@@ -1,3 +1,12 @@
-import { AppRegistry } from 'react-native';
-import App from './App';
-AppRegistry.registerComponent('Goodmate', () => App);
+import { Navigation } from 'react-native-navigation';
+
+import registerScreens from './src/screens';
+
+registerScreens();
+
+Navigation.startSingleScreenApp({
+  screen: {
+    screen: 'goodmate.Login',
+    title: 'Login',
+  },
+});

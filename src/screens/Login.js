@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Platform, Image, Text, View } from 'react-native';
 import firebase from 'react-native-firebase';
 
-export default class App extends React.Component {
+export default class Login extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -17,7 +17,7 @@ export default class App extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Image source={require('./assets/RNFirebase512x512.png')} style={[styles.logo]} />
+        <Image source={require('../assets/RNFirebase512x512.png')} style={[styles.logo]} />
         <Text style={styles.welcome}>
           Welcome to the React Native{'\n'}Firebase starter project!
         </Text>
