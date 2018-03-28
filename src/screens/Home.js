@@ -29,6 +29,9 @@ export default class Home extends Component {
         this.props.navigator.resetTo({
           screen: 'goodmate.Login',
           title: 'Login',
+          navigatorStyle: {
+            navBarHidden: true,
+          },
         });
       })
       .catch(error => {

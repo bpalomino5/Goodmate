@@ -8,5 +8,8 @@ Navigation.startSingleScreenApp({
   screen: {
     screen: 'goodmate.Login',
     title: 'Login',
+    navigatorStyle: {
+      navBarHidden: true,
+    },
   },
 });

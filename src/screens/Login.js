@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import firebase from 'react-native-firebase';
 import { Input, Button } from 'react-native-elements';
+import { Navigation } from 'react-native-navigation';
 
 // import Icon from 'react-native-vector-icons/FontAwesome';
 // import SimpleIcon from 'react-native-vector-icons/SimpleLineIcons';
@@ -66,10 +67,21 @@ export default class Login extends Component {
       .then(response => {
         if (response) {
           // go to Home
-          this.props.navigator.resetTo({
-            screen: 'goodmate.Home',
-            title: 'Home',
+          Navigation.startSingleScreenApp({
+            screen: {
+              screen: 'goodmate.Home',
+              title: 'Home',
+            },
+            drawer: {
+              left: {
+                screen: 'goodmate.Menu',
+              },
+            },
           });
+          // this.props.navigator.resetTo({
+          //   screen: 'goodmate.Home',
+          //   title: 'Home',
+          // });
         }
       })
       .catch(error => {
