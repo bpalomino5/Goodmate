@@ -71,17 +71,16 @@ export default class Login extends Component {
             screen: {
               screen: 'goodmate.Home',
               title: 'Home',
+              navigatorStyle: {
+                navBarHidden: true,
+              },
             },
             drawer: {
               left: {
-                screen: 'goodmate.Menu',
+                screen: 'goodmate.Drawer',
               },
             },
           });
-          // this.props.navigator.resetTo({
-          //   screen: 'goodmate.Home',
-          //   title: 'Home',
-          // });
         }
       })
       .catch(error => {

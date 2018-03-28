@@ -1,6 +1,9 @@
+/* eslint class-methods-use-this: 0 */
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
 import firebase from 'react-native-firebase';
+import { Navigation } from 'react-native-navigation';
+import { Header } from 'react-native-elements';
 
 export default class Home extends Component {
   constructor() {
@@ -26,11 +29,13 @@ export default class Home extends Component {
       .signOut()
       .then(() => {
         // console.log('Signed out successfully');
-        this.props.navigator.resetTo({
-          screen: 'goodmate.Login',
-          title: 'Login',
-          navigatorStyle: {
-            navBarHidden: true,
+        Navigation.startSingleScreenApp({
+          screen: {
+            screen: 'goodmate.Login',
+            title: 'Login',
+            navigatorStyle: {
+              navBarHidden: true,
+            },
           },
         });
       })
@@ -49,15 +54,22 @@ export default class Home extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <Text>Hello {this.state.displayName}</Text>
-        <Button onPress={this.logout} title="Logout" />
-        <TextInput
-          style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
-          onChangeText={name => this.setState({ name })}
-          value={this.state.name}
+      <View>
+        <Header
+          leftComponent={{ icon: 'menu', color: '#fff' }}
+          centerComponent={{ text: 'MY TITLE', style: { color: '#fff' } }}
+          rightComponent={{ icon: 'home', color: '#fff' }}
         />
-        <Button onPress={this.addUser} title="Add User" />
+        <View style={styles.container}>
+          <Text>Hello {this.state.displayName}</Text>
+          <Button onPress={this.logout} title="Logout" />
+          <TextInput
+            style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+            onChangeText={name => this.setState({ name })}
+            value={this.state.name}
+          />
+          <Button onPress={this.addUser} title="Add User" />
+        </View>
       </View>
     );
   }
@@ -65,7 +77,7 @@ export default class Home extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 0,
     justifyContent: 'center',
     backgroundColor: '#F5FCFF',
     padding: 5,

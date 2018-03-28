@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Text, View } from 'react-native';
 
-export default class Menu extends PureComponent {
+export default class Drawer extends PureComponent {
   render() {
     return (
       <View>
