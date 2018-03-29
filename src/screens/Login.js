@@ -77,7 +77,7 @@ export default class Login extends Component {
                 screen: 'goodmate.Drawer',
               },
               style: {
-                drawerShadow: false,
+                drawerShadow: false, // for ios to look nicer
               },
             },
           });

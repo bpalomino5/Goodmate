@@ -1,7 +1,7 @@
 package com.bpalomino.goodmate;
 
 import com.facebook.react.ReactPackage;
-
+import com.oblador.vectoricons.VectorIconsPackage;
 import io.invertase.firebase.RNFirebasePackage;
 // optional packages - add/remove as appropriate
 import io.invertase.firebase.admob.RNFirebaseAdMobPackage; //Firebase AdMob
@@ -34,6 +34,7 @@ import com.reactnativenavigation.NavigationApplication;
          // Add additional packages you require here
          // No need to add RnnPackage and MainReactPackage
          return Arrays.<ReactPackage>asList(
+            new VectorIconsPackage(),
             new RNFirebasePackage(),
             // add/remove these packages as appropriate
             new RNFirebaseAdMobPackage(),

@@ -1,13 +1,12 @@
-/* eslint class-methods-use-this: 0 */
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
 import firebase from 'react-native-firebase';
-import { Navigation } from 'react-native-navigation';
 
 export default class Home extends Component {
   static navigatorButtons = {
     leftButtons: [
       {
+        id: 'sideMenu',
         component: 'goodmate.DrawerToggle',
       },
     ],
@@ -33,7 +32,6 @@ export default class Home extends Component {
 
   onNavigatorEvent(event) {
     if (event.type === 'DeepLink') {
-      console.log(event.link);
       if (event.link === 'DrawerToggle') {
         this.props.navigator.toggleDrawer({
           side: 'left',
