@@ -158,7 +158,7 @@ export default class Login extends Component {
                   onPress={() => this.selectCategory(0)}
                   containerStyle={{ flex: 1 }}
                   titleStyle={[styles.categoryText, isLoginPage && styles.selectedCategoryText]}
-                  title="Login"
+                  title="Login "
                 />
                 <Button
                   disabled={isLoading}
@@ -167,7 +167,7 @@ export default class Login extends Component {
                   onPress={() => this.selectCategory(1)}
                   containerStyle={{ flex: 1 }}
                   titleStyle={[styles.categoryText, isSignUpPage && styles.selectedCategoryText]}
-                  title="Sign up"
+                  title="Sign up "
                 />
               </View>
               <View style={styles.rowSelector}>
@@ -235,7 +235,7 @@ export default class Login extends Component {
                   buttonStyle={styles.loginButton}
                   containerStyle={{ marginTop: 32, flex: 0 }}
                   activeOpacity={0.8}
-                  title={isLoginPage ? 'LOGIN' : 'SIGN UP'}
+                  title={isLoginPage ? 'LOGIN ' : 'SIGN UP '}
                   onPress={isLoginPage ? this.login : this.signUp}
                   titleStyle={styles.loginTextButton}
                   loading={isLoading}
@@ -245,7 +245,7 @@ export default class Login extends Component {
             </KeyboardAvoidingView>
             <View style={styles.helpContainer}>
               <Button
-                title="Need help ?"
+                title="Need help?  "
                 titleStyle={{ color: 'white' }}
                 buttonStyle={{ backgroundColor: 'transparent' }}
                 underlayColor="transparent"
@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   loginButton: {
-    backgroundColor: 'rgba(232, 147, 142, 1)',
+    backgroundColor: '#5B725A',
     borderRadius: 10,
     height: 50,
     width: 200,
