@@ -3,19 +3,27 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
 import firebase from 'react-native-firebase';
 import { Navigation } from 'react-native-navigation';
-import { Header } from 'react-native-elements';
 
 export default class Home extends Component {
-  constructor() {
-    super();
+  static navigatorButtons = {
+    leftButtons: [
+      {
+        component: 'goodmate.DrawerToggle',
+      },
+    ],
+  };
+
+  constructor(props) {
+    super(props);
     this.unsubscriber = null;
     this.ref = firebase.firestore().collection('users');
     this.state = {
       name: '',
       displayName: '',
     };
-    this.logout = this.logout.bind(this);
+
     this.addUser = this.addUser.bind(this);
+    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
   componentWillMount() {
@@ -23,25 +31,16 @@ export default class Home extends Component {
     this.setState({ displayName: user.displayName });
   }
 
-  logout() {
-    firebase
-      .auth()
-      .signOut()
-      .then(() => {
-        // console.log('Signed out successfully');
-        Navigation.startSingleScreenApp({
-          screen: {
-            screen: 'goodmate.Login',
-            title: 'Login',
-            navigatorStyle: {
-              navBarHidden: true,
-            },
-          },
+  onNavigatorEvent(event) {
+    if (event.type === 'DeepLink') {
+      console.log(event.link);
+      if (event.link === 'DrawerToggle') {
+        this.props.navigator.toggleDrawer({
+          side: 'left',
+          animated: true,
         });
-      })
-      .catch(error => {
-        console.log(error.code, error.message);
-      });
+      }
+    }
   }
 
   addUser() {
@@ -54,22 +53,14 @@ export default class Home extends Component {
 
   render() {
     return (
-      <View>
-        <Header
-          leftComponent={{ icon: 'menu', color: '#fff' }}
-          centerComponent={{ text: 'MY TITLE', style: { color: '#fff' } }}
-          rightComponent={{ icon: 'home', color: '#fff' }}
+      <View style={styles.container}>
+        <Text>Hello {this.state.displayName}</Text>
+        <TextInput
+          style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+          onChangeText={name => this.setState({ name })}
+          value={this.state.name}
         />
-        <View style={styles.container}>
-          <Text>Hello {this.state.displayName}</Text>
-          <Button onPress={this.logout} title="Logout" />
-          <TextInput
-            style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
-            onChangeText={name => this.setState({ name })}
-            value={this.state.name}
-          />
-          <Button onPress={this.addUser} title="Add User" />
-        </View>
+        <Button onPress={this.addUser} title="Add User" />
       </View>
     );
   }
@@ -77,7 +68,7 @@ export default class Home extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 0,
+    flex: 1,
     justifyContent: 'center',
     backgroundColor: '#F5FCFF',
     padding: 5,
