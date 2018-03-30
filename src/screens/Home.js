@@ -4,14 +4,9 @@ import firebase from 'react-native-firebase';
 import { Header, Icon } from 'react-native-elements';
 
 export default class Home extends Component {
-  // static navigatorButtons = {
-  //   leftButtons: [
-  //     {
-  //       id: 'sideMenu',
-  //       component: 'goodmate.DrawerToggle',
-  //     },
-  //   ],
-  // };
+  static navigatorStyle = {
+    navBarHidden: true,
+  };
 
   constructor(props) {
     super(props);
@@ -23,24 +18,12 @@ export default class Home extends Component {
     };
 
     this.addUser = this.addUser.bind(this);
-    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     this.toggleDrawer = this.toggleDrawer.bind(this);
   }
 
   componentWillMount() {
     const user = firebase.auth().currentUser;
     this.setState({ displayName: user.displayName });
-  }
-
-  onNavigatorEvent(event) {
-    if (event.type === 'DeepLink') {
-      if (event.link === 'DrawerToggle') {
-        this.props.navigator.toggleDrawer({
-          side: 'left',
-          animated: true,
-        });
-      }
-    }
   }
 
   toggleDrawer() {
@@ -62,11 +45,12 @@ export default class Home extends Component {
     return (
       <View>
         <Header
-          backgroundColor="green"
+          statusBarProps={{ backgroundColor: '#5B725A' }}
+          backgroundColor="#5B725A"
           leftComponent={
             <Icon name="menu" type="Feather" color="white" underlayColor="lightblue" onPress={this.toggleDrawer} />
           }
-          centerComponent={{ text: 'HOME', style: { fontSize: 18, color: '#fff' } }}
+          centerComponent={{ text: 'Home', style: { fontSize: 18, color: '#fff' } }}
         />
         <View style={styles.container}>
           <Text>Hello {this.state.displayName}</Text>

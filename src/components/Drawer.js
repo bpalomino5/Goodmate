@@ -2,7 +2,7 @@
     react/no-array-index-key: 0
 */
 import React, { Component } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import firebase from 'react-native-firebase';
 import { Navigation } from 'react-native-navigation';
 import { Avatar, Text, List, ListItem, Button } from 'react-native-elements';
@@ -80,7 +80,7 @@ export default class Drawer extends Component {
         <Button
           buttonStyle={styles.logoutButton}
           onPress={this.logout}
-          title="Logout"
+          title="Logout "
         />
       </View>
     );
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#3A3837',
-    paddingTop: 30,
+    paddingTop: Platform.OS === 'ios' ? 30 : 15,
   },
   profileContainer: {
     flex: 0,
