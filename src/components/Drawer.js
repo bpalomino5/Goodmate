@@ -12,18 +12,22 @@ const list = [
   {
     title: 'Home',
     icon: 'home',
+    screen: 'goodmate.Home',
   },
   {
     title: 'Rents',
     icon: 'folder',
+    screen: 'goodmate.Home',
   },
   {
     title: 'Reminders',
     icon: 'av-timer',
+    screen: 'goodmate.Home',
   },
   {
     title: 'Settings',
     icon: 'settings',
+    screen: 'goodmate.Home',
   },
 ];
 
@@ -31,6 +35,7 @@ export default class Drawer extends Component {
   constructor(props) {
     super(props);
     this.logout = this.logout.bind(this);
+    this.openScreen = this.openScreen.bind(this);
   }
 
   logout() {
@@ -51,6 +56,20 @@ export default class Drawer extends Component {
       .catch(error => {
         console.log(error.code, error.message);
       });
+  }
+
+  toggleDrawer() {
+    this.props.navigator.toggleDrawer({
+      side: 'left',
+      animated: true,
+    });
+  }
+
+  openScreen(s) {
+    this.toggleDrawer();
+    this.props.navigator.handleDeepLink({
+      link: s,
+    });
   }
 
   render() {
@@ -74,6 +93,7 @@ export default class Drawer extends Component {
               titleStyle={{ color: 'white' }}
               leftIcon={{ name: item.icon }}
               hideChevron
+              onPress={() => this.openScreen(item.screen)}
             />
           ))}
         </List>

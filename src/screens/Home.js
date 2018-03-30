@@ -1,7 +1,22 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import firebase from 'react-native-firebase';
-import { Header, Icon } from 'react-native-elements';
+import { Header, Icon, Text } from 'react-native-elements';
+
+const list = [
+  {
+    name: 'Brandon',
+    description: 'Cleaned the dishes',
+  },
+  {
+    name: 'Bryan',
+    description: 'Watched youtube while doing homework',
+  },
+  {
+    name: 'CJ',
+    description: 'Took out the trash',
+  },
+];
 
 export default class Home extends Component {
   static navigatorStyle = {
@@ -14,16 +29,26 @@ export default class Home extends Component {
     this.ref = firebase.firestore().collection('users');
     this.state = {
       name: '',
-      displayName: '',
     };
 
     this.addUser = this.addUser.bind(this);
     this.toggleDrawer = this.toggleDrawer.bind(this);
+    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
   componentWillMount() {
-    const user = firebase.auth().currentUser;
-    this.setState({ displayName: user.displayName });
+    // const user = firebase.auth().currentUser;
+    // this.setState({ displayName: user.displayName });
+  }
+
+  onNavigatorEvent(event) {
+    if (event.type === 'DeepLink') {
+      if (event.link !== 'goodmate.Home') {
+        this.props.navigator.push({
+          screen: event.link,
+        });
+      }
+    }
   }
 
   toggleDrawer() {
@@ -43,24 +68,39 @@ export default class Home extends Component {
 
   render() {
     return (
-      <View>
+      <View style={styles.container}>
         <Header
           statusBarProps={{ backgroundColor: '#5B725A' }}
           backgroundColor="#5B725A"
           leftComponent={
-            <Icon name="menu" type="Feather" color="white" underlayColor="lightblue" onPress={this.toggleDrawer} />
+            <Icon
+              name="menu"
+              type="Feather"
+              color="white"
+              underlayColor="lightblue"
+              onPress={this.toggleDrawer}
+            />
           }
           centerComponent={{ text: 'Home', style: { fontSize: 18, color: '#fff' } }}
         />
-        <View style={styles.container}>
-          <Text>Hello {this.state.displayName}</Text>
-          <TextInput
-            style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
-            onChangeText={name => this.setState({ name })}
-            value={this.state.name}
-          />
-          <Button onPress={this.addUser} title="Add User" />
-        </View>
+        {list.length > 0 ? (
+          list.map(item => (
+            <View style={styles.row}>
+              <View style={{ flex: 0 }}>
+                <Text style={styles.nameStyle}>{item.name}</Text>
+                <Text>{item.description}</Text>
+              </View>
+              <Icon
+                name="thumbs-up"
+                type="feather"
+              />
+            </View>
+          ))
+        ) : (
+          <View style={styles.row}>
+            <Text>Nothing yet</Text>
+          </View>
+        )}
       </View>
     );
   }
@@ -68,9 +108,18 @@ export default class Home extends Component {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    backgroundColor: '#E3E1DE',
+  },
+  row: {
     flex: 0,
-    justifyContent: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     backgroundColor: '#F5FCFF',
-    padding: 5,
+    padding: 15,
+    marginBottom: 10,
+  },
+  nameStyle: {
+    fontSize: 22,
   },
 });
