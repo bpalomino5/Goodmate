@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, ScrollView } from 'react-native';
 import firebase from 'react-native-firebase';
 import { Header, Icon, Text } from 'react-native-elements';
 
@@ -7,14 +7,17 @@ const list = [
   {
     name: 'Brandon',
     description: 'Cleaned the dishes',
+    key: 'blah',
   },
   {
     name: 'Bryan',
     description: 'Watched youtube while doing homework',
+    key: 'heyyah',
   },
   {
     name: 'CJ',
     description: 'Took out the trash',
+    key: 'yesman',
   },
 ];
 
@@ -27,18 +30,11 @@ export default class Home extends Component {
     super(props);
     this.unsubscriber = null;
     this.ref = firebase.firestore().collection('users');
-    this.state = {
-      name: '',
-    };
 
-    this.addUser = this.addUser.bind(this);
+    // this.addUser = this.addUser.bind(this);
     this.toggleDrawer = this.toggleDrawer.bind(this);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
-  }
-
-  componentWillMount() {
-    // const user = firebase.auth().currentUser;
-    // this.setState({ displayName: user.displayName });
+    this.openActivityModal = this.openActivityModal.bind(this);
   }
 
   onNavigatorEvent(event) {
@@ -58,13 +54,21 @@ export default class Home extends Component {
     });
   }
 
-  addUser() {
-    this.ref.add({
-      username: this.state.name,
+  openActivityModal() {
+    this.props.navigator.showModal({
+      screen: 'goodmate.ActivityModal',
+      animationType: 'slide-up',
+      navigatorStyle: { navBarHidden: true },
     });
-
-    this.setState({ name: '' });
   }
+
+  // addUser() {
+  //   this.ref.add({
+  //     username: this.state.name,
+  //   });
+
+  //   this.setState({ name: '' });
+  // }
 
   render() {
     return (
@@ -77,30 +81,38 @@ export default class Home extends Component {
               name="menu"
               type="Feather"
               color="white"
-              underlayColor="lightblue"
+              underlayColor="transparent"
               onPress={this.toggleDrawer}
             />
           }
           centerComponent={{ text: 'Home', style: { fontSize: 18, color: '#fff' } }}
+          rightComponent={
+            <Icon
+              name="plus"
+              type="feather"
+              color="white"
+              underlayColor="transparent"
+              onPress={this.openActivityModal}
+            />
+          }
         />
-        {list.length > 0 ? (
-          list.map(item => (
-            <View style={styles.row}>
-              <View style={{ flex: 0 }}>
-                <Text style={styles.nameStyle}>{item.name}</Text>
-                <Text>{item.description}</Text>
+        <ScrollView>
+          {list.length > 0 ? (
+            list.map(item => (
+              <View key={item.key} style={styles.row}>
+                <View style={{ flex: 0 }}>
+                  <Text style={styles.nameStyle}>{item.name}</Text>
+                  <Text>{item.description}</Text>
+                </View>
+                <Icon name="thumbs-up" type="feather" />
               </View>
-              <Icon
-                name="thumbs-up"
-                type="feather"
-              />
+            ))
+          ) : (
+            <View style={styles.row}>
+              <Text>Nothing yet</Text>
             </View>
-          ))
-        ) : (
-          <View style={styles.row}>
-            <Text>Nothing yet</Text>
-          </View>
-        )}
+          )}
+        </ScrollView>
       </View>
     );
   }
