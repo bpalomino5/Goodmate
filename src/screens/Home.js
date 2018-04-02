@@ -40,7 +40,7 @@ export default class Home extends Component {
   onNavigatorEvent(event) {
     if (event.type === 'DeepLink') {
       if (event.link !== 'goodmate.Home') {
-        this.props.navigator.push({
+        this.props.navigator.resetTo({
           screen: event.link,
         });
       }
