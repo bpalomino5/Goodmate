@@ -24,6 +24,7 @@ const list = [
 export default class Home extends Component {
   static navigatorStyle = {
     navBarHidden: true,
+    statusBarColor: '#5B725A',
   };
 
   constructor(props) {
@@ -58,7 +59,6 @@ export default class Home extends Component {
     this.props.navigator.showModal({
       screen: 'goodmate.ActivityModal',
       animationType: 'slide-up',
-      navigatorStyle: { navBarHidden: true },
     });
   }
 

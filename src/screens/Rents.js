@@ -5,6 +5,7 @@ import { Header, Icon, Text } from 'react-native-elements';
 export default class Rents extends Component {
   static navigatorStyle = {
     navBarHidden: true,
+    statusBarColor: '#5B725A',
   };
 
   constructor(props) {

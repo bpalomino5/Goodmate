@@ -29,6 +29,11 @@ const data = [
 ];
 
 export default class ActivityModal extends Component {
+  static navigatorStyle = {
+    navBarHidden: true,
+    statusBarColor: '#5B725A',
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -73,8 +78,8 @@ export default class ActivityModal extends Component {
           centerComponent={{ text: 'Share Activities', style: { fontSize: 18, color: '#fff' } }}
           rightComponent={
             <Button
-              title="Post"
-              buttonStyle={{ backgroundColor: 'transparent' }}
+              title="Post "
+              buttonStyle={{ backgroundColor: 'grey', borderRadius: 30 }}
             />
           }
         />
@@ -96,14 +101,14 @@ export default class ActivityModal extends Component {
         </View>
         <View style={styles.ButtonSection}>
           <Button
-            title="Add"
+            title="Add "
             buttonStyle={{ width: 80, borderRadius: 20 }}
             onPress={() =>
               this.setState({ activities: [...this.state.activities, { checked: false }] })
             }
           />
           <Button
-            title="Remove"
+            title="Remove "
             buttonStyle={{ borderRadius: 20, paddingLeft: 2, paddingRight: 2 }}
             onPress={this.removeItem}
           />
@@ -116,6 +121,7 @@ export default class ActivityModal extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#E3E1DE',
   },
   InputSection: {
     flex: 1,
