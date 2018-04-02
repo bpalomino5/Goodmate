@@ -6,13 +6,25 @@ import { Dropdown } from 'react-native-material-dropdown';
 
 const data = [
   {
-    value: 'Banana',
+    value: 'Cleaned the bathroom',
   },
   {
-    value: 'Mango',
+    value: 'Cleaned the kitchen',
   },
   {
-    value: 'Pear',
+    value: 'Vacuumed the floors',
+  },
+  {
+    value: 'Took out the trash',
+  },
+  {
+    value: 'Bought more dish soap',
+  },
+  {
+    value: 'Washed the dishes',
+  },
+  {
+    value: 'Bought more sponges',
   },
 ];
 
@@ -58,7 +70,7 @@ export default class ActivityModal extends Component {
               onPress={this.closeModal}
             />
           }
-          centerComponent={{ text: 'Activity', style: { fontSize: 18, color: '#fff' } }}
+          centerComponent={{ text: 'Share Activities', style: { fontSize: 18, color: '#fff' } }}
           rightComponent={
             <Button
               title="Post"
@@ -76,7 +88,7 @@ export default class ActivityModal extends Component {
                   onIconPress={() => this.updateItem(i)}
                 />
                 <View style={{ flex: 1 }}>
-                  <Dropdown label="Favorite Fruit" data={data} />
+                  <Dropdown label="Activity" data={data} />
                 </View>
               </View>
             ))}

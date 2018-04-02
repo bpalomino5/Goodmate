@@ -17,7 +17,7 @@ const list = [
   {
     title: 'Rents',
     icon: 'folder',
-    screen: 'goodmate.Home',
+    screen: 'goodmate.Rents',
   },
   {
     title: 'Reminders',
