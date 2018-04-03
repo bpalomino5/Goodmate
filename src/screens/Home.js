@@ -21,6 +21,50 @@ const list = [
   },
 ];
 
+const GoodHeader = ({ toggleDrawer, openActivityModal }) => (
+  <Header
+    statusBarProps={{ backgroundColor: '#5B725A' }}
+    backgroundColor="#5B725A"
+    leftComponent={
+      <Icon
+        name="menu"
+        type="Feather"
+        color="white"
+        underlayColor="transparent"
+        onPress={toggleDrawer}
+      />
+    }
+    centerComponent={{ text: 'Home', style: { fontSize: 18, color: '#fff' } }}
+    rightComponent={
+      <Icon
+        name="plus"
+        type="feather"
+        color="white"
+        underlayColor="transparent"
+        onPress={openActivityModal}
+      />
+    }
+  />
+);
+
+const ActivityFeed = () => list.map(item => <ActivityItem key={item.key} item={item} />);
+
+const ActivityItem = ({ item }) => (
+  <View style={styles.row}>
+    <View style={{ flex: 0 }}>
+      <Text style={styles.nameStyle}>{item.name}</Text>
+      <Text>{item.description}</Text>
+    </View>
+    <Icon name="thumbs-up" type="feather" />
+  </View>
+);
+
+const EmptyActivityFeed = () => (
+  <View style={styles.emptyfeed}>
+    <Text h4>Upcoming activities!</Text>
+  </View>
+);
+
 export default class Home extends Component {
   static navigatorStyle = {
     navBarHidden: true,
@@ -73,46 +117,8 @@ export default class Home extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Header
-          statusBarProps={{ backgroundColor: '#5B725A' }}
-          backgroundColor="#5B725A"
-          leftComponent={
-            <Icon
-              name="menu"
-              type="Feather"
-              color="white"
-              underlayColor="transparent"
-              onPress={this.toggleDrawer}
-            />
-          }
-          centerComponent={{ text: 'Home', style: { fontSize: 18, color: '#fff' } }}
-          rightComponent={
-            <Icon
-              name="plus"
-              type="feather"
-              color="white"
-              underlayColor="transparent"
-              onPress={this.openActivityModal}
-            />
-          }
-        />
-        <ScrollView>
-          {list.length > 0 ? (
-            list.map(item => (
-              <View key={item.key} style={styles.row}>
-                <View style={{ flex: 0 }}>
-                  <Text style={styles.nameStyle}>{item.name}</Text>
-                  <Text>{item.description}</Text>
-                </View>
-                <Icon name="thumbs-up" type="feather" />
-              </View>
-            ))
-          ) : (
-            <View style={styles.row}>
-              <Text>Nothing yet</Text>
-            </View>
-          )}
-        </ScrollView>
+        <GoodHeader toggleDrawer={this.toggleDrawer} openActivityModal={this.openActivityModal} />
+        <ScrollView>{list.length > 0 ? <ActivityFeed /> : <EmptyActivityFeed />}</ScrollView>
       </View>
     );
   }
@@ -130,6 +136,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5FCFF',
     padding: 15,
     marginBottom: 10,
+  },
+  emptyfeed: {
+    flex: 0,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    backgroundColor: '#F5FCFF',
+    padding: 15,
   },
   nameStyle: {
     fontSize: 22,

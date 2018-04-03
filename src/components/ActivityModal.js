@@ -28,6 +28,44 @@ const data = [
   },
 ];
 
+const GoodHeader = ({ closeModal }) => (
+  <Header
+    statusBarProps={{ backgroundColor: '#5B725A' }}
+    backgroundColor="#5B725A"
+    leftComponent={
+      <Icon name="arrow-back" color="white" underlayColor="transparent" onPress={closeModal} />
+    }
+    centerComponent={{ text: 'Share Activities', style: { fontSize: 18, color: '#fff' } }}
+    rightComponent={
+      <Button title="Post " buttonStyle={{ backgroundColor: 'grey', borderRadius: 30 }} />
+    }
+  />
+);
+
+const ActivitySelectionList = ({ activities, updateItem }) => (
+  activities.map((item, i) => (
+    <ActivitySelection
+      key={i}
+      i={i}
+      updateItem={() => updateItem(i)}
+      activities={activities}
+    />
+  ))
+);
+
+const ActivitySelection = ({ activities, updateItem, i }) => (
+  <View style={styles.SelectionRow}>
+    <CheckBox
+      containerStyle={{ alignSelf: 'flex-end' }}
+      checked={activities[i].checked}
+      onIconPress={() => updateItem(i)}
+    />
+    <View style={{ flex: 1 }}>
+      <Dropdown label="Activity" data={data} />
+    </View>
+  </View>
+);
+
 export default class ActivityModal extends Component {
   static navigatorStyle = {
     navBarHidden: true,
@@ -64,39 +102,13 @@ export default class ActivityModal extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Header
-          statusBarProps={{ backgroundColor: '#5B725A' }}
-          backgroundColor="#5B725A"
-          leftComponent={
-            <Icon
-              name="arrow-back"
-              color="white"
-              underlayColor="transparent"
-              onPress={this.closeModal}
-            />
-          }
-          centerComponent={{ text: 'Share Activities', style: { fontSize: 18, color: '#fff' } }}
-          rightComponent={
-            <Button
-              title="Post "
-              buttonStyle={{ backgroundColor: 'grey', borderRadius: 30 }}
-            />
-          }
-        />
+        <GoodHeader closeModal={this.closeModal} />
         <View style={styles.InputSection}>
           <ScrollView>
-            {this.state.activities.map((item, i) => (
-              <View key={i} style={styles.SelectionRow}>
-                <CheckBox
-                  containerStyle={{ alignSelf: 'flex-end' }}
-                  checked={this.state.activities[i].checked}
-                  onIconPress={() => this.updateItem(i)}
-                />
-                <View style={{ flex: 1 }}>
-                  <Dropdown label="Activity" data={data} />
-                </View>
-              </View>
-            ))}
+            <ActivitySelectionList
+              activities={this.state.activities}
+              updateItem={(i) => this.updateItem(i)}
+            />
           </ScrollView>
         </View>
         <View style={styles.ButtonSection}>

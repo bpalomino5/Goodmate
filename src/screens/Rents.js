@@ -1,6 +1,23 @@
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Header, Icon, Text } from 'react-native-elements';
+import { Header, Icon } from 'react-native-elements';
+
+const GoodHeader = ({ toggleDrawer }) => (
+  <Header
+    statusBarProps={{ backgroundColor: '#5B725A' }}
+    backgroundColor="#5B725A"
+    leftComponent={
+      <Icon
+        name="menu"
+        type="Feather"
+        color="white"
+        underlayColor="transparent"
+        onPress={toggleDrawer}
+      />
+    }
+    centerComponent={{ text: 'Rents', style: { fontSize: 18, color: '#fff' } }}
+  />
+);
 
 export default class Rents extends Component {
   static navigatorStyle = {
@@ -10,7 +27,6 @@ export default class Rents extends Component {
 
   constructor(props) {
     super(props);
-
     this.toggleDrawer = this.toggleDrawer.bind(this);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
@@ -35,21 +51,7 @@ export default class Rents extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Header
-          statusBarProps={{ backgroundColor: '#5B725A' }}
-          backgroundColor="#5B725A"
-          leftComponent={
-            <Icon
-              name="menu"
-              type="Feather"
-              color="white"
-              underlayColor="transparent"
-              onPress={this.toggleDrawer}
-            />
-          }
-          centerComponent={{ text: 'Rents', style: { fontSize: 18, color: '#fff' } }}
-        />
-        <Text> textInComponent </Text>
+        <GoodHeader toggleDrawer={this.toggleDrawer} />
       </View>
     );
   }
