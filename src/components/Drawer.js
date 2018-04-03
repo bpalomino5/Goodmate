@@ -12,21 +12,25 @@ const list = [
   {
     title: 'Home',
     icon: 'home',
+    type: 'material',
     screen: 'goodmate.Home',
   },
   {
     title: 'Rents',
-    icon: 'folder',
+    icon: 'file-document-box',
+    type: 'material-community',
     screen: 'goodmate.Rents',
   },
   {
     title: 'Reminders',
     icon: 'av-timer',
+    type: 'material',
     screen: 'goodmate.Home',
   },
   {
     title: 'Settings',
     icon: 'settings',
+    type: 'material',
     screen: 'goodmate.Home',
   },
 ];
@@ -91,7 +95,7 @@ export default class Drawer extends Component {
               key={i}
               title={item.title}
               titleStyle={{ color: 'white' }}
-              leftIcon={{ name: item.icon }}
+              leftIcon={{ name: item.icon, type: item.type }}
               hideChevron
               onPress={() => this.openScreen(item.screen)}
             />
