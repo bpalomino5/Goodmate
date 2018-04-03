@@ -60,12 +60,14 @@ const DateSelection = ({ updateMonth, updateYear }) => (
       label="Month"
       data={months}
       onChangeText={value => updateMonth(value)}
+      animationDuration={180}
     />
     <Dropdown
       containerStyle={{ width: 100 }}
       label="Year"
       data={years}
       onChangeText={value => updateYear(value)}
+      animationDuration={180}
     />
   </View>
 );

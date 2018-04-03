@@ -61,7 +61,7 @@ const ActivitySelection = ({ activities, updateItem, i }) => (
       onIconPress={() => updateItem(i)}
     />
     <View style={{ flex: 1 }}>
-      <Dropdown label="Activity" data={data} />
+      <Dropdown label="Activity" data={data} animationDuration={150} />
     </View>
   </View>
 );
