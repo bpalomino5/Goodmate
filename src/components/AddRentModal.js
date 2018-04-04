@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Header, Icon, Button, Input } from 'react-native-elements';
+import { Header, Icon, Button } from 'react-native-elements';
+import RentForm from './RentForm';
 
 const GoodHeader = ({ closeModal }) => (
   <Header
@@ -10,17 +11,7 @@ const GoodHeader = ({ closeModal }) => (
       <Icon name="arrow-back" color="white" underlayColor="transparent" onPress={closeModal} />
     }
     centerComponent={{ text: 'Create Rent Sheet', style: { fontSize: 18, color: '#fff' } }}
-    rightComponent={
-      <Button title="Done " buttonStyle={{ backgroundColor: 'grey', borderRadius: 30 }} />
-    }
   />
-);
-
-const RentForm = () => (
-  <View style={{ flex: 1, alignItems: 'center' }}>
-    <Input placeholder="Monthly Rent" leftIcon={<Icon name="attach-money" size={24} color="black" />} />
-    <Input placeholder="Monthly Rent" leftIcon={<Icon name="attach-money" size={24} color="black" />} />
-  </View>
 );
 
 export default class AddRentModal extends Component {
@@ -45,6 +36,11 @@ export default class AddRentModal extends Component {
       <View style={styles.container}>
         <GoodHeader closeModal={this.closeModal} />
         <RentForm />
+        <Button
+          containerStyle={{ marginTop: 20 }}
+          title="Submit "
+          buttonStyle={{ borderRadius: 30 }}
+        />
       </View>
     );
   }
