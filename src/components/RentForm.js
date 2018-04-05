@@ -4,19 +4,44 @@
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { Icon, Input, Card } from 'react-native-elements';
+import { Dropdown } from 'react-native-material-dropdown';
+
+const types = [{ value: 'Avalon' }, { value: 'Bryan' }];
 
 export default class RentForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      baseItems: [{ title: 'Monthly Rent', value: '' }],
-      billItems: [{ title: 'Utilities', value: '' }],
+      baseItems: [
+        {
+          section: '',
+          type: '',
+          value: '',
+          removable: false,
+        },
+      ],
+      billItems: [
+        {
+          section: '',
+          type: '',
+          value: '',
+          removable: false,
+        },
+      ],
     };
   }
 
-  addItem(key, state, title) {
+  addItem(key, state) {
     this.setState({
-      [key]: [...state, { title, value: '' }],
+      [key]: [
+        ...state,
+        {
+          section: '',
+          type: '',
+          value: '',
+          removable: true,
+        },
+      ],
     });
   }
 
@@ -26,8 +51,13 @@ export default class RentForm extends Component {
     });
   }
 
-  updateItem(i, text, state) {
+  updateItemValue(i, text, state) {
     state[i].value = text;
+    this.forceUpdate();
+  }
+
+  updateItemType(i, type, state) {
+    state[i].type = type;
     this.forceUpdate();
   }
 
@@ -37,16 +67,18 @@ export default class RentForm extends Component {
         <RentFormCard
           title="Base Rent Items"
           data={this.state.baseItems}
-          addItem={() => this.addItem('baseItems', this.state.baseItems, 'Other Rent')}
+          addItem={() => this.addItem('baseItems', this.state.baseItems)}
           removeItem={i => this.removeItem('baseItems', this.state.baseItems, i)}
-          updateItem={(i, text) => this.updateItem(i, text, this.state.baseItems)}
+          updateItemType={(i, text) => this.updateItemType(i, text, this.state.baseItems)}
+          updateItemValue={(i, text) => this.updateItemValue(i, text, this.state.baseItems)}
         />
         <RentFormCard
           title="Bill Items"
           data={this.state.billItems}
-          addItem={() => this.addItem('billItems', this.state.billItems, 'Other Bill')}
+          addItem={() => this.addItem('billItems', this.state.billItems)}
           removeItem={i => this.removeItem('billItems', this.state.billItems, i)}
-          updateItem={(i, text) => this.updateItem(i, text, this.state.billItems)}
+          updateItemType={(i, text) => this.updateItemType(i, text, this.state.billItems)}
+          updateItemValue={(i, text) => this.updateItemValue(i, text, this.state.billItems)}
         />
       </View>
     );
@@ -54,35 +86,70 @@ export default class RentForm extends Component {
 }
 
 const RentFormCard = ({
-  title, data, addItem, updateItem, removeItem,
+  title, data, addItem, updateItemType, updateItemValue, removeItem,
 }) => (
   <Card title={title}>
     {data.map((item, i) => (
       <RentFormItem
         key={i}
         i={i}
-        title={item.title}
         addItem={addItem}
         removeItem={() => removeItem(i)}
-        textChange={text => updateItem(i, text)}
+        type={item.type}
+        typeChange={text => updateItemType(i, text)}
         value={item.value}
+        valueChange={text => updateItemValue(i, text)}
+        removable={item.removable}
       />
     ))}
   </Card>
 );
 
 const RentFormItem = ({
-  title, addItem, removeItem, value, textChange,
+  type, typeChange, addItem, removeItem, value, valueChange, removable,
 }) => (
-  <View style={{ flex: 0, flexDirection: 'row', marginBottom: 5 }}>
+  <View
+    style={{
+      flex: 0,
+      flexDirection: 'row',
+      alignItems: 'center',
+    }}
+  >
+    <Dropdown
+      containerStyle={{
+        width: 85,
+        marginRight: 10,
+      }}
+      label="Section"
+      data={types}
+      animationDuration={150}
+    />
     <Input
-      placeholder={title}
-      leftIcon={<Icon name="attach-money" color="black" />}
+      placeholder="Type"
+      inputStyle={{ flex: 1 }}
+      value={type}
+      onChangeText={typeChange}
+      containerStyle={{ width: 95, marginRight: 5, marginTop: 15 }}
+    />
+    <Icon name="attach-money" size={20} color="black" containerStyle={{ marginTop: 10 }} />
+    <Input
+      placeholder="Value"
       inputStyle={{ flex: 1 }}
       value={value}
-      onChangeText={textChange}
+      onChangeText={valueChange}
+      containerStyle={{
+        width: 90,
+        marginLeft: -15,
+        marginRight: 5,
+        marginTop: 15,
+      }}
     />
-    <Icon name="add" color="green" onPress={addItem} />
-    <Icon name="remove" color="red" onPress={removeItem} />
+    <Icon
+      name="add-circle-outline"
+      color="green"
+      onPress={addItem}
+      containerStyle={{ marginRight: 5 }}
+    />
+    {removable && <Icon name="remove-circle-outline" color="red" onPress={removeItem} />}
   </View>
 );
