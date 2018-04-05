@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, ScrollView } from 'react-native';
+import { StyleSheet, View, ScrollView, LayoutAnimation } from 'react-native';
 import { Header, Icon, Button, Overlay, Text, Input } from 'react-native-elements';
 import RentForm from './RentForm';
 
@@ -58,6 +58,7 @@ export default class AddRentModal extends Component {
   }
 
   toggleOverlay(open) {
+    LayoutAnimation.easeInEaseOut();
     this.setState({ isOverlayOpen: open });
   }
 
@@ -74,7 +75,7 @@ export default class AddRentModal extends Component {
           <Button
             containerStyle={{ marginTop: 20 }}
             title="Submit "
-            buttonStyle={{ borderRadius: 30 }}
+            buttonStyle={{ borderRadius: 30, width: 150, height: 40 }}
           />
         </View>
         <SectionOverlay

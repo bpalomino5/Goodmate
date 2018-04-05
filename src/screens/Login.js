@@ -1,3 +1,4 @@
+/* eslint no-unused-expressions: 0 */
 import React, { Component } from 'react';
 import {
   StyleSheet,
@@ -22,7 +23,6 @@ const SCREEN_HEIGHT = Dimensions.get('window').height;
 const BG_IMAGE = require('../assets/home.jpg');
 
 // Enable LayoutAnimation on Android
-/* eslint no-unused-expressions: 0 */
 UIManager.setLayoutAnimationEnabledExperimental &&
   UIManager.setLayoutAnimationEnabledExperimental(true);
 
@@ -106,7 +106,8 @@ export default class Login extends Component {
       return;
     }
 
-    firebase.auth()
+    firebase
+      .auth()
       .createUserAndRetrieveDataWithEmailAndPassword(email, password)
       .then(response => {
         if (response) {
@@ -114,7 +115,7 @@ export default class Login extends Component {
           this.selectCategory(0);
         }
       })
-      .catch((error) => {
+      .catch(error => {
         // Handle Errors here.
         LayoutAnimation.easeInEaseOut();
         this.setState({
@@ -186,7 +187,9 @@ export default class Login extends Component {
                   inputStyle={{ marginLeft: 10 }}
                   placeholder="Email"
                   containerStyle={{ borderBottomColor: 'rgba(0, 0, 0, 0.38)' }}
-                  ref={input => { this.emailInput = input; }}
+                  ref={input => {
+                    this.emailInput = input;
+                  }}
                   onSubmitEditing={() => this.passwordInput.focus()}
                   onChangeText={e => this.setState({ email: e })}
                   displayError={!isEmailValid}
@@ -203,7 +206,9 @@ export default class Login extends Component {
                   containerStyle={{ marginTop: 16, borderBottomColor: 'rgba(0, 0, 0, 0.38)' }}
                   inputStyle={{ marginLeft: 10 }}
                   placeholder="Password"
-                  ref={input => { this.passwordInput = input; }}
+                  ref={input => {
+                    this.passwordInput = input;
+                  }}
                   onSubmitEditing={() =>
                     (isSignUpPage ? this.confirmationInput.focus() : this.login())
                   }
@@ -224,7 +229,9 @@ export default class Login extends Component {
                     containerStyle={{ marginTop: 16, borderBottomColor: 'rgba(0, 0, 0, 0.38)' }}
                     inputStyle={{ marginLeft: 10 }}
                     placeholder="Confirm password"
-                    ref={input => { this.confirmationInput = input; }}
+                    ref={input => {
+                      this.confirmationInput = input;
+                    }}
                     onSubmitEditing={this.signUp}
                     onChangeText={pc => this.setState({ passwordConfirmation: pc })}
                     displayError={!isConfirmationValid}

@@ -2,7 +2,7 @@
    no-param-reassign: 0,
 */
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { View, LayoutAnimation } from 'react-native';
 import { Icon, Input, Card } from 'react-native-elements';
 import { Dropdown } from 'react-native-material-dropdown';
 
@@ -32,6 +32,7 @@ export default class RentForm extends Component {
   }
 
   addItem(key, state) {
+    LayoutAnimation.easeInEaseOut();
     this.setState({
       [key]: [
         ...state,
@@ -46,6 +47,7 @@ export default class RentForm extends Component {
   }
 
   removeItem(key, state, index) {
+    LayoutAnimation.easeInEaseOut();
     this.setState({
       [key]: state.filter((_, i) => i !== index),
     });

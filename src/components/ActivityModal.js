@@ -1,7 +1,7 @@
 /* eslint react/no-array-index-key: 0 */
 import React, { Component } from 'react';
 import { Header, Icon, CheckBox, Button } from 'react-native-elements';
-import { StyleSheet, View, ScrollView } from 'react-native';
+import { StyleSheet, View, ScrollView, LayoutAnimation } from 'react-native';
 import { Dropdown } from 'react-native-material-dropdown';
 
 const data = [
@@ -42,16 +42,10 @@ const GoodHeader = ({ closeModal }) => (
   />
 );
 
-const ActivitySelectionList = ({ activities, updateItem }) => (
+const ActivitySelectionList = ({ activities, updateItem }) =>
   activities.map((item, i) => (
-    <ActivitySelection
-      key={i}
-      i={i}
-      updateItem={() => updateItem(i)}
-      activities={activities}
-    />
-  ))
-);
+    <ActivitySelection key={i} i={i} updateItem={() => updateItem(i)} activities={activities} />
+  ));
 
 const ActivitySelection = ({ activities, updateItem, i }) => (
   <View style={styles.SelectionRow}>
@@ -80,6 +74,7 @@ export default class ActivityModal extends Component {
 
     this.closeModal = this.closeModal.bind(this);
     this.removeItem = this.removeItem.bind(this);
+    this.addItem = this.addItem.bind(this);
   }
 
   closeModal() {
@@ -93,7 +88,13 @@ export default class ActivityModal extends Component {
     this.forceUpdate();
   }
 
+  addItem() {
+    LayoutAnimation.easeInEaseOut();
+    this.setState({ activities: [...this.state.activities, { checked: false }] });
+  }
+
   removeItem() {
+    LayoutAnimation.easeInEaseOut();
     this.setState({
       activities: this.state.activities.filter((_, i) => i !== this.state.activities.length - 1),
     });
@@ -107,21 +108,19 @@ export default class ActivityModal extends Component {
           <ScrollView>
             <ActivitySelectionList
               activities={this.state.activities}
-              updateItem={(i) => this.updateItem(i)}
+              updateItem={i => this.updateItem(i)}
             />
           </ScrollView>
         </View>
         <View style={styles.ButtonSection}>
           <Button
             title="Add "
-            buttonStyle={{ width: 80, borderRadius: 20 }}
-            onPress={() =>
-              this.setState({ activities: [...this.state.activities, { checked: false }] })
-            }
+            buttonStyle={{ width: 100, borderRadius: 30, height: 40 }}
+            onPress={this.addItem}
           />
           <Button
             title="Remove "
-            buttonStyle={{ borderRadius: 20, paddingLeft: 2, paddingRight: 2 }}
+            buttonStyle={{ borderRadius: 30, width: 100, height: 40 }}
             onPress={this.removeItem}
           />
         </View>
