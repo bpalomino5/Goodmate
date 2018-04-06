@@ -17,20 +17,34 @@ const GoodHeader = ({ closeModal, openOverlay }) => (
   />
 );
 
-const SectionOverlay = ({ isVisible, toggleOverlay }) => (
+const SectionOverlay = ({
+  isVisible,
+  toggleOverlay,
+  sectionValue,
+  onChangeText,
+  submitSection,
+}) => (
   <Overlay isVisible={isVisible} width="auto" height="auto">
     <View>
       <Text style={{ fontSize: 24, marginBottom: 5 }}>Add Section</Text>
       <Text style={{ fontSize: 16, color: 'gray', marginBottom: 10 }}>
         Sections are useful for grouping rent & bill items
       </Text>
-      <Input placeholder="Section Name" containerStyle={{ marginBottom: 10 }} />
+      <Input
+        placeholder="Section Name"
+        containerStyle={{ marginBottom: 10 }}
+        value={sectionValue}
+        onChangeText={text => onChangeText(text)}
+      />
     </View>
     <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'flex-end' }}>
       <Button
         title="Add "
         containerStyle={{ marginRight: 5 }}
-        onPress={() => toggleOverlay(false)}
+        onPress={() => {
+          toggleOverlay(false);
+          submitSection();
+        }}
       />
       <Button title="Close " onPress={() => toggleOverlay(false)} />
     </View>
@@ -47,8 +61,11 @@ export default class AddRentModal extends Component {
     super(props);
     this.state = {
       isOverlayOpen: false,
+      sections: [],
+      sectionValue: '',
     };
     this.closeModal = this.closeModal.bind(this);
+    this.addSection = this.addSection.bind(this);
   }
 
   closeModal() {
@@ -62,13 +79,21 @@ export default class AddRentModal extends Component {
     this.setState({ isOverlayOpen: open });
   }
 
+  addSection() {
+    const value = this.state.sectionValue;
+    this.setState({
+      sections: [...this.state.sections, { value }],
+      sectionValue: '',
+    });
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <GoodHeader closeModal={this.closeModal} openOverlay={() => this.toggleOverlay(true)} />
         <View style={styles.InputSection}>
           <ScrollView>
-            <RentForm />
+            <RentForm sections={this.state.sections} />
           </ScrollView>
         </View>
         <View style={styles.SubmitSection}>
@@ -81,6 +106,9 @@ export default class AddRentModal extends Component {
         <SectionOverlay
           isVisible={this.state.isOverlayOpen}
           toggleOverlay={toggle => this.toggleOverlay(toggle)}
+          sectionValue={this.state.sectionValue}
+          onChangeText={text => this.setState({ sectionValue: text })}
+          submitSection={this.addSection}
         />
       </View>
     );

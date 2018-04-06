@@ -6,8 +6,6 @@ import { View, LayoutAnimation } from 'react-native';
 import { Icon, Input, Card } from 'react-native-elements';
 import { Dropdown } from 'react-native-material-dropdown';
 
-const types = [{ value: 'Avalon' }, { value: 'Bryan' }];
-
 export default class RentForm extends Component {
   constructor(props) {
     super(props);
@@ -69,6 +67,7 @@ export default class RentForm extends Component {
         <RentFormCard
           title="Base Rent Items"
           data={this.state.baseItems}
+          sections={this.props.sections}
           addItem={() => this.addItem('baseItems', this.state.baseItems)}
           removeItem={i => this.removeItem('baseItems', this.state.baseItems, i)}
           updateItemType={(i, text) => this.updateItemType(i, text, this.state.baseItems)}
@@ -77,6 +76,7 @@ export default class RentForm extends Component {
         <RentFormCard
           title="Bill Items"
           data={this.state.billItems}
+          sections={this.props.sections}
           addItem={() => this.addItem('billItems', this.state.billItems)}
           removeItem={i => this.removeItem('billItems', this.state.billItems, i)}
           updateItemType={(i, text) => this.updateItemType(i, text, this.state.billItems)}
@@ -88,7 +88,13 @@ export default class RentForm extends Component {
 }
 
 const RentFormCard = ({
-  title, data, addItem, updateItemType, updateItemValue, removeItem,
+  title,
+  data,
+  addItem,
+  updateItemType,
+  updateItemValue,
+  removeItem,
+  sections,
 }) => (
   <Card title={title}>
     {data.map((item, i) => (
@@ -102,13 +108,21 @@ const RentFormCard = ({
         value={item.value}
         valueChange={text => updateItemValue(i, text)}
         removable={item.removable}
+        sections={sections}
       />
     ))}
   </Card>
 );
 
 const RentFormItem = ({
-  type, typeChange, addItem, removeItem, value, valueChange, removable,
+  type,
+  typeChange,
+  addItem,
+  removeItem,
+  value,
+  valueChange,
+  removable,
+  sections,
 }) => (
   <View
     style={{
@@ -123,7 +137,7 @@ const RentFormItem = ({
         marginRight: 10,
       }}
       label="Section"
-      data={types}
+      data={sections}
       animationDuration={150}
     />
     <Input
