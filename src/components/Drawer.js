@@ -19,13 +19,13 @@ const list = [
     title: 'Rents',
     icon: 'file-document-box',
     type: 'material-community',
-    screen: 'goodmate.Rents',
+    screen: 'goodmate.Rent',
   },
   {
     title: 'Reminders',
     icon: 'av-timer',
     type: 'material',
-    screen: 'goodmate.Home',
+    screen: 'goodmate.Reminders',
   },
   {
     title: 'Settings',
@@ -101,11 +101,7 @@ export default class Drawer extends Component {
             />
           ))}
         </List>
-        <Button
-          buttonStyle={styles.logoutButton}
-          onPress={this.logout}
-          title="Logout "
-        />
+        <Button buttonStyle={styles.logoutButton} onPress={this.logout} title="Logout " />
       </View>
     );
   }

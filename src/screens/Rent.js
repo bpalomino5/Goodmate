@@ -40,7 +40,7 @@ const GoodHeader = ({ toggleDrawer, openRentModal }) => (
         onPress={toggleDrawer}
       />
     }
-    centerComponent={{ text: 'Rents', style: { fontSize: 18, color: '#fff' } }}
+    centerComponent={{ text: 'Rent', style: { fontSize: 18, color: '#fff' } }}
     rightComponent={
       <Icon
         name="plus"
@@ -99,7 +99,7 @@ const RentCardItem = ({ title, value }) => (
   </View>
 );
 
-export default class Rents extends Component {
+export default class Rent extends Component {
   static navigatorStyle = {
     navBarHidden: true,
     statusBarColor: '#5B725A',
@@ -118,7 +118,7 @@ export default class Rents extends Component {
 
   onNavigatorEvent(event) {
     if (event.type === 'DeepLink') {
-      if (event.link !== 'goodmate.Rents') {
+      if (event.link !== 'goodmate.Rent') {
         this.props.navigator.resetTo({
           screen: event.link,
         });
