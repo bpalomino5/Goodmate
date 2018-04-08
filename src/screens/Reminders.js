@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { ScrollView, StyleSheet, View, TouchableOpacity } from 'react-native';
 import { Header, Icon, Text, Divider } from 'react-native-elements';
 
-const GoodHeader = ({ toggleDrawer }) => (
+const GoodHeader = ({ toggleDrawer, openReminderModal }) => (
   <Header
     statusBarProps={{ backgroundColor: '#5B725A' }}
     backgroundColor="#5B725A"
@@ -24,7 +24,7 @@ const GoodHeader = ({ toggleDrawer }) => (
         type="feather"
         color="white"
         underlayColor="transparent"
-        onPress={() => console.log('hi')}
+        onPress={openReminderModal}
       />
     }
   />
@@ -95,6 +95,7 @@ export default class Reminders extends Component {
 
     this.toggleDrawer = this.toggleDrawer.bind(this);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+    this.openReminderModal = this.openReminderModal.bind(this);
   }
 
   onNavigatorEvent(event) {
@@ -114,10 +115,17 @@ export default class Reminders extends Component {
     });
   }
 
+  openReminderModal() {
+    this.props.navigator.showModal({
+      screen: 'goodmate.AddReminderModal',
+      animationType: 'slide-up',
+    });
+  }
+
   render() {
     return (
       <View style={styles.container}>
-        <GoodHeader toggleDrawer={this.toggleDrawer} />
+        <GoodHeader toggleDrawer={this.toggleDrawer} openReminderModal={this.openReminderModal} />
         <ReminderList reminders={this.state.reminders} />
       </View>
     );

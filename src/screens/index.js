@@ -8,6 +8,7 @@ import Reminders from './Reminders';
 
 import ActivityModal from '../components/ActivityModal';
 import AddRentModal from '../components/AddRentModal';
+import AddReminderModal from '../components/AddReminderModal';
 
 export default function registerScreens() {
   Navigation.registerComponent('goodmate.Login', () => Login);
@@ -17,4 +18,5 @@ export default function registerScreens() {
   Navigation.registerComponent('goodmate.ActivityModal', () => ActivityModal);
   Navigation.registerComponent('goodmate.AddRentModal', () => AddRentModal);
   Navigation.registerComponent('goodmate.Reminders', () => Reminders);
+  Navigation.registerComponent('goodmate.AddReminderModal', () => AddReminderModal);
 }
