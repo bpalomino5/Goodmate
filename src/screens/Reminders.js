@@ -30,7 +30,7 @@ const GoodHeader = ({ toggleDrawer, openReminderModal }) => (
   />
 );
 
-const ReminderList = ({ reminders }) => (
+const ReminderList = ({ reminders, onItemPress }) => (
   <ScrollView>
     {reminders.map((item, i) => (
       <ReminderItem
@@ -38,7 +38,7 @@ const ReminderList = ({ reminders }) => (
         title={item.type}
         subtitle={item.title}
         isBill={item.type === 'Bill'}
-        onPress={() => console.log('i')}
+        onPress={() => onItemPress(item)}
       />
     ))}
   </ScrollView>
@@ -122,11 +122,19 @@ export default class Reminders extends Component {
     });
   }
 
+  handleItemPress = item => {
+    this.props.navigator.showModal({
+      screen: 'goodmate.AddReminderModal',
+      animationType: 'slide-up',
+      passProps: { item },
+    });
+  };
+
   render() {
     return (
       <View style={styles.container}>
         <GoodHeader toggleDrawer={this.toggleDrawer} openReminderModal={this.openReminderModal} />
-        <ReminderList reminders={this.state.reminders} />
+        <ReminderList reminders={this.state.reminders} onItemPress={this.handleItemPress} />
       </View>
     );
   }
