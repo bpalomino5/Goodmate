@@ -82,7 +82,7 @@ export default class AddReminderModal extends Component {
   formatTime(date) {
     const hours = (date.getHours() + 11) % 12 + 1;
     const suffix = date.getHours() >= 12 ? 'PM' : 'AM';
-    const min = date.getMinutes() === 0 ? '00' : date.getMinutes();
+    const min = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes();
     const time = `${hours}:${min} ${suffix}`;
     return time;
   }
