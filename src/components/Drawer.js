@@ -31,7 +31,7 @@ const list = [
     title: 'Settings',
     icon: 'settings',
     type: 'material',
-    screen: 'goodmate.Home',
+    screen: 'goodmate.Settings',
   },
 ];
 
