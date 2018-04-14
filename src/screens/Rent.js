@@ -72,6 +72,18 @@ const DateSelection = ({ updateMonth, updateYear }) => (
   </View>
 );
 
+const DefaultView = () => (
+  <View
+    style={{
+      flex: 1,
+      alignItems: 'center',
+      marginTop: 200,
+    }}
+  >
+    <Text h4>Please select a date!</Text>
+  </View>
+);
+
 const RentSheet = () => (
   <ScrollView>
     <Card title="Base" titleStyle={{ alignSelf: 'flex-start' }}>
@@ -153,13 +165,7 @@ export default class Rent extends Component {
           updateMonth={month => this.setState({ month })}
           updateYear={year => this.setState({ year })}
         />
-        {dateSelected ? (
-          <RentSheet />
-        ) : (
-          <View style={{ flex: 0, alignSelf: 'center' }}>
-            <Text h4>Please select a date!</Text>
-          </View>
-        )}
+        {dateSelected ? <RentSheet /> : <DefaultView />}
       </View>
     );
   }

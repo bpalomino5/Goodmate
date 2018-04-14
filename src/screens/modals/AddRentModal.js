@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, ScrollView, LayoutAnimation } from 'react-native';
 import { Header, Icon, Button, Overlay, Text, Input } from 'react-native-elements';
-import RentForm from './RentForm';
+import RentForm from '../../components/RentForm';
 
 const GoodHeader = ({ closeModal, openOverlay }) => (
   <Header
@@ -24,7 +24,13 @@ const SectionOverlay = ({
   onChangeText,
   submitSection,
 }) => (
-  <Overlay isVisible={isVisible} width="auto" height="auto">
+  <Overlay
+    borderRadius={5}
+    overlayStyle={{ padding: 15 }}
+    isVisible={isVisible}
+    width="auto"
+    height="auto"
+  >
     <View>
       <Text style={{ fontSize: 24, marginBottom: 5 }}>Add Section</Text>
       <Text style={{ fontSize: 16, color: 'gray', marginBottom: 10 }}>

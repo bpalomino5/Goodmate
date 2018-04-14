@@ -7,13 +7,14 @@ import Rent from './Rent';
 import Reminders from './Reminders';
 import Settings from './Settings';
 
-import ActivityModal from '../components/ActivityModal';
-import AddRentModal from '../components/AddRentModal';
-import AddReminderModal from '../components/AddReminderModal';
+import ActivityModal from './modals/ActivityModal';
+import AddRentModal from './modals/AddRentModal';
+import AddReminderModal from './modals/AddReminderModal';
 
 import EditProfileModal from './modals/EditProfileModal';
 import ChangePasswordModal from './modals/ChangePasswordModal';
 import RentGroupModal from './modals/RentGroupModal';
+import FeedbackModal from './modals/FeedbackModal';
 
 export default function registerScreens() {
   Navigation.registerComponent('goodmate.Login', () => Login);
@@ -28,4 +29,5 @@ export default function registerScreens() {
   Navigation.registerComponent('goodmate.EditProfileModal', () => EditProfileModal);
   Navigation.registerComponent('goodmate.ChangePasswordModal', () => ChangePasswordModal);
   Navigation.registerComponent('goodmate.RentGroupModal', () => RentGroupModal);
+  Navigation.registerComponent('goodmate.FeedbackModal', () => FeedbackModal);
 }

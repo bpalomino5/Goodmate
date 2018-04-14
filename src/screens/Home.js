@@ -51,11 +51,11 @@ const ActivityFeed = () => list.map(item => <ActivityItem key={item.key} item={i
 
 const ActivityItem = ({ item }) => (
   <View style={styles.row}>
-    <View style={{ flex: 0 }}>
+    <View style={{ flex: 1 }}>
       <Text style={styles.nameStyle}>{item.name}</Text>
       <Text>{item.description}</Text>
     </View>
-    <Icon name="thumbs-up" type="feather" />
+    <Icon name="thumbs-up" type="feather" onPress={() => console.log('hi')} />
   </View>
 );
 

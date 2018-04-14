@@ -1,7 +1,7 @@
 /* eslint react/no-array-index-key: 0 */
 import React, { Component } from 'react';
-import { Header, Icon, CheckBox, Button } from 'react-native-elements';
-import { StyleSheet, View, ScrollView, LayoutAnimation } from 'react-native';
+import { Header, Icon, CheckBox, Button, Text } from 'react-native-elements';
+import { StyleSheet, View, ScrollView, LayoutAnimation, TouchableOpacity } from 'react-native';
 import { Dropdown } from 'react-native-material-dropdown';
 
 const data = [
@@ -36,10 +36,16 @@ const GoodHeader = ({ closeModal }) => (
       <Icon name="arrow-back" color="white" underlayColor="transparent" onPress={closeModal} />
     }
     centerComponent={{ text: 'Share Activities', style: { fontSize: 18, color: '#fff' } }}
-    rightComponent={
-      <Button title="Post " buttonStyle={{ backgroundColor: 'grey', borderRadius: 30 }} />
-    }
+    rightComponent={<GoodButton />}
   />
+);
+
+const GoodButton = () => (
+  <TouchableOpacity>
+    <View>
+      <Text style={{ fontSize: 18, color: 'white' }}>Post</Text>
+    </View>
+  </TouchableOpacity>
 );
 
 const ActivitySelectionList = ({ activities, updateItem }) =>
@@ -132,7 +138,7 @@ export default class ActivityModal extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E3E1DE',
+    backgroundColor: 'white',
   },
   InputSection: {
     flex: 1,
