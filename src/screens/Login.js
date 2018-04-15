@@ -10,16 +10,14 @@ import {
   LayoutAnimation,
   KeyboardAvoidingView,
 } from 'react-native';
-import firebase from 'react-native-firebase';
-import { Input, Button } from 'react-native-elements';
-import { Navigation } from 'react-native-navigation';
 
-// import Icon from 'react-native-vector-icons/FontAwesome';
-// import SimpleIcon from 'react-native-vector-icons/SimpleLineIcons';
+import firebase from 'react-native-firebase';
+import { Button } from 'react-native-elements';
+import { Navigation } from 'react-native-navigation';
+import LoginForm from '../components/LoginForm';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
-
 const BG_IMAGE = require('../assets/home.jpg');
 
 // Enable LayoutAnimation on Android
@@ -32,18 +30,50 @@ const TabSelector = ({ selected }) => (
   </View>
 );
 
+const TitleSection = () => (
+  <View style={styles.titleContainer}>
+    <View style={{ flexDirection: 'row' }}>
+      <Text style={styles.titleText}>GOODMATE</Text>
+    </View>
+  </View>
+);
+
+const OptionSelector = ({
+  isLoading, isLoginPage, isSignUpPage, selectCategory,
+}) => (
+  <View style={{ flexDirection: 'row' }}>
+    <Button
+      disabled={isLoading}
+      clear
+      activeOpacity={0.7}
+      onPress={() => selectCategory(0)}
+      containerStyle={{ flex: 1 }}
+      titleStyle={[styles.categoryText, isLoginPage && styles.selectedCategoryText]}
+      title="Login "
+    />
+    <Button
+      disabled={isLoading}
+      clear
+      activeOpacity={0.7}
+      onPress={() => selectCategory(1)}
+      containerStyle={{ flex: 1 }}
+      titleStyle={[styles.categoryText, isSignUpPage && styles.selectedCategoryText]}
+      title="Sign up "
+    />
+  </View>
+);
+
 export default class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: '',
-      password: '',
       selectedCategory: 0,
       isLoading: false,
       isEmailValid: true,
       isPasswordValid: true,
       isConfirmationValid: true,
     };
+
     this.login = this.login.bind(this);
     this.selectCategory = this.selectCategory.bind(this);
     this.signUp = this.signUp.bind(this);
@@ -57,8 +87,7 @@ export default class Login extends Component {
     });
   }
 
-  login() {
-    const { email, password } = this.state;
+  login(email, password) {
     this.setState({ isLoading: true });
     // Firebase API call
     firebase
@@ -87,20 +116,25 @@ export default class Login extends Component {
         LayoutAnimation.easeInEaseOut();
         this.setState({
           isLoading: false,
-          isEmailValid: this.emailInput.shake(),
-          isPasswordValid: password.length >= 8 || this.passwordInput.shake(),
+          isEmailValid: this.loginForm.emailInput.shake(),
+          isPasswordValid: password.length >= 8 || this.loginForm.passwordInput.shake(),
         });
         console.log(error.code, error.message);
       });
   }
 
-  signUp() {
-    const { email, password, passwordConfirmation } = this.state;
+  signUp(email, password, passwordConfirmation) {
+    this.props.navigator.showModal({
+      screen: 'goodmate.WelcomeModal',
+      animationType: 'slide-up',
+      navigatorStyle: { navBarHidden: true },
+    });
+    /*
     this.setState({ isLoading: true });
 
     if (password !== passwordConfirmation) {
       this.setState({
-        isConfirmationValid: this.confirmationInput.shake(),
+        isConfirmationValid: this.loginForm.confirmationInput.shake(),
         isLoading: false,
       });
       return;
@@ -112,6 +146,10 @@ export default class Login extends Component {
       .then(response => {
         if (response) {
           // go to Login
+          this.props.navigator.showModal({
+            screen: 'goodmate.WelcomeModal',
+            animationType: 'slide-up',
+          });
           this.selectCategory(0);
         }
       })
@@ -120,12 +158,14 @@ export default class Login extends Component {
         LayoutAnimation.easeInEaseOut();
         this.setState({
           isLoading: false,
-          isEmailValid: this.emailInput.shake(),
-          isPasswordValid: password.length >= 8 || this.passwordInput.shake(),
-          isConfirmationValid: password === passwordConfirmation || this.confirmationInput.shake(),
+          isEmailValid: this.loginForm.emailInput.shake(),
+          isPasswordValid: password.length >= 8 || this.loginForm.passwordInput.shake(),
+          isConfirmationValid:
+            password === passwordConfirmation || this.loginForm.confirmationInput.shake(),
         });
         console.log(error.code, error.message);
       });
+      */
   }
 
   render() {
@@ -135,120 +175,40 @@ export default class Login extends Component {
       isEmailValid,
       isPasswordValid,
       isConfirmationValid,
-      email,
-      password,
-      passwordConfirmation,
     } = this.state;
+
     const isLoginPage = selectedCategory === 0;
     const isSignUpPage = selectedCategory === 1;
+
     return (
       <View style={styles.container}>
         <ImageBackground source={BG_IMAGE} style={styles.bgImage}>
           <View>
             <KeyboardAvoidingView contentContainerStyle={styles.loginContainer} behavior="position">
-              <View style={styles.titleContainer}>
-                <View style={{ flexDirection: 'row' }}>
-                  <Text style={styles.titleText}>GOODMATE</Text>
-                </View>
-              </View>
-              <View style={{ flexDirection: 'row' }}>
-                <Button
-                  disabled={isLoading}
-                  clear
-                  activeOpacity={0.7}
-                  onPress={() => this.selectCategory(0)}
-                  containerStyle={{ flex: 1 }}
-                  titleStyle={[styles.categoryText, isLoginPage && styles.selectedCategoryText]}
-                  title="Login "
-                />
-                <Button
-                  disabled={isLoading}
-                  clear
-                  activeOpacity={0.7}
-                  onPress={() => this.selectCategory(1)}
-                  containerStyle={{ flex: 1 }}
-                  titleStyle={[styles.categoryText, isSignUpPage && styles.selectedCategoryText]}
-                  title="Sign up "
-                />
-              </View>
+              <TitleSection />
+              <OptionSelector
+                isLoading={isLoading}
+                isLoginPage={isLoginPage}
+                isSignUpPage={isSignUpPage}
+                selectCategory={v => this.selectCategory(v)}
+              />
               <View style={styles.rowSelector}>
                 <TabSelector selected={isLoginPage} />
                 <TabSelector selected={isSignUpPage} />
               </View>
-              <View style={styles.formContainer}>
-                <Input
-                  value={email}
-                  keyboardAppearance="light"
-                  autoFocus={false}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  keyboardType="email-address"
-                  returnKeyType="next"
-                  inputStyle={{ marginLeft: 10 }}
-                  placeholder="Email"
-                  containerStyle={{ borderBottomColor: 'rgba(0, 0, 0, 0.38)' }}
-                  ref={input => {
-                    this.emailInput = input;
-                  }}
-                  onSubmitEditing={() => this.passwordInput.focus()}
-                  onChangeText={e => this.setState({ email: e })}
-                  displayError={!isEmailValid}
-                  errorMessage="Please enter a valid email address"
-                />
-                <Input
-                  value={password}
-                  keyboardAppearance="light"
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  secureTextEntry
-                  returnKeyType={isSignUpPage ? 'next' : 'done'}
-                  blurOnSubmit
-                  containerStyle={{ marginTop: 16, borderBottomColor: 'rgba(0, 0, 0, 0.38)' }}
-                  inputStyle={{ marginLeft: 10 }}
-                  placeholder="Password"
-                  ref={input => {
-                    this.passwordInput = input;
-                  }}
-                  onSubmitEditing={() =>
-                    (isSignUpPage ? this.confirmationInput.focus() : this.login())
-                  }
-                  onChangeText={p => this.setState({ password: p })}
-                  displayError={!isPasswordValid}
-                  errorMessage="Please enter at least 8 characters"
-                />
-                {isSignUpPage && (
-                  <Input
-                    value={passwordConfirmation}
-                    secureTextEntry
-                    keyboardAppearance="light"
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    keyboardType="default"
-                    returnKeyType="done"
-                    blurOnSubmit
-                    containerStyle={{ marginTop: 16, borderBottomColor: 'rgba(0, 0, 0, 0.38)' }}
-                    inputStyle={{ marginLeft: 10 }}
-                    placeholder="Confirm password"
-                    ref={input => {
-                      this.confirmationInput = input;
-                    }}
-                    onSubmitEditing={this.signUp}
-                    onChangeText={pc => this.setState({ passwordConfirmation: pc })}
-                    displayError={!isConfirmationValid}
-                    errorMessage="Please enter the same password"
-                  />
-                )}
-                <Button
-                  buttonStyle={styles.loginButton}
-                  containerStyle={{ marginTop: 32, flex: 0 }}
-                  activeOpacity={0.8}
-                  title={isLoginPage ? 'LOGIN ' : 'SIGN UP '}
-                  onPress={isLoginPage ? this.login : this.signUp}
-                  titleStyle={styles.loginTextButton}
-                  loading={isLoading}
-                  disabled={isLoading}
-                />
-              </View>
+              <LoginForm
+                login={(e, p) => this.login(e, p)}
+                signUp={(e, p, c) => this.signUp(e, p, c)}
+                isLoading={isLoading}
+                isLoginPage={isLoginPage}
+                isSignUpPage={isSignUpPage}
+                isEmailValid={isEmailValid}
+                isPasswordValid={isPasswordValid}
+                isConfirmationValid={isConfirmationValid}
+                ref={form => {
+                  this.loginForm = form;
+                }}
+              />
             </KeyboardAvoidingView>
             <View style={styles.helpContainer}>
               <Button
@@ -294,29 +254,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  loginTextButton: {
-    fontSize: 16,
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  loginButton: {
-    backgroundColor: '#5B725A',
-    borderRadius: 10,
-    height: 50,
-    width: 200,
-  },
   titleContainer: {
     height: 150,
     backgroundColor: 'transparent',
     justifyContent: 'center',
-  },
-  formContainer: {
-    backgroundColor: 'white',
-    width: SCREEN_WIDTH - 30,
-    borderRadius: 10,
-    paddingTop: 32,
-    paddingBottom: 32,
-    alignItems: 'center',
   },
   loginText: {
     fontSize: 16,
