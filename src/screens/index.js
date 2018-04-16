@@ -15,9 +15,11 @@ import EditProfileModal from './modals/EditProfileModal';
 import ChangePasswordModal from './modals/ChangePasswordModal';
 import RentGroupModal from './modals/RentGroupModal';
 import FeedbackModal from './modals/FeedbackModal';
+import HelpModal from './modals/HelpModal';
 
 import WelcomeModal from './modals/signup/WelcomeModal';
 import UserInfoModal from './modals/signup/UserInfoModal';
+import CreateGroupModal from './modals/signup/CreateGroupModal';
 
 export default function registerScreens() {
   Navigation.registerComponent('goodmate.Login', () => Login);
@@ -33,7 +35,9 @@ export default function registerScreens() {
   Navigation.registerComponent('goodmate.ChangePasswordModal', () => ChangePasswordModal);
   Navigation.registerComponent('goodmate.RentGroupModal', () => RentGroupModal);
   Navigation.registerComponent('goodmate.FeedbackModal', () => FeedbackModal);
+  Navigation.registerComponent('goodmate.HelpModal', () => HelpModal);
 
   Navigation.registerComponent('goodmate.WelcomeModal', () => WelcomeModal);
   Navigation.registerComponent('goodmate.UserInfoModal', () => UserInfoModal);
+  Navigation.registerComponent('goodmate.CreateGroupModal', () => CreateGroupModal);
 }

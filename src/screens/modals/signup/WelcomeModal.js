@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { View, ImageBackground, Dimensions, StyleSheet } from 'react-native';
 import { Text } from 'react-native-elements';
+
+const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_HEIGHT = Dimensions.get('window').height;
+const BG_IMAGE = require('../../../assets/bg2.jpg');
 
 export default class WelcomeModal extends Component {
   componentDidMount() {
@@ -10,19 +14,33 @@ export default class WelcomeModal extends Component {
         animationType: 'slide-up',
         navigatorStyle: { navBarHidden: true },
       });
-    }, 4000);
+    }, 3000);
   }
 
   render() {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={{ color: 'green' }} h4 fontFamily="AvenirNext-Medium">
-          Welcome to Goodmate,
-        </Text>
-        <Text style={{ color: 'green' }} h4 fontFamily="AvenirNext-Medium">
-          {"Let's get started..."}
-        </Text>
+        <ImageBackground source={BG_IMAGE} style={styles.bgImage}>
+          <Text style={{ color: 'white' }} h4 fontFamily="AvenirNext-Medium">
+            Welcome to Goodmate,
+          </Text>
+          <Text style={{ color: 'white' }} h4 fontFamily="AvenirNext-Medium">
+            {"Let's get started..."}
+          </Text>
+        </ImageBackground>
       </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  bgImage: {
+    flex: 1,
+    top: 0,
+    left: 0,
+    width: SCREEN_WIDTH,
+    height: SCREEN_HEIGHT,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});

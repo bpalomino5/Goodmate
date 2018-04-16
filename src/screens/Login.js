@@ -18,7 +18,7 @@ import LoginForm from '../components/LoginForm';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
-const BG_IMAGE = require('../assets/home.jpg');
+const BG_IMAGE = require('../assets/bg2.jpg');
 
 // Enable LayoutAnimation on Android
 UIManager.setLayoutAnimationEnabledExperimental &&
@@ -38,12 +38,9 @@ const TitleSection = () => (
   </View>
 );
 
-const OptionSelector = ({
-  isLoading, isLoginPage, isSignUpPage, selectCategory,
-}) => (
+const OptionSelector = ({ isLoginPage, isSignUpPage, selectCategory }) => (
   <View style={{ flexDirection: 'row' }}>
     <Button
-      disabled={isLoading}
       clear
       activeOpacity={0.7}
       onPress={() => selectCategory(0)}
@@ -52,7 +49,6 @@ const OptionSelector = ({
       title="Login "
     />
     <Button
-      disabled={isLoading}
       clear
       activeOpacity={0.7}
       onPress={() => selectCategory(1)}
@@ -77,6 +73,7 @@ export default class Login extends Component {
     this.login = this.login.bind(this);
     this.selectCategory = this.selectCategory.bind(this);
     this.signUp = this.signUp.bind(this);
+    this.openHelpModal = this.openHelpModal.bind(this);
   }
 
   selectCategory(selectedCategory) {
@@ -168,6 +165,14 @@ export default class Login extends Component {
       */
   }
 
+  openHelpModal() {
+    this.props.navigator.showModal({
+      screen: 'goodmate.HelpModal',
+      animationType: 'slide-up',
+      navigatorStyle: { navBarHidden: true },
+    });
+  }
+
   render() {
     const {
       selectedCategory,
@@ -187,7 +192,6 @@ export default class Login extends Component {
             <KeyboardAvoidingView contentContainerStyle={styles.loginContainer} behavior="position">
               <TitleSection />
               <OptionSelector
-                isLoading={isLoading}
                 isLoginPage={isLoginPage}
                 isSignUpPage={isSignUpPage}
                 selectCategory={v => this.selectCategory(v)}
@@ -216,7 +220,7 @@ export default class Login extends Component {
                 titleStyle={{ color: 'white' }}
                 buttonStyle={{ backgroundColor: 'transparent' }}
                 underlayColor="transparent"
-                onPress={() => console.log('Account created')}
+                onPress={this.openHelpModal}
               />
             </View>
           </View>
