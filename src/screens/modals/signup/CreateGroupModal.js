@@ -37,7 +37,12 @@ export default class CreateGroupModal extends Component {
 
   render() {
     return (
-      <View style={{ flex: 1 }}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: 'white',
+        }}
+      >
         <View style={{ flex: 0, padding: 15, marginTop: 30 }}>
           <Text style={{ fontSize: 18, marginBottom: 30 }}>
             Goodmate users can organize themselves into groups! Groups are essential for dividing
@@ -67,7 +72,7 @@ export default class CreateGroupModal extends Component {
         </View>
         <View style={{ flex: 1, justifyContent: 'flex-end', marginBottom: 20 }}>
           <Button
-            title="DONE"
+            title="DONE  "
             buttonStyle={{
               backgroundColor: 'rgba(92, 99,216, 1)',
               width: 300,

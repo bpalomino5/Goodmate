@@ -16,7 +16,12 @@ export default class HelpModal extends Component {
   }
   render() {
     return (
-      <View style={{ flex: 1 }}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: 'white',
+        }}
+      >
         <Header
           backgroundColor="white"
           statusBarProps={{ backgroundColor: 'white' }}

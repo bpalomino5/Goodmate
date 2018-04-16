@@ -13,14 +13,21 @@ export default class UserInfoModal extends Component {
 
   render() {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: 'white',
+        }}
+      >
         <View style={{ flex: 0, justifyContent: 'flex-start' }}>
           <Text style={{ marginBottom: 20, marginLeft: 10 }}>YOUR NAME</Text>
           <Input placeholder="First Last" />
         </View>
         <Button
           containerStyle={{ marginTop: 40 }}
-          title="CONTINUE "
+          title="CONTINUE  "
           buttonStyle={{
             backgroundColor: 'rgba(92, 99,216, 1)',
             width: 300,

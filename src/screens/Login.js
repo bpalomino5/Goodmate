@@ -9,6 +9,7 @@ import {
   UIManager,
   LayoutAnimation,
   KeyboardAvoidingView,
+  TouchableOpacity,
 } from 'react-native';
 
 import firebase from 'react-native-firebase';
@@ -214,15 +215,11 @@ export default class Login extends Component {
                 }}
               />
             </KeyboardAvoidingView>
-            <View style={styles.helpContainer}>
-              <Button
-                title="Need help?  "
-                titleStyle={{ color: 'white' }}
-                buttonStyle={{ backgroundColor: 'transparent' }}
-                underlayColor="transparent"
-                onPress={this.openHelpModal}
-              />
-            </View>
+            <TouchableOpacity onPress={this.openHelpModal}>
+              <View style={styles.helpContainer}>
+                <Text style={{ color: 'white', fontSize: 18 }}>Need help?</Text>
+              </View>
+            </TouchableOpacity>
           </View>
         </ImageBackground>
       </View>
