@@ -12,6 +12,7 @@ export default class WelcomeModal extends Component {
       this.props.navigator.showModal({
         screen: 'goodmate.UserInfoModal',
         animationType: 'slide-up',
+        passProps: { user: this.props.user },
         navigatorStyle: { navBarHidden: true },
       });
     }, 3000);
@@ -19,16 +20,16 @@ export default class WelcomeModal extends Component {
 
   render() {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ImageBackground source={BG_IMAGE} style={styles.bgImage}>
+      <ImageBackground source={BG_IMAGE} style={styles.bgImage}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <Text style={{ color: 'white' }} h4 fontFamily="AvenirNext-Medium">
             Welcome to Goodmate,
           </Text>
           <Text style={{ color: 'white' }} h4 fontFamily="AvenirNext-Medium">
             {"Let's get started..."}
           </Text>
-        </ImageBackground>
-      </View>
+        </View>
+      </ImageBackground>
     );
   }
 }

@@ -16,6 +16,7 @@ import firebase from 'react-native-firebase';
 import { Button } from 'react-native-elements';
 import { Navigation } from 'react-native-navigation';
 import LoginForm from '../components/LoginForm';
+import DataStore from '../utils/DataStore';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -71,11 +72,30 @@ export default class Login extends Component {
       isConfirmationValid: true,
     };
 
-    this.login = this.login.bind(this);
+    this.loginWithEmail = this.loginWithEmail.bind(this);
     this.selectCategory = this.selectCategory.bind(this);
     this.signUp = this.signUp.bind(this);
     this.openHelpModal = this.openHelpModal.bind(this);
   }
+
+  componentDidMount() {
+    // firebase.auth().onAuthStateChanged(user => {
+    //   if (user !== null && this.state.selectedCategory === 0) {
+    //     DataStore.getData('user-password').then(response => {
+    //       if (response) {
+    //         const cred = firebase.auth.EmailAuthProvider.credential(user.email, response.password);
+    //         this.loginWithCred(cred);
+    //       }
+    //     });
+    //   }
+    // });
+  }
+
+  // componentWillUnmount() {
+  //   if (this.unsubscriber) {
+  //     this.unsubscriber();
+  //   }
+  // }
 
   selectCategory(selectedCategory) {
     LayoutAnimation.easeInEaseOut();
@@ -85,7 +105,43 @@ export default class Login extends Component {
     });
   }
 
-  login(email, password) {
+  loginWithCred(credential) {
+    this.setState({ isLoading: true });
+    // Firebase API call
+    firebase
+      .auth()
+      .signInAndRetrieveDataWithCredential(credential)
+      .then(response => {
+        if (response) {
+          // go to Home
+          Navigation.startSingleScreenApp({
+            screen: {
+              screen: 'goodmate.Home',
+              title: 'Home',
+            },
+            drawer: {
+              left: {
+                screen: 'goodmate.Drawer',
+              },
+              style: {
+                drawerShadow: false, // for ios to look nicer
+              },
+            },
+          });
+        }
+      })
+      .catch(error => {
+        // LayoutAnimation.easeInEaseOut();
+        this.setState({
+          isLoading: false,
+          //   isEmailValid: this.loginForm.emailInput.shake(),
+          //   isPasswordValid: this.loginForm.passwordInput.shake(),
+        });
+        console.log(error.code, error.message);
+      });
+  }
+
+  loginWithEmail(email, password) {
     this.setState({ isLoading: true });
     // Firebase API call
     firebase
@@ -93,6 +149,8 @@ export default class Login extends Component {
       .signInAndRetrieveDataWithEmailAndPassword(email, password)
       .then(response => {
         if (response) {
+          // store password
+          DataStore.storeData('user-password', { password });
           // go to Home
           Navigation.startSingleScreenApp({
             screen: {
@@ -122,14 +180,7 @@ export default class Login extends Component {
   }
 
   signUp(email, password, passwordConfirmation) {
-    this.props.navigator.showModal({
-      screen: 'goodmate.WelcomeModal',
-      animationType: 'slide-up',
-      navigatorStyle: { navBarHidden: true },
-    });
-    /*
     this.setState({ isLoading: true });
-
     if (password !== passwordConfirmation) {
       this.setState({
         isConfirmationValid: this.loginForm.confirmationInput.shake(),
@@ -138,15 +189,23 @@ export default class Login extends Component {
       return;
     }
 
+    // fix for strange errors in creating new user accounts
+    console.ignoredYellowBox = [
+      'Deprecated firebase.User.prototype.createUserWithEmailAndPassword',
+    ];
+
     firebase
       .auth()
-      .createUserAndRetrieveDataWithEmailAndPassword(email, password)
+      .createUserWithEmailAndPassword(email, password)
       .then(response => {
         if (response) {
-          // go to Login
+          // go to Welcome
+          this.setState({ isLoading: false });
           this.props.navigator.showModal({
             screen: 'goodmate.WelcomeModal',
             animationType: 'slide-up',
+            passProps: { user: response },
+            navigatorStyle: { navBarHidden: true },
           });
           this.selectCategory(0);
         }
@@ -163,7 +222,6 @@ export default class Login extends Component {
         });
         console.log(error.code, error.message);
       });
-      */
   }
 
   openHelpModal() {
@@ -202,7 +260,7 @@ export default class Login extends Component {
                 <TabSelector selected={isSignUpPage} />
               </View>
               <LoginForm
-                login={(e, p) => this.login(e, p)}
+                login={(e, p) => this.loginWithEmail(e, p)}
                 signUp={(e, p, c) => this.signUp(e, p, c)}
                 isLoading={isLoading}
                 isLoginPage={isLoginPage}
@@ -259,11 +317,6 @@ const styles = StyleSheet.create({
     height: 150,
     backgroundColor: 'transparent',
     justifyContent: 'center',
-  },
-  loginText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: 'white',
   },
   bgImage: {
     flex: 1,
