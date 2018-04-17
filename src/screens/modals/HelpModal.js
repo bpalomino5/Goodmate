@@ -28,6 +28,7 @@ export default class HelpModal extends Component {
           leftComponent={
             <Icon name="close" underlayColor="transparent" onPress={this.closeModal} />
           }
+          outerContainerStyles={{ borderBottomWidth: 0 }}
         />
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <Text> Forgot your password? </Text>
