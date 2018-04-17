@@ -38,8 +38,18 @@ const list = [
 export default class Drawer extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      name: '',
+    };
     this.logout = this.logout.bind(this);
     this.openScreen = this.openScreen.bind(this);
+  }
+
+  componentWillMount() {
+    const user = firebase.auth().currentUser;
+    if (user) {
+      this.setState({ name: user.displayName });
+    }
   }
 
   logout() {
@@ -87,7 +97,7 @@ export default class Drawer extends Component {
             onPress={() => console.log('Works!')}
             activeOpacity={0.7}
           />
-          <Text style={{ paddingLeft: 10, fontSize: 20, color: 'white' }}>Name</Text>
+          <Text style={{ paddingLeft: 10, fontSize: 20, color: 'white' }}>{this.state.name}</Text>
         </View>
         <List containerStyle={{ backgroundColor: '#3A3837', paddingBottom: 15 }}>
           {list.map((item, i) => (

@@ -72,9 +72,7 @@ export default class Login extends Component {
       isConfirmationValid: true,
     };
 
-    this.loginWithEmail = this.loginWithEmail.bind(this);
     this.selectCategory = this.selectCategory.bind(this);
-    this.signUp = this.signUp.bind(this);
     this.openHelpModal = this.openHelpModal.bind(this);
   }
 
@@ -196,23 +194,18 @@ export default class Login extends Component {
 
     firebase
       .auth()
-      .createUserWithEmailAndPassword(email, password)
+      .createUserAndRetrieveDataWithEmailAndPassword(email, password)
       .then(response => {
         if (response) {
           // go to Welcome
           this.setState({ isLoading: false });
-          this.props.navigator.showModal({
-            screen: 'goodmate.WelcomeModal',
-            animationType: 'slide-up',
-            passProps: { user: response },
-            navigatorStyle: { navBarHidden: true },
-          });
+          this.openWelcomeModal();
           this.selectCategory(0);
         }
       })
       .catch(error => {
         // Handle Errors here.
-        LayoutAnimation.easeInEaseOut();
+        // LayoutAnimation.easeInEaseOut();
         this.setState({
           isLoading: false,
           isEmailValid: this.loginForm.emailInput.shake(),
@@ -222,6 +215,14 @@ export default class Login extends Component {
         });
         console.log(error.code, error.message);
       });
+  }
+
+  openWelcomeModal() {
+    this.props.navigator.showModal({
+      screen: 'goodmate.WelcomeModal',
+      animationType: 'slide-up',
+      navigatorStyle: { navBarHidden: true },
+    });
   }
 
   openHelpModal() {

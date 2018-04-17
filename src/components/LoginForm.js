@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Dimensions } from 'react-native';
+import { StyleSheet, View, Dimensions, TouchableOpacity, Text } from 'react-native';
 import { Input, Button, Icon } from 'react-native-elements';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -10,6 +10,7 @@ export default class LoginForm extends Component {
     this.state = {
       email: '',
       password: '',
+      passwordConfirmation: '',
     };
   }
 
@@ -86,7 +87,7 @@ export default class LoginForm extends Component {
         )}
         <Button
           buttonStyle={styles.loginButton}
-          containerStyle={{ marginTop: 32, flex: 0 }}
+          containerStyle={{ marginTop: 32 }}
           activeOpacity={0.8}
           title={this.props.isLoginPage ? 'LOGIN ' : 'SIGN UP '}
           onPress={

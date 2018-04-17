@@ -12,7 +12,6 @@ export default class WelcomeModal extends Component {
       this.props.navigator.showModal({
         screen: 'goodmate.UserInfoModal',
         animationType: 'slide-up',
-        passProps: { user: this.props.user },
         navigatorStyle: { navBarHidden: true },
       });
     }, 3000);
