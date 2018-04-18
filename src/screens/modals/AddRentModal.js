@@ -72,6 +72,7 @@ export default class AddRentModal extends Component {
     };
     this.closeModal = this.closeModal.bind(this);
     this.addSection = this.addSection.bind(this);
+    this.submitRent = this.submitRent.bind(this);
   }
 
   closeModal() {
@@ -93,13 +94,23 @@ export default class AddRentModal extends Component {
     });
   }
 
+  submitRent() {
+    console.log(this.rentRef.state.baseItems);
+    console.log(this.rentRef.state.billItems);
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <GoodHeader closeModal={this.closeModal} openOverlay={() => this.toggleOverlay(true)} />
         <View style={styles.InputSection}>
           <ScrollView>
-            <RentForm sections={this.state.sections} />
+            <RentForm
+              sections={this.state.sections}
+              ref={refs => {
+                this.rentRef = refs;
+              }}
+            />
           </ScrollView>
         </View>
         <View style={styles.SubmitSection}>
@@ -107,6 +118,7 @@ export default class AddRentModal extends Component {
             containerStyle={{ marginTop: 20 }}
             title="Submit "
             buttonStyle={{ borderRadius: 30, width: 150, height: 40 }}
+            onPress={this.submitRent}
           />
         </View>
         <SectionOverlay

@@ -61,6 +61,11 @@ export default class RentForm extends Component {
     this.forceUpdate();
   }
 
+  updateItemSection(i, section, state) {
+    state[i].section = section;
+    this.forceUpdate();
+  }
+
   render() {
     return (
       <View>
@@ -72,6 +77,7 @@ export default class RentForm extends Component {
           removeItem={i => this.removeItem('baseItems', this.state.baseItems, i)}
           updateItemType={(i, text) => this.updateItemType(i, text, this.state.baseItems)}
           updateItemValue={(i, text) => this.updateItemValue(i, text, this.state.baseItems)}
+          updateItemSection={(i, text) => this.updateItemSection(i, text, this.state.baseItems)}
         />
         <RentFormCard
           title="Bill Items"
@@ -81,6 +87,7 @@ export default class RentForm extends Component {
           removeItem={i => this.removeItem('billItems', this.state.billItems, i)}
           updateItemType={(i, text) => this.updateItemType(i, text, this.state.billItems)}
           updateItemValue={(i, text) => this.updateItemValue(i, text, this.state.billItems)}
+          updateItemSection={(i, text) => this.updateItemSection(i, text, this.state.billItems)}
         />
       </View>
     );
@@ -95,6 +102,7 @@ const RentFormCard = ({
   updateItemValue,
   removeItem,
   sections,
+  updateItemSection,
 }) => (
   <Card title={title}>
     {data.map((item, i) => (
@@ -109,6 +117,7 @@ const RentFormCard = ({
         valueChange={text => updateItemValue(i, text)}
         removable={item.removable}
         sections={sections}
+        setSection={text => updateItemSection(i, text)}
       />
     ))}
   </Card>
@@ -123,6 +132,7 @@ const RentFormItem = ({
   valueChange,
   removable,
   sections,
+  setSection,
 }) => (
   <View
     style={{
@@ -139,6 +149,7 @@ const RentFormItem = ({
       label="Section"
       data={sections}
       animationDuration={150}
+      onChangeText={setSection}
     />
     <Input
       placeholder="Type"

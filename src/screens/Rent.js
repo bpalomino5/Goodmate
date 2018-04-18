@@ -1,7 +1,18 @@
+/* eslint class-methods-use-this: 0
+    react/no-array-index-key: 0
+*/
+
 import React, { Component } from 'react';
 import { StyleSheet, View, ScrollView } from 'react-native';
-import { Header, Icon, Text, Card } from 'react-native-elements';
+import { Header, Icon, Text, Card, Button } from 'react-native-elements';
 import { Dropdown } from 'react-native-material-dropdown';
+import FireTools from '../utils/FireTools';
+
+const formatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  minimumFractionDigits: 2,
+});
 
 const months = [
   { value: 'January' },
@@ -71,7 +82,7 @@ const DateSelection = ({ updateMonth, updateYear }) => (
   </View>
 );
 
-const DefaultView = () => (
+const DefaultView = ({ description }) => (
   <View
     style={{
       flex: 1,
@@ -79,26 +90,35 @@ const DefaultView = () => (
       marginTop: 200,
     }}
   >
-    <Text h4>Please select a date!</Text>
+    <Text h4>{description}</Text>
   </View>
 );
 
-const RentSheet = () => (
+const RentSheet = ({ base, bills, totals }) => (
   <ScrollView>
     <Card title="Base" titleStyle={{ alignSelf: 'flex-start' }}>
-      <RentCardItem title="Monthly Rent" value="$1,843.00" />
-      <RentCardItem title="Bedroom 1" value="$501.44" />
+      {base.map((item, i) => (
+        <RentCardItem key={i} title={item.type} value={formatter.format(item.value)} />
+      ))}
+      {/* <RentCardItem title="Monthly Rent" value="$1,843.00" /> */}
+      {/* <RentCardItem title="Bedroom 1" value="$501.44" /> */}
     </Card>
     <Card title="Bills" titleStyle={{ alignSelf: 'flex-start' }}>
-      <RentCardItem title="Utilties" value="$22.23" />
-      <RentCardItem title="Electricity" value="$22.98" />
-      <RentCardItem title="Internet" value="$13.75" />
-      <RentCardItem title="Garage" value="$50.00" />
+      {bills.map((item, i) => (
+        <RentCardItem key={i} title={item.type} value={formatter.format(item.value)} />
+      ))}
+      {/* <RentCardItem title="Utilties" value="$22.23" /> */}
+      {/* <RentCardItem title="Electricity" value="$22.98" /> */}
+      {/* <RentCardItem title="Internet" value="$13.75" /> */}
+      {/* <RentCardItem title="Garage" value="$50.00" /> */}
     </Card>
     <Card title="Totals" titleStyle={{ alignSelf: 'flex-start' }}>
-      <RentCardItem title="Avalon" value="$573.67" />
-      <RentCardItem title="Bryan Payment" value="$45.96" />
-      <RentCardItem title="Final Total" value="$619.63" />
+      {totals.map((item, i) => (
+        <RentCardItem key={i} title={item.section} value={formatter.format(item.value)} />
+      ))}
+      {/* <RentCardItem title="Avalon" value="$573.67" /> */}
+      {/* <RentCardItem title="Bryan Payment" value="$45.96" /> */}
+      {/* <RentCardItem title="Final Total" value="$619.63" /> */}
     </Card>
   </ScrollView>
 );
@@ -121,10 +141,20 @@ export default class Rent extends Component {
     this.state = {
       month: '',
       year: '',
+      base: [],
+      bills: [],
+      totals: [],
+      dateSelected: false,
+      displayText: 'Please select a date!',
     };
     this.toggleDrawer = this.toggleDrawer.bind(this);
     this.openRentModal = this.openRentModal.bind(this);
+    this.editRentSheet = this.editRentSheet.bind(this);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+  }
+
+  async componentDidMount() {
+    FireTools.init();
   }
 
   onNavigatorEvent(event) {
@@ -134,6 +164,26 @@ export default class Rent extends Component {
           screen: event.link,
         });
       }
+    }
+  }
+
+  async getRentSheet() {
+    const { month, year } = this.state;
+    const sheetRef = await FireTools.getRent(month, year);
+    if (sheetRef) {
+      const base = sheetRef.get('base');
+      const bills = sheetRef.get('bill');
+      const totals = sheetRef.get('totals');
+      if (base != null && bills != null && totals != null) {
+        this.setState({
+          base,
+          bills,
+          totals,
+          dateSelected: true,
+        });
+      }
+    } else {
+      this.setState({ dateSelected: false, displayText: 'No rent sheet created yet!' });
     }
   }
 
@@ -151,10 +201,18 @@ export default class Rent extends Component {
     });
   }
 
+  editRentSheet() {
+    const { base, bills, totals } = this.state;
+    this.props.navigator.showModal({
+      screen: 'goodmate.AddRentModal',
+      animationType: 'slide-up',
+      passProps: { base, bills, totals },
+    });
+  }
+
   render() {
-    let dateSelected = false;
     if (this.state.month.trim() !== '' && this.state.year.trim() !== '') {
-      dateSelected = true;
+      this.getRentSheet();
     }
 
     return (
@@ -164,7 +222,26 @@ export default class Rent extends Component {
           updateMonth={month => this.setState({ month })}
           updateYear={year => this.setState({ year })}
         />
-        {dateSelected ? <RentSheet /> : <DefaultView />}
+        {this.state.dateSelected ? (
+          <View style={{ flex: 1 }}>
+            <RentSheet base={this.state.base} bills={this.state.bills} totals={this.state.totals} />
+            <Button
+              containerStyle={{ marginTop: 10, marginBottom: 20 }}
+              title="Edit Rent Sheet "
+              buttonStyle={{
+                backgroundColor: 'rgba(92, 99,216, 1)',
+                width: 300,
+                height: 45,
+                borderColor: 'transparent',
+                borderWidth: 0,
+                borderRadius: 5,
+              }}
+              onPress={this.editRentSheet}
+            />
+          </View>
+        ) : (
+          <DefaultView description={this.state.displayText} />
+        )}
       </View>
     );
   }
