@@ -19,7 +19,6 @@ const months = [
 ];
 
 const years = [
-  { value: '2017' },
   { value: '2018' },
   { value: '2019' },
   { value: '2020' },

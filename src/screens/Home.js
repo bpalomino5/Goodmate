@@ -3,24 +3,6 @@ import { StyleSheet, View, ScrollView } from 'react-native';
 import firebase from 'react-native-firebase';
 import { Header, Icon, Text } from 'react-native-elements';
 
-const list = [
-  {
-    name: 'Brandon',
-    description: 'Cleaned the dishes',
-    key: 'blah',
-  },
-  {
-    name: 'Bryan',
-    description: 'Watched youtube while doing homework',
-    key: 'heyyah',
-  },
-  {
-    name: 'CJ',
-    description: 'Took out the trash',
-    key: 'yesman',
-  },
-];
-
 const GoodHeader = ({ toggleDrawer, openActivityModal }) => (
   <Header
     statusBarProps={{ backgroundColor: '#5B725A' }}
@@ -47,15 +29,21 @@ const GoodHeader = ({ toggleDrawer, openActivityModal }) => (
   />
 );
 
-const ActivityFeed = () => list.map(item => <ActivityItem key={item.key} item={item} />);
+const ActivityFeed = ({ activities, addLike }) =>
+  activities.map(item => (
+    <ActivityItem key={item.key} item={item} addLike={() => addLike(item.key)} />
+  ));
 
-const ActivityItem = ({ item }) => (
+const ActivityItem = ({ item, addLike }) => (
   <View style={styles.row}>
     <View style={{ flex: 1 }}>
       <Text style={styles.nameStyle}>{item.name}</Text>
-      <Text>{item.description}</Text>
+      {item.description.map(desc => <Text key={desc}>{desc}</Text>)}
     </View>
-    <Icon name="thumbs-up" type="feather" onPress={() => console.log('hi')} />
+    <View style={{ alignSelf: 'center' }}>
+      <Icon name="thumbs-up" type="feather" onPress={addLike} />
+      {item.likes > 0 && <Text style={{ marginTop: 5 }}>{item.likes} likes</Text>}
+    </View>
   </View>
 );
 
@@ -73,13 +61,19 @@ export default class Home extends Component {
 
   constructor(props) {
     super(props);
-    this.unsubscriber = null;
-    this.ref = firebase.firestore().collection('users');
+    this.state = {
+      activities: [],
+      groupId: '',
+    };
 
-    // this.addUser = this.addUser.bind(this);
+    this.usersRef = firebase.firestore().collection('users');
     this.toggleDrawer = this.toggleDrawer.bind(this);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     this.openActivityModal = this.openActivityModal.bind(this);
+  }
+
+  componentWillMount() {
+    this.updateActivities();
   }
 
   onNavigatorEvent(event) {
@@ -90,6 +84,33 @@ export default class Home extends Component {
         });
       }
     }
+    if (event.id === 'willAppear') {
+      this.updateActivities();
+    }
+  }
+
+  updateActivities() {
+    const user = firebase.auth().currentUser;
+    const activities = [];
+    this.usersRef
+      .doc(user.uid)
+      .get()
+      .then(snapshot => {
+        this.setState({ groupId: `groups/${snapshot.get('groupRef').id}` });
+        const groupRef = snapshot.get('groupRef');
+        groupRef
+          .collection('activities')
+          .orderBy('time', 'desc')
+          .get()
+          .then(snap => {
+            snap.forEach(doc => {
+              const activity = doc.data();
+              activity.key = doc.id;
+              activities.push(activity);
+            });
+            this.setState({ activities });
+          });
+      });
   }
 
   toggleDrawer() {
@@ -103,22 +124,39 @@ export default class Home extends Component {
     this.props.navigator.showModal({
       screen: 'goodmate.ActivityModal',
       animationType: 'slide-up',
+      passProps: { groupId: this.state.groupId },
     });
   }
 
-  // addUser() {
-  //   this.ref.add({
-  //     username: this.state.name,
-  //   });
-
-  //   this.setState({ name: '' });
-  // }
+  addLike(key) {
+    const user = firebase.auth().currentUser;
+    this.usersRef
+      .doc(user.uid)
+      .get()
+      .then(snapshot => {
+        const groupRef = snapshot.get('groupRef');
+        const activityRef = groupRef.collection('activities').doc(key);
+        activityRef.get().then(doc => {
+          let likes = 0;
+          likes = doc.get('likes');
+          activityRef.update({
+            likes: likes + 1,
+          });
+        });
+      });
+  }
 
   render() {
     return (
       <View style={styles.container}>
         <GoodHeader toggleDrawer={this.toggleDrawer} openActivityModal={this.openActivityModal} />
-        <ScrollView>{list.length > 0 ? <ActivityFeed /> : <EmptyActivityFeed />}</ScrollView>
+        <ScrollView>
+          {this.state.activities.length > 0 ? (
+            <ActivityFeed activities={this.state.activities} addLike={key => this.addLike(key)} />
+          ) : (
+            <EmptyActivityFeed />
+          )}
+        </ScrollView>
       </View>
     );
   }

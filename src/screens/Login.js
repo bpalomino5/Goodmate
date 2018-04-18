@@ -89,12 +89,6 @@ export default class Login extends Component {
     // });
   }
 
-  // componentWillUnmount() {
-  //   if (this.unsubscriber) {
-  //     this.unsubscriber();
-  //   }
-  // }
-
   selectCategory(selectedCategory) {
     LayoutAnimation.easeInEaseOut();
     this.setState({

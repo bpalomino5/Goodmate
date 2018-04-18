@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { Header, Icon, CheckBox, Button, Text } from 'react-native-elements';
 import { StyleSheet, View, ScrollView, LayoutAnimation, TouchableOpacity } from 'react-native';
 import { Dropdown } from 'react-native-material-dropdown';
+import firebase from 'react-native-firebase';
 
 const data = [
   {
@@ -28,7 +29,7 @@ const data = [
   },
 ];
 
-const GoodHeader = ({ closeModal }) => (
+const GoodHeader = ({ closeModal, onPost }) => (
   <Header
     statusBarProps={{ backgroundColor: '#5B725A' }}
     backgroundColor="#5B725A"
@@ -36,24 +37,32 @@ const GoodHeader = ({ closeModal }) => (
       <Icon name="arrow-back" color="white" underlayColor="transparent" onPress={closeModal} />
     }
     centerComponent={{ text: 'Share Activities', style: { fontSize: 18, color: '#fff' } }}
-    rightComponent={<GoodButton />}
+    rightComponent={<GoodButton onPress={onPost} />}
   />
 );
 
-const GoodButton = () => (
-  <TouchableOpacity>
+const GoodButton = ({ onPress }) => (
+  <TouchableOpacity onPress={onPress}>
     <View>
       <Text style={{ fontSize: 18, color: 'white' }}>Post</Text>
     </View>
   </TouchableOpacity>
 );
 
-const ActivitySelectionList = ({ activities, updateItem }) =>
+const ActivitySelectionList = ({ activities, updateItem, updateValue }) =>
   activities.map((item, i) => (
-    <ActivitySelection key={i} i={i} updateItem={() => updateItem(i)} activities={activities} />
+    <ActivitySelection
+      key={i}
+      i={i}
+      updateItem={() => updateItem(i)}
+      activities={activities}
+      updateValue={value => updateValue(i, value)}
+    />
   ));
 
-const ActivitySelection = ({ activities, updateItem, i }) => (
+const ActivitySelection = ({
+  activities, updateItem, i, updateValue,
+}) => (
   <View style={styles.SelectionRow}>
     <CheckBox
       containerStyle={{ alignSelf: 'flex-end' }}
@@ -61,7 +70,12 @@ const ActivitySelection = ({ activities, updateItem, i }) => (
       onIconPress={() => updateItem(i)}
     />
     <View style={{ flex: 1 }}>
-      <Dropdown label="Activity" data={data} animationDuration={150} />
+      <Dropdown
+        label="Activity"
+        data={data}
+        animationDuration={150}
+        onChangeText={value => updateValue(value)}
+      />
     </View>
   </View>
 );
@@ -75,12 +89,21 @@ export default class ActivityModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activities: [{ checked: false }],
+      activities: [{ checked: false, description: '' }],
+      first: '',
     };
-
+    this.usersRef = firebase.firestore().collection('users');
+    this.activitiesRef = firebase.firestore().collection(`${this.props.groupId}/activities`);
     this.closeModal = this.closeModal.bind(this);
     this.removeItem = this.removeItem.bind(this);
     this.addItem = this.addItem.bind(this);
+    this.postActivities = this.postActivities.bind(this);
+  }
+
+  componentWillMount() {
+    const user = firebase.auth().currentUser;
+    const name = user.displayName.split(' ');
+    this.setState({ first: name[0] });
   }
 
   closeModal() {
@@ -94,9 +117,14 @@ export default class ActivityModal extends Component {
     this.forceUpdate();
   }
 
+  updateValue(i, value) {
+    this.state.activities[i].description = value;
+    this.forceUpdate();
+  }
+
   addItem() {
     LayoutAnimation.easeInEaseOut();
-    this.setState({ activities: [...this.state.activities, { checked: false }] });
+    this.setState({ activities: [...this.state.activities, { checked: false, description: '' }] });
   }
 
   removeItem() {
@@ -106,15 +134,41 @@ export default class ActivityModal extends Component {
     });
   }
 
+  postActivities() {
+    const { activities, first } = this.state;
+    const selections = [];
+    activities.forEach(item => {
+      if (item.checked) {
+        selections.push(item.description);
+      }
+    });
+
+    // get time
+    const date = new Date();
+    const time = date.getTime();
+
+    this.activitiesRef
+      .add({
+        name: first,
+        description: selections,
+        likes: 0,
+        time,
+      })
+      .then(() => {
+        this.closeModal();
+      });
+  }
+
   render() {
     return (
       <View style={styles.container}>
-        <GoodHeader closeModal={this.closeModal} />
+        <GoodHeader closeModal={this.closeModal} onPost={this.postActivities} />
         <View style={styles.InputSection}>
           <ScrollView>
             <ActivitySelectionList
               activities={this.state.activities}
               updateItem={i => this.updateItem(i)}
+              updateValue={(i, v) => this.updateValue(i, v)}
             />
           </ScrollView>
         </View>

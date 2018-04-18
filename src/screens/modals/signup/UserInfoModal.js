@@ -9,6 +9,7 @@ export default class UserInfoModal extends Component {
     this.state = {
       name: '',
       user: null,
+      isLoading: false,
     };
     this.openNextModal = this.openNextModal.bind(this);
   }
@@ -22,14 +23,16 @@ export default class UserInfoModal extends Component {
   }
 
   openNextModal() {
+    this.setState({ isLoading: true });
     const { name, user } = this.state;
     if (name.length !== 0 && user !== null) {
-      user.updateProfile({ displayName: name });
-
-      this.props.navigator.showModal({
-        screen: 'goodmate.CreateGroupModal',
-        animationType: 'slide-up',
-        navigatorStyle: { navBarHidden: true },
+      user.updateProfile({ displayName: name }).then(() => {
+        // then move on to next modal
+        this.props.navigator.showModal({
+          screen: 'goodmate.CreateGroupModal',
+          animationType: 'slide-up',
+          navigatorStyle: { navBarHidden: true },
+        });
       });
     }
   }
@@ -50,6 +53,7 @@ export default class UserInfoModal extends Component {
             placeholder="First Last"
             value={this.state.name}
             onChangeText={t => this.setState({ name: t })}
+            onSubmitEditing={this.openNextModal}
           />
         </View>
         <Button
@@ -64,6 +68,8 @@ export default class UserInfoModal extends Component {
             borderRadius: 5,
           }}
           onPress={this.openNextModal}
+          loading={this.state.isLoading}
+          disabled={this.state.isLoading}
         />
       </View>
     );
