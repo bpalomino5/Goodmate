@@ -206,7 +206,11 @@ export default class Rent extends Component {
     this.props.navigator.showModal({
       screen: 'goodmate.AddRentModal',
       animationType: 'slide-up',
-      passProps: { base, bills, totals },
+      passProps: {
+        base: JSON.stringify(base),
+        bills: JSON.stringify(bills),
+        totals: JSON.stringify(totals),
+      },
     });
   }
 

@@ -75,6 +75,58 @@ export default class AddRentModal extends Component {
     this.submitRent = this.submitRent.bind(this);
   }
 
+  componentDidMount() {
+    if (this.props.base !== undefined) {
+      this.loadRentData();
+    }
+  }
+
+  loadRentData() {
+    const base = JSON.parse(this.props.base);
+    const bills = JSON.parse(this.props.bills);
+    const sections = [];
+    // update base
+    base.forEach(item => {
+      if (sections.indexOf(item.section) === -1) {
+        sections.push({ value: item.section });
+      }
+      this.rentRef.setState({
+        baseItems: [
+          ...this.rentRef.state.baseItems,
+          {
+            section: item.section,
+            type: item.type,
+            value: item.value.toString(),
+            removable: true,
+          },
+        ],
+      });
+    });
+
+    // update bills
+    bills.forEach(item => {
+      if (sections.indexOf(item.section) === -1) {
+        sections.push({ value: item.section });
+      }
+
+      this.rentRef.setState({
+        billItems: [
+          ...this.rentRef.state.billItems,
+          {
+            section: item.section,
+            type: item.type,
+            value: item.value.toString(),
+            removable: true,
+          },
+        ],
+      });
+    });
+
+    // update sections
+    console.log(sections);
+    this.setState({ sections });
+  }
+
   closeModal() {
     this.props.navigator.dismissModal({
       animationType: 'slide-down',
@@ -95,6 +147,17 @@ export default class AddRentModal extends Component {
   }
 
   submitRent() {
+    this.rentRef.setState({
+      baseItems: [
+        ...this.rentRef.state.baseItems,
+        {
+          section: '',
+          type: '',
+          value: '',
+          removable: true,
+        },
+      ],
+    });
     console.log(this.rentRef.state.baseItems);
     console.log(this.rentRef.state.billItems);
   }
