@@ -37,7 +37,7 @@ const years = [
   { value: '2022' },
 ];
 
-const GoodHeader = ({ toggleDrawer, openRentModal }) => (
+const GoodHeader = ({ toggleDrawer, openRentModal, disabled }) => (
   <Header
     statusBarProps={{ backgroundColor: '#5B725A' }}
     backgroundColor="#5B725A"
@@ -55,9 +55,9 @@ const GoodHeader = ({ toggleDrawer, openRentModal }) => (
       <Icon
         name="plus"
         type="feather"
-        color="white"
+        color={disabled ? 'grey' : 'white'}
         underlayColor="transparent"
-        onPress={openRentModal}
+        onPress={disabled ? null : openRentModal}
       />
     }
   />
@@ -144,7 +144,7 @@ export default class Rent extends Component {
       base: [],
       bills: [],
       totals: [],
-      dateSelected: false,
+      sheetAvailable: false,
       displayText: 'Please select a date!',
     };
     this.toggleDrawer = this.toggleDrawer.bind(this);
@@ -153,7 +153,7 @@ export default class Rent extends Component {
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     FireTools.init();
   }
 
@@ -172,18 +172,18 @@ export default class Rent extends Component {
     const sheetRef = await FireTools.getRent(month, year);
     if (sheetRef) {
       const base = sheetRef.get('base');
-      const bills = sheetRef.get('bill');
+      const bills = sheetRef.get('bills');
       const totals = sheetRef.get('totals');
       if (base != null && bills != null && totals != null) {
         this.setState({
           base,
           bills,
           totals,
-          dateSelected: true,
+          sheetAvailable: true,
         });
       }
     } else {
-      this.setState({ dateSelected: false, displayText: 'No rent sheet created yet!' });
+      this.setState({ sheetAvailable: false, displayText: 'No rent sheet created yet!' });
     }
   }
 
@@ -195,14 +195,22 @@ export default class Rent extends Component {
   }
 
   openRentModal() {
+    const { month, year } = this.state;
+    const date = { month, year };
+
     this.props.navigator.showModal({
       screen: 'goodmate.AddRentModal',
       animationType: 'slide-up',
+      passProps: { date: JSON.stringify(date) },
     });
   }
 
   editRentSheet() {
-    const { base, bills, totals } = this.state;
+    const {
+      base, bills, totals, month, year,
+    } = this.state;
+    const date = { month, year };
+
     this.props.navigator.showModal({
       screen: 'goodmate.AddRentModal',
       animationType: 'slide-up',
@@ -210,23 +218,30 @@ export default class Rent extends Component {
         base: JSON.stringify(base),
         bills: JSON.stringify(bills),
         totals: JSON.stringify(totals),
+        date: JSON.stringify(date),
       },
     });
   }
 
   render() {
+    let dateSelected = false;
     if (this.state.month.trim() !== '' && this.state.year.trim() !== '') {
+      dateSelected = true;
       this.getRentSheet();
     }
 
     return (
       <View style={styles.container}>
-        <GoodHeader toggleDrawer={this.toggleDrawer} openRentModal={this.openRentModal} />
+        <GoodHeader
+          toggleDrawer={this.toggleDrawer}
+          openRentModal={this.openRentModal}
+          disabled={this.state.sheetAvailable || dateSelected === false}
+        />
         <DateSelection
           updateMonth={month => this.setState({ month })}
           updateYear={year => this.setState({ year })}
         />
-        {this.state.dateSelected ? (
+        {this.state.sheetAvailable ? (
           <View style={{ flex: 1 }}>
             <RentSheet base={this.state.base} bills={this.state.bills} totals={this.state.totals} />
             <Button

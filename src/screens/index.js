@@ -9,6 +9,7 @@ import Settings from './Settings';
 
 import ActivityModal from './modals/ActivityModal';
 import AddRentModal from './modals/AddRentModal';
+import FinishRentModal from './modals/FinishRentModal';
 import AddReminderModal from './modals/AddReminderModal';
 
 import EditProfileModal from './modals/EditProfileModal';
@@ -28,6 +29,7 @@ export default function registerScreens() {
   Navigation.registerComponent('goodmate.Drawer', () => Drawer);
   Navigation.registerComponent('goodmate.ActivityModal', () => ActivityModal);
   Navigation.registerComponent('goodmate.AddRentModal', () => AddRentModal);
+  Navigation.registerComponent('goodmate.FinishRentModal', () => FinishRentModal);
   Navigation.registerComponent('goodmate.Reminders', () => Reminders);
   Navigation.registerComponent('goodmate.AddReminderModal', () => AddReminderModal);
   Navigation.registerComponent('goodmate.Settings', () => Settings);

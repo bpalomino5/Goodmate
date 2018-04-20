@@ -117,6 +117,7 @@ const RentFormCard = ({
         valueChange={text => updateItemValue(i, text)}
         removable={item.removable}
         sections={sections}
+        sectionValue={item.section}
         setSection={text => updateItemSection(i, text)}
       />
     ))}
@@ -133,6 +134,7 @@ const RentFormItem = ({
   removable,
   sections,
   setSection,
+  sectionValue,
 }) => (
   <View
     style={{
@@ -148,6 +150,7 @@ const RentFormItem = ({
       }}
       label="Section"
       data={sections}
+      value={sectionValue}
       animationDuration={150}
       onChangeText={setSection}
     />

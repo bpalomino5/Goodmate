@@ -1,7 +1,9 @@
+/* eslint no-param-reassign:0 */
 import React, { Component } from 'react';
 import { StyleSheet, View, ScrollView, LayoutAnimation } from 'react-native';
 import { Header, Icon, Button, Overlay, Text, Input } from 'react-native-elements';
 import RentForm from '../../components/RentForm';
+import FireTools from '../../utils/FireTools';
 
 const GoodHeader = ({ closeModal, openOverlay }) => (
   <Header
@@ -73,57 +75,72 @@ export default class AddRentModal extends Component {
     this.closeModal = this.closeModal.bind(this);
     this.addSection = this.addSection.bind(this);
     this.submitRent = this.submitRent.bind(this);
+    this.openFinishModal = this.openFinishModal.bind(this);
   }
 
   componentDidMount() {
+    FireTools.init();
     if (this.props.base !== undefined) {
       this.loadRentData();
     }
+  }
+
+  handleFirstCase(base, bills, sections) {
+    // base
+    let item = base.shift();
+    if (sections.findIndex(s => s.value === item.section) === -1) {
+      sections.push({ value: item.section });
+    }
+    this.rentRef.state.baseItems[0].section = item.section;
+    this.rentRef.state.baseItems[0].type = item.type;
+    this.rentRef.state.baseItems[0].value = item.value.toString();
+    this.rentRef.state.baseItems[0].removable = false;
+
+    // bills
+    item = bills.shift();
+    if (sections.findIndex(s => s.value === item.section) === -1) {
+      sections.push({ value: item.section });
+    }
+    this.rentRef.state.billItems[0].section = item.section;
+    this.rentRef.state.billItems[0].type = item.type;
+    this.rentRef.state.billItems[0].value = item.value.toString();
+    this.rentRef.state.billItems[0].removable = false;
   }
 
   loadRentData() {
     const base = JSON.parse(this.props.base);
     const bills = JSON.parse(this.props.bills);
     const sections = [];
+    this.handleFirstCase(base, bills, sections);
+
     // update base
     base.forEach(item => {
-      if (sections.indexOf(item.section) === -1) {
+      if (sections.findIndex(s => s.value === item.section) === -1) {
         sections.push({ value: item.section });
       }
-      this.rentRef.setState({
-        baseItems: [
-          ...this.rentRef.state.baseItems,
-          {
-            section: item.section,
-            type: item.type,
-            value: item.value.toString(),
-            removable: true,
-          },
-        ],
+
+      this.rentRef.state.baseItems.push({
+        section: item.section,
+        type: item.type,
+        value: item.value.toString(),
+        removable: true,
       });
     });
 
     // update bills
     bills.forEach(item => {
-      if (sections.indexOf(item.section) === -1) {
+      if (sections.findIndex(s => s.value === item.section) === -1) {
         sections.push({ value: item.section });
       }
 
-      this.rentRef.setState({
-        billItems: [
-          ...this.rentRef.state.billItems,
-          {
-            section: item.section,
-            type: item.type,
-            value: item.value.toString(),
-            removable: true,
-          },
-        ],
+      this.rentRef.state.billItems.push({
+        section: item.section,
+        type: item.type,
+        value: item.value.toString(),
+        removable: true,
       });
     });
-
     // update sections
-    console.log(sections);
     this.setState({ sections });
   }
 
@@ -146,20 +163,52 @@ export default class AddRentModal extends Component {
     });
   }
 
-  submitRent() {
-    this.rentRef.setState({
-      baseItems: [
-        ...this.rentRef.state.baseItems,
-        {
-          section: '',
-          type: '',
-          value: '',
-          removable: true,
-        },
-      ],
+  openFinishModal() {
+    const base = JSON.stringify(this.rentRef.state.baseItems);
+    const bills = JSON.stringify(this.rentRef.state.billItems);
+
+    this.props.navigator.showModal({
+      screen: 'goodmate.FinishRentModal',
+      animationType: 'slide-up',
+      passProps: { base, bills },
     });
-    console.log(this.rentRef.state.baseItems);
-    console.log(this.rentRef.state.billItems);
+  }
+
+  async submitRent() {
+    const base = [];
+    const bills = [];
+    const totals = [];
+    const date = JSON.parse(this.props.date);
+
+    // strip removables from data and calc totals
+    this.rentRef.state.baseItems.forEach(item => {
+      const index = totals.findIndex(t => t.section === item.section);
+      if (index === -1) {
+        totals.push({ value: parseFloat(item.value), section: item.section });
+      } else {
+        totals[index].value += parseFloat(item.value);
+      }
+      base.push({ section: item.section, value: parseFloat(item.value), type: item.type });
+    });
+
+    this.rentRef.state.billItems.forEach(item => {
+      const index = totals.findIndex(t => t.section === item.section);
+      if (index === -1) {
+        totals.push({ value: parseFloat(item.value), section: item.section });
+      } else {
+        totals[index].value += parseFloat(item.value);
+      }
+      bills.push({ section: item.section, value: parseFloat(item.value), type: item.type });
+    });
+
+    // send to firestore
+    const rentSheet = {
+      base,
+      bills,
+      totals,
+      date,
+    };
+    await FireTools.submitRent(rentSheet);
   }
 
   render() {
@@ -179,9 +228,16 @@ export default class AddRentModal extends Component {
         <View style={styles.SubmitSection}>
           <Button
             containerStyle={{ marginTop: 20 }}
-            title="Submit "
-            buttonStyle={{ borderRadius: 30, width: 150, height: 40 }}
-            onPress={this.submitRent}
+            title="Next "
+            buttonStyle={{
+              backgroundColor: 'rgba(92, 99,216, 1)',
+              width: 300,
+              height: 45,
+              borderColor: 'transparent',
+              borderWidth: 0,
+              borderRadius: 5,
+            }}
+            onPress={this.openFinishModal}
           />
         </View>
         <SectionOverlay

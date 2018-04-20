@@ -46,6 +46,18 @@ class FireTools {
       return null;
     }
   }
+
+  async submitRent(rentSheet) {
+    const sheetRef = await this.getRent(rentSheet.date.month, rentSheet.date.year);
+    if (sheetRef) {
+      sheetRef.ref.set(rentSheet);
+    } else {
+      const ref = await this.getGroupRef();
+      if (ref) {
+        ref.collection('rents').add(rentSheet);
+      }
+    }
+  }
 }
 
 export default new FireTools();
