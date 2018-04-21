@@ -60,21 +60,33 @@ class FireTools {
   }
 
   async getRoommates() {
-    const query = await firebase
-      .firestore()
-      .collection('users')
-      .get();
+    try {
+      const ref = await this.getGroupRef();
+      const users = [];
+      if (ref) {
+        const rquery = await ref.collection('roommates').get();
+        if (rquery) {
+          await Promise.all(rquery.docs.map(async doc => {
+            const uid = doc.get('roommate');
+            const user = await firebase
+              .firestore()
+              .collection('users')
+              .doc(uid)
+              .get();
 
-    const users = [];
-    query.forEach(doc => {
-      users.push({
-        first: doc.get('first'),
-        last: doc.get('last'),
-        primary: doc.get('primary'),
-        uid: doc.id,
-      });
-    });
-    return users;
+            users.push({
+              first: user.get('first'),
+              last: user.get('last'),
+              primary: user.get('primary'),
+              uid: user.id,
+            });
+          }));
+        }
+      }
+      return users;
+    } catch (error) {
+      return null;
+    }
   }
 }
 

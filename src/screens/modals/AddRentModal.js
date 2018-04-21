@@ -74,7 +74,6 @@ export default class AddRentModal extends Component {
     };
     this.closeModal = this.closeModal.bind(this);
     this.addSection = this.addSection.bind(this);
-    this.submitRent = this.submitRent.bind(this);
     this.openFinishModal = this.openFinishModal.bind(this);
   }
 
@@ -126,7 +125,7 @@ export default class AddRentModal extends Component {
         type: item.type,
         value: item.value.toString(),
         removable: true,
-        uids: {},
+        uids: item.uids,
       });
     });
 
@@ -141,7 +140,7 @@ export default class AddRentModal extends Component {
         type: item.type,
         value: item.value.toString(),
         removable: true,
-        uids: {},
+        uids: item.uids,
       });
     });
     // update sections
@@ -174,45 +173,8 @@ export default class AddRentModal extends Component {
     this.props.navigator.showModal({
       screen: 'goodmate.FinishRentModal',
       animationType: 'slide-up',
-      passProps: { base, bills },
+      passProps: { base, bills, date: this.props.date },
     });
-  }
-
-  async submitRent() {
-    const base = [];
-    const bills = [];
-    const totals = [];
-    const date = JSON.parse(this.props.date);
-
-    // strip removables from data and calc totals
-    this.rentRef.state.baseItems.forEach(item => {
-      const index = totals.findIndex(t => t.section === item.section);
-      if (index === -1) {
-        totals.push({ value: parseFloat(item.value), section: item.section });
-      } else {
-        totals[index].value += parseFloat(item.value);
-      }
-      base.push({ section: item.section, value: parseFloat(item.value), type: item.type });
-    });
-
-    this.rentRef.state.billItems.forEach(item => {
-      const index = totals.findIndex(t => t.section === item.section);
-      if (index === -1) {
-        totals.push({ value: parseFloat(item.value), section: item.section });
-      } else {
-        totals[index].value += parseFloat(item.value);
-      }
-      bills.push({ section: item.section, value: parseFloat(item.value), type: item.type });
-    });
-
-    // send to firestore
-    const rentSheet = {
-      base,
-      bills,
-      totals,
-      date,
-    };
-    await FireTools.submitRent(rentSheet);
   }
 
   render() {

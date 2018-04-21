@@ -1,9 +1,12 @@
-/* eslint class-methods-use-this: 0
-    react/no-array-index-key: 0
+/* eslint class-methods-use-this: 0,
+    react/no-array-index-key: 0,
+    no-param-reassign: 0
 */
 
+import 'intl';
+import 'intl/locale-data/jsonp/en';
 import React, { Component } from 'react';
-import { StyleSheet, View, ScrollView } from 'react-native';
+import { StyleSheet, View, ScrollView, Platform } from 'react-native';
 import { Header, Icon, Text, Card, Button } from 'react-native-elements';
 import { Dropdown } from 'react-native-material-dropdown';
 import FireTools from '../utils/FireTools';
@@ -37,7 +40,9 @@ const years = [
   { value: '2022' },
 ];
 
-const GoodHeader = ({ toggleDrawer, openRentModal, disabled }) => (
+const GoodHeader = ({
+  toggleDrawer, openRentModal, disabled, primary,
+}) => (
   <Header
     statusBarProps={{ backgroundColor: '#5B725A' }}
     backgroundColor="#5B725A"
@@ -52,13 +57,15 @@ const GoodHeader = ({ toggleDrawer, openRentModal, disabled }) => (
     }
     centerComponent={{ text: 'Rent', style: { fontSize: 18, color: '#fff' } }}
     rightComponent={
-      <Icon
-        name="plus"
-        type="feather"
-        color={disabled ? 'grey' : 'white'}
-        underlayColor="transparent"
-        onPress={disabled ? null : openRentModal}
-      />
+      primary ? (
+        <Icon
+          name="plus"
+          type="feather"
+          color={disabled ? 'grey' : 'white'}
+          underlayColor="transparent"
+          onPress={disabled ? null : openRentModal}
+        />
+      ) : null
     }
   />
 );
@@ -135,8 +142,12 @@ export default class Rent extends Component {
       base: [],
       bills: [],
       totals: [],
+      userbase: [],
+      userbills: [],
+      usertotals: [],
       sheetAvailable: false,
       displayText: 'Please select a date!',
+      primary: false,
     };
     this.toggleDrawer = this.toggleDrawer.bind(this);
     this.openRentModal = this.openRentModal.bind(this);
@@ -144,8 +155,14 @@ export default class Rent extends Component {
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     FireTools.init();
+    const roommates = await FireTools.getRoommates();
+    roommates.forEach(mate => {
+      if (mate.uid === FireTools.user.uid) {
+        this.setState({ primary: mate.primary });
+      }
+    });
   }
 
   onNavigatorEvent(event) {
@@ -159,23 +176,79 @@ export default class Rent extends Component {
   }
 
   async getRentSheet() {
-    const { month, year } = this.state;
+    const { month, year, primary } = this.state;
     const sheetRef = await FireTools.getRent(month, year);
     if (sheetRef) {
       const base = sheetRef.get('base');
       const bills = sheetRef.get('bills');
       const totals = sheetRef.get('totals');
+      const userbase = sheetRef.get('base');
+      const userbills = sheetRef.get('bills');
       if (base != null && bills != null && totals != null) {
-        this.setState({
-          base,
-          bills,
-          totals,
-          sheetAvailable: true,
-        });
+        if (primary) {
+          // display master sheet
+          this.setState({
+            base,
+            bills,
+            totals,
+            sheetAvailable: true,
+          });
+        } else {
+          // display normal user sheet
+          this.reviseRentSheet(userbase, userbills);
+        }
       }
     } else {
       this.setState({ sheetAvailable: false, displayText: 'No rent sheet created yet!' });
     }
+  }
+
+  reviseRentSheet(userbase, userbills) {
+    const usertotals = [];
+
+    userbase.forEach((item, i) => {
+      const index = usertotals.findIndex(t => t.section === item.section);
+      const ids = Object.values(item.uids);
+      if (ids.length > 0) {
+        if (ids.indexOf(FireTools.user.uid) === -1) {
+          // do not display
+          delete userbase[i];
+        } else {
+          // divide by length
+          userbase[i].value = item.value / ids.length;
+
+          if (index === -1) {
+            usertotals.push({ value: userbase[i].value, section: item.section });
+          } else {
+            usertotals[index].value += userbase[i].value;
+          }
+        }
+      }
+    });
+
+    userbills.forEach((item, i) => {
+      const index = usertotals.findIndex(t => t.section === item.section);
+      const ids = Object.values(item.uids);
+      if (ids.indexOf(FireTools.user.uid) === -1) {
+        // do not display
+        delete userbills[i];
+      } else {
+        userbills[i].value = item.value / ids.length;
+
+        if (index === -1) {
+          usertotals.push({ value: userbills[i].value, section: item.section });
+        } else {
+          usertotals[index].value += userbills[i].value;
+        }
+      }
+    });
+
+    this.setState({
+      userbase,
+      userbills,
+      usertotals,
+      sheetAvailable: true,
+    });
   }
 
   toggleDrawer() {
@@ -198,7 +271,7 @@ export default class Rent extends Component {
 
   editRentSheet() {
     const {
-      base, bills, totals, month, year,
+      base, bills, month, year,
     } = this.state;
     const date = { month, year };
 
@@ -208,7 +281,6 @@ export default class Rent extends Component {
       passProps: {
         base: JSON.stringify(base),
         bills: JSON.stringify(bills),
-        totals: JSON.stringify(totals),
         date: JSON.stringify(date),
       },
     });
@@ -227,6 +299,7 @@ export default class Rent extends Component {
           toggleDrawer={this.toggleDrawer}
           openRentModal={this.openRentModal}
           disabled={this.state.sheetAvailable || dateSelected === false}
+          primary={this.state.primary}
         />
         <DateSelection
           updateMonth={month => this.setState({ month })}
@@ -234,20 +307,34 @@ export default class Rent extends Component {
         />
         {this.state.sheetAvailable ? (
           <View style={{ flex: 1 }}>
-            <RentSheet base={this.state.base} bills={this.state.bills} totals={this.state.totals} />
-            <Button
-              containerStyle={{ marginTop: 10, marginBottom: 20 }}
-              title="Edit Rent Sheet "
-              buttonStyle={{
-                backgroundColor: 'rgba(92, 99,216, 1)',
-                width: 300,
-                height: 45,
-                borderColor: 'transparent',
-                borderWidth: 0,
-                borderRadius: 5,
-              }}
-              onPress={this.editRentSheet}
-            />
+            {this.state.primary ? (
+              <View style={styles.primaryContainer}>
+                <RentSheet
+                  base={this.state.base}
+                  bills={this.state.bills}
+                  totals={this.state.totals}
+                />
+                <Button
+                  containerStyle={{ marginTop: 10, marginBottom: 20 }}
+                  title="Edit Rent Sheet "
+                  buttonStyle={{
+                    backgroundColor: 'rgba(92, 99,216, 1)',
+                    width: 300,
+                    height: 45,
+                    borderColor: 'transparent',
+                    borderWidth: 0,
+                    borderRadius: 5,
+                  }}
+                  onPress={this.editRentSheet}
+                />
+              </View>
+            ) : (
+              <RentSheet
+                base={this.state.userbase}
+                bills={this.state.userbills}
+                totals={this.state.usertotals}
+              />
+            )}
           </View>
         ) : (
           <DefaultView description={this.state.displayText} />
@@ -273,5 +360,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 2,
+  },
+  primaryContainer: {
+    marginBottom: Platform.OS === 'android' ? 65 : 0,
   },
 });

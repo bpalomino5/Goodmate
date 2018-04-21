@@ -1,4 +1,6 @@
 /* eslint react/no-array-index-key:0 */
+import 'intl';
+import 'intl/locale-data/jsonp/en';
 import React, { Component } from 'react';
 import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native';
 import { Button, Header, Icon, Text, Divider, Overlay, CheckBox } from 'react-native-elements';
@@ -10,7 +12,7 @@ const formatter = new Intl.NumberFormat('en-US', {
   minimumFractionDigits: 2,
 });
 
-const GoodHeader = ({ closeModal }) => (
+const GoodHeader = ({ closeModal, infoPress }) => (
   <Header
     statusBarProps={{ backgroundColor: '#5B725A' }}
     backgroundColor="#5B725A"
@@ -18,7 +20,38 @@ const GoodHeader = ({ closeModal }) => (
       <Icon name="arrow-back" color="white" underlayColor="transparent" onPress={closeModal} />
     }
     centerComponent={{ text: 'Assign & Finish', style: { fontSize: 18, color: '#fff' } }}
+    rightComponent={
+      <Icon
+        name="info"
+        type="feather"
+        color="white"
+        underlayColor="transparent"
+        onPress={() => infoPress(true)}
+      />
+    }
   />
+);
+
+const InfoOverlay = ({ toggleOverlay, isVisible }) => (
+  <Overlay
+    borderRadius={5}
+    overlayStyle={{ padding: 15 }}
+    isVisible={isVisible}
+    width="auto"
+    height="auto"
+  >
+    <View>
+      <Text style={{ fontSize: 24, marginBottom: 5 }}>About Assign</Text>
+      <Text style={{ fontSize: 16, color: 'gray', marginBottom: 10 }}>
+        Rent items can be divided evenly in price amongst specific roommates. If no assignment is
+        made the item will be displayed to all but not included in totals. Select an item to get
+        started.
+      </Text>
+    </View>
+    <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'flex-end' }}>
+      <Button title="Close " onPress={() => toggleOverlay(false)} />
+    </View>
+  </Overlay>
 );
 
 const AssignmentOverlay = ({
@@ -34,7 +67,7 @@ const AssignmentOverlay = ({
     <View>
       <Text style={{ fontSize: 24, marginBottom: 5 }}>Assign to Roommates</Text>
       <Text style={{ fontSize: 16, color: 'gray', marginBottom: 10 }}>
-        Rent items can be divided amongst specific roommates
+        Select the roommates you want to divide this item by
       </Text>
       {roommates.map((item, i) => (
         <View key={i}>
@@ -115,6 +148,7 @@ export default class FinishRentModal extends Component {
       isVisible: false,
       roommates: [],
       dataItem: {},
+      infoVisible: false,
     };
     this.closeModal = this.closeModal.bind(this);
     this.submitRent = this.submitRent.bind(this);
@@ -152,7 +186,61 @@ export default class FinishRentModal extends Component {
     });
   }
 
-  submitRent() {
+  async submitRent() {
+    const base = [];
+    const bills = [];
+    const totals = [];
+    const date = JSON.parse(this.props.date);
+
+    const { baseItems, billItems } = this.state;
+    // strip removables from data and calc totals
+    baseItems.forEach(item => {
+      const index = totals.findIndex(t => t.section === item.section);
+      if (index === -1) {
+        // not in totals, add to totals
+        if (Object.keys(item.uids).length > 0) {
+          // assigned, add to totals
+          totals.push({ value: parseFloat(item.value), section: item.section });
+        }
+      } else {
+        // in totals, update totals
+        totals[index].value += parseFloat(item.value);
+      }
+      base.push({
+        section: item.section,
+        value: parseFloat(item.value),
+        type: item.type,
+        uids: item.uids,
+      });
+    });
+
+    billItems.forEach(item => {
+      const index = totals.findIndex(t => t.section === item.section);
+      if (index === -1) {
+        if (Object.keys(item.uids).length > 0) {
+          // assigned, add to totals
+          totals.push({ value: parseFloat(item.value), section: item.section });
+        }
+      } else {
+        totals[index].value += parseFloat(item.value);
+      }
+      bills.push({
+        section: item.section,
+        value: parseFloat(item.value),
+        type: item.type,
+        uids: item.uids,
+      });
+    });
+
+    // send to firestore
+    const rentSheet = {
+      base,
+      bills,
+      totals,
+      date,
+    };
+    // console.log(rentSheet);
+    await FireTools.submitRent(rentSheet);
     this.props.navigator.dismissAllModals({
       animationType: 'slide-down',
     });
@@ -172,13 +260,17 @@ export default class FinishRentModal extends Component {
     this.setState({ isVisible: toggle });
   }
 
+  displayInfoOverlay(toggle) {
+    this.setState({ infoVisible: toggle });
+  }
+
   render() {
     const {
-      isVisible, baseItems, billItems, roommates, dataItem,
+      isVisible, baseItems, billItems, roommates, dataItem, infoVisible,
     } = this.state;
     return (
       <View style={styles.container}>
-        <GoodHeader closeModal={this.closeModal} />
+        <GoodHeader closeModal={this.closeModal} infoPress={t => this.displayInfoOverlay(t)} />
         <RentSheet
           base={baseItems}
           bills={billItems}
@@ -191,6 +283,7 @@ export default class FinishRentModal extends Component {
           dataItem={dataItem}
           onCheckPress={item => this.onCheckPress(item)}
         />
+        <InfoOverlay isVisible={infoVisible} toggleOverlay={t => this.displayInfoOverlay(t)} />
         <View style={styles.SubmitSection}>
           <Button
             containerStyle={{ marginTop: 20 }}

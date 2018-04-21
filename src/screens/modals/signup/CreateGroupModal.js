@@ -84,16 +84,13 @@ export default class CreateGroupModal extends Component {
   }
 
   addtoRoommateGroup(groupId) {
-    // get ref to user from firestore
-    const ref = this.usersRef.doc(this.state.user.uid);
-
-    // add roommate ref to new roommate group
+    // add roommate uid to roommates collection under group collection
     const path = `groups/${groupId}/roommates`;
     firebase
       .firestore()
       .collection(path)
       .add({
-        roommate: ref,
+        roommate: this.state.user.uid,
       });
   }
 
