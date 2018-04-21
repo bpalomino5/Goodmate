@@ -16,6 +16,7 @@ export default class RentForm extends Component {
           type: '',
           value: '',
           removable: false,
+          uids: {},
         },
       ],
       billItems: [
@@ -24,6 +25,7 @@ export default class RentForm extends Component {
           type: '',
           value: '',
           removable: false,
+          uids: {},
         },
       ],
     };

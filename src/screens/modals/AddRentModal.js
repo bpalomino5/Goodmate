@@ -95,6 +95,7 @@ export default class AddRentModal extends Component {
     this.rentRef.state.baseItems[0].type = item.type;
     this.rentRef.state.baseItems[0].value = item.value.toString();
     this.rentRef.state.baseItems[0].removable = false;
+    this.rentRef.state.baseItems[0].uids = item.uids;
 
     // bills
     item = bills.shift();
@@ -105,6 +106,7 @@ export default class AddRentModal extends Component {
     this.rentRef.state.billItems[0].type = item.type;
     this.rentRef.state.billItems[0].value = item.value.toString();
     this.rentRef.state.billItems[0].removable = false;
+    this.rentRef.state.billItems[0].uids = item.uids;
   }
 
   loadRentData() {
@@ -124,6 +126,7 @@ export default class AddRentModal extends Component {
         type: item.type,
         value: item.value.toString(),
         removable: true,
+        uids: {},
       });
     });
 
@@ -138,6 +141,7 @@ export default class AddRentModal extends Component {
         type: item.type,
         value: item.value.toString(),
         removable: true,
+        uids: {},
       });
     });
     // update sections

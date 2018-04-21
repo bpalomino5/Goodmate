@@ -1,19 +1,104 @@
+/* eslint react/no-array-index-key:0 */
 import React, { Component } from 'react';
-import { StyleSheet, View, TouchableOpacity } from 'react-native';
-import { Button, Header, Icon, Text, Divider } from 'react-native-elements';
+import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native';
+import { Button, Header, Icon, Text, Divider, Overlay, CheckBox } from 'react-native-elements';
+import FireTools from '../../utils/FireTools';
 
-const GoodHeader = ({ closeModal, openOverlay }) => (
+const formatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  minimumFractionDigits: 2,
+});
+
+const GoodHeader = ({ closeModal }) => (
   <Header
     statusBarProps={{ backgroundColor: '#5B725A' }}
     backgroundColor="#5B725A"
     leftComponent={
       <Icon name="arrow-back" color="white" underlayColor="transparent" onPress={closeModal} />
     }
-    centerComponent={{ text: 'Finalize', style: { fontSize: 18, color: '#fff' } }}
-    rightComponent={
-      <Icon name="add" color="white" underlayColor="transparent" onPress={openOverlay} />
-    }
+    centerComponent={{ text: 'Assign & Finish', style: { fontSize: 18, color: '#fff' } }}
   />
+);
+
+const AssignmentOverlay = ({
+  isVisible, toggleOverlay, roommates, onCheckPress, dataItem,
+}) => (
+  <Overlay
+    borderRadius={5}
+    overlayStyle={{ padding: 15 }}
+    isVisible={isVisible}
+    width="auto"
+    height="auto"
+  >
+    <View>
+      <Text style={{ fontSize: 24, marginBottom: 5 }}>Assign to Roommates</Text>
+      <Text style={{ fontSize: 16, color: 'gray', marginBottom: 10 }}>
+        Rent items can be divided amongst specific roommates
+      </Text>
+      {roommates.map((item, i) => (
+        <View key={i}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <CheckBox
+              onPress={() => onCheckPress(item)}
+              checked={dataItem.uids !== undefined ? item.first in dataItem.uids : null}
+            />
+            <Text style={{ fontSize: 20 }}>{item.first}</Text>
+          </View>
+        </View>
+      ))}
+    </View>
+    <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'flex-end' }}>
+      <Button title="Close " onPress={() => toggleOverlay(false)} />
+    </View>
+  </Overlay>
+);
+
+const RentSheet = ({ base, bills, onItemPress }) => (
+  <ScrollView>
+    <View style={{ flex: 1 }}>
+      {base.map((item, i) => (
+        <SheetItem key={i} data={item} onPress={() => onItemPress(i, 'base')} />
+      ))}
+      {bills.map((item, i) => (
+        <SheetItem key={i} data={item} onPress={() => onItemPress(i, 'bills')} />
+      ))}
+    </View>
+  </ScrollView>
+);
+
+const SheetItem = ({ data, onPress }) => (
+  <TouchableOpacity onPress={onPress}>
+    <View style={{ padding: 5 }}>
+      <View style={{ flexDirection: 'row' }}>
+        <View style={{ alignSelf: 'center', margin: 10, width: 65 }}>
+          <Text style={{ fontSize: 20 }}>{data.section}</Text>
+        </View>
+        <View style={{ marginLeft: 12, flex: 1 }}>
+          <Text style={{ fontSize: 20, marginBottom: 4 }}>{data.type}</Text>
+          <View style={{ flexDirection: 'row' }}>
+            {Object.keys(data.uids).map((item, i) => (
+              <Text key={i} style={{ fontSize: 14, color: 'grey' }}>
+                {item}{' '}
+              </Text>
+            ))}
+          </View>
+        </View>
+        <View
+          style={{
+            flex: 0,
+            marginRight: 10,
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 90,
+          }}
+        >
+          <Text style={{ fontSize: 18 }}>{formatter.format(data.value)}</Text>
+        </View>
+      </View>
+    </View>
+    <Divider style={{ backgroundColor: 'grey' }} />
+  </TouchableOpacity>
 );
 
 export default class FinishRentModal extends Component {
@@ -24,16 +109,41 @@ export default class FinishRentModal extends Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      baseItems: [],
+      billItems: [],
+      isVisible: false,
+      roommates: [],
+      dataItem: {},
+    };
     this.closeModal = this.closeModal.bind(this);
     this.submitRent = this.submitRent.bind(this);
   }
 
-  componentDidMount() {
+  async componentWillMount() {
+    FireTools.init();
     if (this.props.base !== undefined) {
       const base = JSON.parse(this.props.base);
       const bills = JSON.parse(this.props.bills);
-      console.log(base, bills);
+      this.setState({ baseItems: base });
+      this.setState({ billItems: bills });
     }
+
+    const roommates = await FireTools.getRoommates();
+    this.setState({ roommates });
+  }
+
+  onCheckPress(item) {
+    const { dataItem } = this.state;
+    // check if uids is already assigned
+    if (item.first in dataItem.uids) {
+      // remove uid
+      delete dataItem.uids[item.first];
+    } else {
+      // add uid
+      dataItem.uids[item.first] = item.uid;
+    }
+    this.forceUpdate();
   }
 
   closeModal() {
@@ -48,36 +158,39 @@ export default class FinishRentModal extends Component {
     });
   }
 
+  openOverlay(i, name) {
+    if (name === 'base') {
+      this.setState({ dataItem: this.state.baseItems[i] });
+    } else {
+      this.setState({ dataItem: this.state.billItems[i] });
+    }
+
+    this.setState({ isVisible: true });
+  }
+
+  toggleOverlay(toggle) {
+    this.setState({ isVisible: toggle });
+  }
+
   render() {
+    const {
+      isVisible, baseItems, billItems, roommates, dataItem,
+    } = this.state;
     return (
       <View style={styles.container}>
         <GoodHeader closeModal={this.closeModal} />
-        <View style={{ flex: 1 }}>
-          <TouchableOpacity>
-            <View style={{ padding: 5 }}>
-              <View style={{ flexDirection: 'row' }}>
-                <View style={{ alignSelf: 'center', padding: 10, backgroundColor: 'white' }}>
-                  <Text style={{ fontSize: 20 }}>Avalon</Text>
-                </View>
-                <View style={{ marginLeft: 12, width: 220 }}>
-                  <Text style={{ fontSize: 20, marginBottom: 4 }}>Garage</Text>
-                  <Text style={{ fontSize: 14, color: 'grey' }}>Brandon, CJ, Bryan, Marvin</Text>
-                </View>
-                <View
-                  style={{
-                    flex: 1,
-                    marginRight: 10,
-                    alignItems: 'flex-end',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Text style={{ fontSize: 18 }}>$100.00</Text>
-                </View>
-              </View>
-            </View>
-            <Divider style={{ backgroundColor: 'grey' }} />
-          </TouchableOpacity>
-        </View>
+        <RentSheet
+          base={baseItems}
+          bills={billItems}
+          onItemPress={(i, name) => this.openOverlay(i, name)}
+        />
+        <AssignmentOverlay
+          isVisible={isVisible}
+          toggleOverlay={t => this.toggleOverlay(t)}
+          roommates={roommates}
+          dataItem={dataItem}
+          onCheckPress={item => this.onCheckPress(item)}
+        />
         <View style={styles.SubmitSection}>
           <Button
             containerStyle={{ marginTop: 20 }}

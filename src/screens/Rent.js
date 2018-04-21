@@ -100,25 +100,16 @@ const RentSheet = ({ base, bills, totals }) => (
       {base.map((item, i) => (
         <RentCardItem key={i} title={item.type} value={formatter.format(item.value)} />
       ))}
-      {/* <RentCardItem title="Monthly Rent" value="$1,843.00" /> */}
-      {/* <RentCardItem title="Bedroom 1" value="$501.44" /> */}
     </Card>
     <Card title="Bills" titleStyle={{ alignSelf: 'flex-start' }}>
       {bills.map((item, i) => (
         <RentCardItem key={i} title={item.type} value={formatter.format(item.value)} />
       ))}
-      {/* <RentCardItem title="Utilties" value="$22.23" /> */}
-      {/* <RentCardItem title="Electricity" value="$22.98" /> */}
-      {/* <RentCardItem title="Internet" value="$13.75" /> */}
-      {/* <RentCardItem title="Garage" value="$50.00" /> */}
     </Card>
     <Card title="Totals" titleStyle={{ alignSelf: 'flex-start' }}>
       {totals.map((item, i) => (
         <RentCardItem key={i} title={item.section} value={formatter.format(item.value)} />
       ))}
-      {/* <RentCardItem title="Avalon" value="$573.67" /> */}
-      {/* <RentCardItem title="Bryan Payment" value="$45.96" /> */}
-      {/* <RentCardItem title="Final Total" value="$619.63" /> */}
     </Card>
   </ScrollView>
 );

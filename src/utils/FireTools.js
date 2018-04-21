@@ -58,6 +58,24 @@ class FireTools {
       }
     }
   }
+
+  async getRoommates() {
+    const query = await firebase
+      .firestore()
+      .collection('users')
+      .get();
+
+    const users = [];
+    query.forEach(doc => {
+      users.push({
+        first: doc.get('first'),
+        last: doc.get('last'),
+        primary: doc.get('primary'),
+        uid: doc.id,
+      });
+    });
+    return users;
+  }
 }
 
 export default new FireTools();
