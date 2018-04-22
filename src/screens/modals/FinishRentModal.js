@@ -241,6 +241,7 @@ export default class FinishRentModal extends Component {
     };
     // console.log(rentSheet);
     await FireTools.submitRent(rentSheet);
+    this.props.onFinish();
     this.props.navigator.dismissAllModals({
       animationType: 'slide-down',
     });

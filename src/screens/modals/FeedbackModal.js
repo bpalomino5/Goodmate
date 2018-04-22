@@ -44,7 +44,14 @@ export default class FeedbackModal extends Component {
           maxLength={300}
         />
         <Button
-          buttonStyle={styles.submitButton}
+          buttonStyle={{
+            backgroundColor: 'rgba(92, 99,216, 1)',
+            width: 300,
+            height: 45,
+            borderColor: 'transparent',
+            borderWidth: 0,
+            borderRadius: 5,
+          }}
           title="Submit "
           onPress={() => console.log('hi')}
         />

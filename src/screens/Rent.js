@@ -167,17 +167,12 @@ export default class Rent extends Component {
   }
 
   onNavigatorEvent(event) {
-    console.log(event.id);
     if (event.type === 'DeepLink') {
       if (event.link !== 'goodmate.Rent') {
         this.props.navigator.resetTo({
           screen: event.link,
         });
       }
-    }
-    // returning from finish modal
-    if (event.id === 'willAppear') {
-      this.getRentSheet(this.state.month, this.state.year);
     }
   }
 
@@ -271,7 +266,10 @@ export default class Rent extends Component {
     this.props.navigator.showModal({
       screen: 'goodmate.AddRentModal',
       animationType: 'slide-up',
-      passProps: { date: JSON.stringify(date) },
+      passProps: {
+        date: JSON.stringify(date),
+        onFinish: () => this.getRentSheet(month, year),
+      },
     });
   }
 
@@ -288,6 +286,7 @@ export default class Rent extends Component {
         base: JSON.stringify(base),
         bills: JSON.stringify(bills),
         date: JSON.stringify(date),
+        onFinish: () => this.getRentSheet(month, year),
       },
     });
   }

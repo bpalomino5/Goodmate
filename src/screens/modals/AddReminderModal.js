@@ -7,6 +7,7 @@ import { Header, Icon, Text } from 'react-native-elements';
 import { TextField } from 'react-native-material-textfield';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import { Dropdown } from 'react-native-material-dropdown';
+import FireTools from '../../utils/FireTools';
 
 const types = [{ value: 'Bill' }, { value: 'Chore' }];
 
@@ -63,13 +64,22 @@ export default class AddReminderModal extends Component {
       time: '',
       title: '',
       type: '',
+      rid: '',
     };
     this.closeModal = this.closeModal.bind(this);
+    this.addReminder = this.addReminder.bind(this);
   }
 
-  componentWillMount() {
+  async componentWillMount() {
+    FireTools.init();
     if (this.props.item !== undefined) {
-      this.setState({ title: this.props.item.title, type: this.props.item.type });
+      this.setState({
+        title: this.props.item.title,
+        type: this.props.item.type,
+        date: this.props.item.date,
+        time: this.props.item.time,
+        rid: this.props.item.rid,
+      });
     }
   }
 
@@ -77,6 +87,25 @@ export default class AddReminderModal extends Component {
     this.props.navigator.dismissModal({
       animationType: 'slide-down',
     });
+  }
+
+  async addReminder() {
+    const {
+      date, time, title, type, rid,
+    } = this.state;
+
+    await FireTools.addReminder(
+      {
+        date,
+        time,
+        title,
+        type,
+      },
+      rid,
+    );
+
+    this.props.onFinish();
+    this.closeModal();
   }
 
   formatTime(date) {
@@ -113,7 +142,7 @@ export default class AddReminderModal extends Component {
           />
         </View>
         <View style={styles.buttonDone}>
-          <Icon name="check" reverse color="#80A07E" onPress={this.closeModal} />
+          <Icon name="check" reverse color="#80A07E" onPress={this.addReminder} />
         </View>
         <SettingItem
           title="Date"

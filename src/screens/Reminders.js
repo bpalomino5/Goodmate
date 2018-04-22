@@ -3,6 +3,7 @@
 import React, { Component } from 'react';
 import { ScrollView, StyleSheet, View, TouchableOpacity } from 'react-native';
 import { Header, Icon, Text, Divider } from 'react-native-elements';
+import FireTools from '../utils/FireTools';
 
 const GoodHeader = ({ toggleDrawer, openReminderModal }) => (
   <Header
@@ -86,16 +87,17 @@ export default class Reminders extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      reminders: [
-        { type: 'Bill', title: 'Monthly Rent' },
-        { type: 'Bill', title: 'Bryan Payment' },
-        { type: 'Chore', title: 'Clean the dishes' },
-      ],
+      reminders: [],
     };
 
     this.toggleDrawer = this.toggleDrawer.bind(this);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     this.openReminderModal = this.openReminderModal.bind(this);
+  }
+
+  async componentWillMount() {
+    FireTools.init();
+    this.getReminders();
   }
 
   onNavigatorEvent(event) {
@@ -105,6 +107,13 @@ export default class Reminders extends Component {
           screen: event.link,
         });
       }
+    }
+  }
+
+  async getReminders() {
+    const reminders = await FireTools.getReminders();
+    if (reminders) {
+      this.setState({ reminders });
     }
   }
 
@@ -119,6 +128,9 @@ export default class Reminders extends Component {
     this.props.navigator.showModal({
       screen: 'goodmate.AddReminderModal',
       animationType: 'slide-up',
+      passProps: {
+        onFinish: () => this.getReminders(),
+      },
     });
   }
 
@@ -126,7 +138,10 @@ export default class Reminders extends Component {
     this.props.navigator.showModal({
       screen: 'goodmate.AddReminderModal',
       animationType: 'slide-up',
-      passProps: { item },
+      passProps: {
+        item,
+        onFinish: () => this.getReminders(),
+      },
     });
   };
 

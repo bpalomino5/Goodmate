@@ -2,13 +2,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Header, Icon, Text, Card, Button } from 'react-native-elements';
-
-const roommates = [
-  { name: 'Brandon', primary: false },
-  { name: 'Bryan', primary: true },
-  { name: 'CJ', primary: false },
-  { name: 'Marvin', primary: false },
-];
+import FireTools from '../../utils/FireTools';
 
 const GoodHeader = ({ closeModal }) => (
   <Header
@@ -21,7 +15,7 @@ const GoodHeader = ({ closeModal }) => (
   />
 );
 
-const RoommateView = () => (
+const RoommateView = ({ roommates }) => (
   <Card title="Roommates">
     {roommates.map((member, i) => (
       <View
@@ -34,7 +28,7 @@ const RoommateView = () => (
         }}
         key={i}
       >
-        <Text style={{ fontSize: 20 }}>{member.name}</Text>
+        <Text style={{ fontSize: 20 }}>{member.first}</Text>
         {member.primary && <Icon name="verified-user" />}
       </View>
     ))}
@@ -44,7 +38,22 @@ const RoommateView = () => (
 export default class RentGroupModal extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      roommates: [],
+      primary: false,
+    };
     this.closeModal = this.closeModal.bind(this);
+  }
+
+  async componentWillMount() {
+    FireTools.init();
+    const roommates = await FireTools.getRoommates();
+    roommates.forEach(mate => {
+      if (mate.uid === FireTools.user.uid) {
+        this.setState({ primary: mate.primary });
+      }
+    });
+    this.setState({ roommates });
   }
 
   closeModal() {
@@ -57,19 +66,23 @@ export default class RentGroupModal extends Component {
     return (
       <View style={styles.container}>
         <GoodHeader closeModal={this.closeModal} />
-        <RoommateView />
-        <Button
-          containerStyle={{ marginTop: 10 }}
-          title="Delete Group "
-          buttonStyle={{
-            backgroundColor: 'rgba(92, 99,216, 1)',
-            width: 300,
-            height: 45,
-            borderColor: 'transparent',
-            borderWidth: 0,
-            borderRadius: 5,
-          }}
-        />
+        <RoommateView roommates={this.state.roommates} />
+        <View style={{ flex: 1, justifyContent: 'flex-end', marginBottom: 10 }}>
+          {this.state.primary && (
+            <Button
+              containerStyle={{ marginTop: 10 }}
+              title="Delete Group "
+              buttonStyle={{
+                backgroundColor: 'rgba(92, 99,216, 1)',
+                width: 300,
+                height: 45,
+                borderColor: 'transparent',
+                borderWidth: 0,
+                borderRadius: 5,
+              }}
+            />
+          )}
+        </View>
       </View>
     );
   }

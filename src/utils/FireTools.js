@@ -28,6 +28,54 @@ class FireTools {
     }
   }
 
+  async getReminder(rid) {
+    try {
+      let rem = null;
+      const ref = await this.getGroupRef();
+      if (ref) {
+        const querySnapshot = await ref.collection('reminders').get();
+        querySnapshot.forEach(doc => {
+          if (doc.id === rid) {
+            rem = doc;
+          }
+        });
+      }
+      return rem;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  async addReminder(reminder, rid) {
+    const reminderRef = await this.getReminder(rid);
+    if (reminderRef) {
+      reminderRef.ref.set(reminder);
+    } else {
+      const ref = await this.getGroupRef();
+      if (ref) {
+        ref.collection('reminders').add(reminder);
+      }
+    }
+  }
+
+  async getReminders() {
+    const reminders = [];
+    const ref = await this.getGroupRef();
+    if (ref) {
+      const query = await ref.collection('reminders').get();
+      query.forEach(doc => {
+        reminders.push({
+          title: doc.get('title'),
+          type: doc.get('type'),
+          date: doc.get('date'),
+          time: doc.get('time'),
+          rid: doc.id,
+        });
+      });
+    }
+    return reminders;
+  }
+
   async getRent(month, year) {
     try {
       let rentSheet = null;

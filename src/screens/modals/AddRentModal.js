@@ -173,7 +173,12 @@ export default class AddRentModal extends Component {
     this.props.navigator.showModal({
       screen: 'goodmate.FinishRentModal',
       animationType: 'slide-up',
-      passProps: { base, bills, date: this.props.date },
+      passProps: {
+        base,
+        bills,
+        date: this.props.date,
+        onFinish: this.props.onFinish,
+      },
     });
   }
 
