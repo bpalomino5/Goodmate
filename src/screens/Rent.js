@@ -137,6 +137,7 @@ export default class Rent extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      dateSelected: false,
       month: '',
       year: '',
       base: [],
@@ -166,6 +167,7 @@ export default class Rent extends Component {
   }
 
   onNavigatorEvent(event) {
+    console.log(event.id);
     if (event.type === 'DeepLink') {
       if (event.link !== 'goodmate.Rent') {
         this.props.navigator.resetTo({
@@ -173,10 +175,14 @@ export default class Rent extends Component {
         });
       }
     }
+    // returning from finish modal
+    if (event.id === 'willAppear') {
+      this.getRentSheet(this.state.month, this.state.year);
+    }
   }
 
-  async getRentSheet() {
-    const { month, year, primary } = this.state;
+  async getRentSheet(month, year) {
+    const { primary } = this.state;
     const sheetRef = await FireTools.getRent(month, year);
     if (sheetRef) {
       const base = sheetRef.get('base');
@@ -286,24 +292,38 @@ export default class Rent extends Component {
     });
   }
 
-  render() {
-    let dateSelected = false;
-    if (this.state.month.trim() !== '' && this.state.year.trim() !== '') {
-      dateSelected = true;
-      this.getRentSheet();
+  updateMonth(month) {
+    const { year } = this.state;
+    if (year.trim() !== '') {
+      this.getRentSheet(month, year);
+      this.setState({ month, dateSelected: true });
+    } else {
+      this.setState({ month });
     }
+  }
 
+  updateYear(year) {
+    const { month } = this.state;
+    if (month.trim() !== '') {
+      this.getRentSheet(month, year);
+      this.setState({ year, dateSelected: true });
+    } else {
+      this.setState({ year });
+    }
+  }
+
+  render() {
     return (
       <View style={styles.container}>
         <GoodHeader
           toggleDrawer={this.toggleDrawer}
           openRentModal={this.openRentModal}
-          disabled={this.state.sheetAvailable || dateSelected === false}
+          disabled={this.state.sheetAvailable || this.state.dateSelected === false}
           primary={this.state.primary}
         />
         <DateSelection
-          updateMonth={month => this.setState({ month })}
-          updateYear={year => this.setState({ year })}
+          updateMonth={month => this.updateMonth(month)}
+          updateYear={year => this.updateYear(year)}
         />
         {this.state.sheetAvailable ? (
           <View style={{ flex: 1 }}>
@@ -315,7 +335,7 @@ export default class Rent extends Component {
                   totals={this.state.totals}
                 />
                 <Button
-                  containerStyle={{ marginTop: 10, marginBottom: 20 }}
+                  containerStyle={{ marginTop: 20 }}
                   title="Edit Rent Sheet "
                   buttonStyle={{
                     backgroundColor: 'rgba(92, 99,216, 1)',

@@ -41,6 +41,7 @@ export default class RentForm extends Component {
           type: '',
           value: '',
           removable: true,
+          uids: {},
         },
       ],
     });
