@@ -1,7 +1,29 @@
+/* eslint class-methods-use-this:0 */
 import React, { Component } from 'react';
-import { StyleSheet, View, ScrollView } from 'react-native';
-import firebase from 'react-native-firebase';
-import { Header, Icon, Text } from 'react-native-elements';
+import { StyleSheet, View, ScrollView, TouchableWithoutFeedback } from 'react-native';
+import { Header, Icon, Text, Overlay, Button } from 'react-native-elements';
+import FireTools from '../utils/FireTools';
+
+function formatTime(t) {
+  const today = new Date().toLocaleDateString('en-US', {
+    day: 'numeric',
+    month: 'short',
+  });
+  const date = new Date(t).toLocaleDateString('en-US', {
+    day: 'numeric',
+    month: 'short',
+  });
+  const time = new Date(t).toLocaleString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+
+  let formatted = `${date} at `;
+  if (today === date) {
+    formatted = 'Today at ';
+  }
+  return `${formatted}${time}`;
+}
 
 const GoodHeader = ({ toggleDrawer, openActivityModal }) => (
   <Header
@@ -19,8 +41,8 @@ const GoodHeader = ({ toggleDrawer, openActivityModal }) => (
     centerComponent={{ text: 'Home', style: { fontSize: 18, color: '#fff' } }}
     rightComponent={
       <Icon
-        name="plus"
-        type="feather"
+        name="pencil"
+        type="entypo"
         color="white"
         underlayColor="transparent"
         onPress={openActivityModal}
@@ -29,22 +51,50 @@ const GoodHeader = ({ toggleDrawer, openActivityModal }) => (
   />
 );
 
-const ActivityFeed = ({ activities, addLike }) =>
+const ItemOverlay = ({ isVisible, closeOverlay, deleteItem }) => (
+  <Overlay
+    borderRadius={5}
+    overlayStyle={{ margin: 20 }}
+    isVisible={isVisible}
+    width="auto"
+    height="auto"
+  >
+    <View>
+      <Text style={{ fontSize: 22, marginBottom: 10 }}>Delete Post</Text>
+      <View style={{ flexDirection: 'row' }}>
+        <Button title="Delete " onPress={deleteItem} containerStyle={{ marginRight: 10 }} />
+        <Button title="Close " onPress={closeOverlay} />
+      </View>
+    </View>
+  </Overlay>
+);
+
+const ActivityFeed = ({ activities, addLike, onItemSelect }) =>
   activities.map(item => (
-    <ActivityItem key={item.key} item={item} addLike={() => addLike(item.key)} />
+    <ActivityItem
+      key={item.key}
+      item={item}
+      addLike={() => addLike(item.key)}
+      onLongPress={() => onItemSelect(item.key)}
+    />
   ));
 
-const ActivityItem = ({ item, addLike }) => (
-  <View style={styles.row}>
-    <View style={{ flex: 1 }}>
-      <Text style={styles.nameStyle}>{item.name}</Text>
-      {item.description.map(desc => <Text key={desc}>{desc}</Text>)}
+const ActivityItem = ({ item, addLike, onLongPress }) => (
+  <TouchableWithoutFeedback onLongPress={onLongPress}>
+    <View style={styles.row}>
+      <View style={{ flex: 1 }}>
+        <Text style={styles.nameStyle}>{item.name}</Text>
+        <View style={{ marginBottom: 5 }}>
+          <Text style={{ fontSize: 13, color: 'grey' }}>{formatTime(item.time)}</Text>
+        </View>
+        {item.description.map(desc => <Text key={desc}>{desc}</Text>)}
+      </View>
+      <View style={{ alignSelf: 'center' }}>
+        <Icon name="thumbs-up" type="feather" onPress={addLike} />
+        {item.likes > 0 && <Text style={{ marginTop: 5 }}>{item.likes} likes</Text>}
+      </View>
     </View>
-    <View style={{ alignSelf: 'center' }}>
-      <Icon name="thumbs-up" type="feather" onPress={addLike} />
-      {item.likes > 0 && <Text style={{ marginTop: 5 }}>{item.likes} likes</Text>}
-    </View>
-  </View>
+  </TouchableWithoutFeedback>
 );
 
 const EmptyActivityFeed = () => (
@@ -63,16 +113,18 @@ export default class Home extends Component {
     super(props);
     this.state = {
       activities: [],
-      groupId: '',
+      isVisible: false,
+      aid: null,
     };
 
-    this.usersRef = firebase.firestore().collection('users');
     this.toggleDrawer = this.toggleDrawer.bind(this);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     this.openActivityModal = this.openActivityModal.bind(this);
+    this.removeItem = this.removeItem.bind(this);
   }
 
-  componentWillMount() {
+  async componentWillMount() {
+    FireTools.init();
     this.updateActivities();
   }
 
@@ -89,30 +141,11 @@ export default class Home extends Component {
     }
   }
 
-  updateActivities() {
-    const user = firebase.auth().currentUser;
-    const activities = [];
-    this.usersRef
-      .doc(user.uid)
-      .get()
-      .then(snapshot => {
-        const groupRef = snapshot.get('groupRef');
-        if (groupRef) {
-          this.setState({ groupId: `groups/${snapshot.get('groupRef').id}` });
-          groupRef
-            .collection('activities')
-            .orderBy('time', 'desc')
-            .get()
-            .then(snap => {
-              snap.forEach(doc => {
-                const activity = doc.data();
-                activity.key = doc.id;
-                activities.push(activity);
-              });
-              this.setState({ activities });
-            });
-        }
-      });
+  async updateActivities() {
+    const activities = await FireTools.getActivities();
+    if (activities) {
+      this.setState({ activities });
+    }
   }
 
   toggleDrawer() {
@@ -126,41 +159,49 @@ export default class Home extends Component {
     this.props.navigator.showModal({
       screen: 'goodmate.ActivityModal',
       animationType: 'slide-up',
-      passProps: { groupId: this.state.groupId },
     });
   }
 
-  addLike(key) {
-    const user = firebase.auth().currentUser;
-    this.usersRef
-      .doc(user.uid)
-      .get()
-      .then(snapshot => {
-        const groupRef = snapshot.get('groupRef');
-        if (groupRef) {
-          const activityRef = groupRef.collection('activities').doc(key);
-          activityRef.get().then(doc => {
-            let likes = 0;
-            likes = doc.get('likes');
-            activityRef.update({
-              likes: likes + 1,
-            });
-          });
-        }
-      });
+  async addLike(aid) {
+    await FireTools.addLikeToActivity(aid);
+    await this.updateActivities();
+  }
+
+  openOverlay(aid) {
+    this.setState({ aid, isVisible: true });
+  }
+
+  async removeItem() {
+    const { aid } = this.state;
+    await FireTools.removeActivity(aid);
+    await this.updateActivities();
+    this.setState({ isVisible: false });
   }
 
   render() {
     return (
       <View style={styles.container}>
-        <GoodHeader toggleDrawer={this.toggleDrawer} openActivityModal={this.openActivityModal} />
+        <GoodHeader
+          toggleDrawer={this.toggleDrawer}
+          openActivityModal={this.openActivityModal}
+          isVisible={this.state.headerVisible}
+        />
         <ScrollView>
           {this.state.activities.length > 0 ? (
-            <ActivityFeed activities={this.state.activities} addLike={key => this.addLike(key)} />
+            <ActivityFeed
+              activities={this.state.activities}
+              addLike={key => this.addLike(key)}
+              onItemSelect={aid => this.openOverlay(aid)}
+            />
           ) : (
             <EmptyActivityFeed />
           )}
         </ScrollView>
+        <ItemOverlay
+          isVisible={this.state.isVisible}
+          deleteItem={this.removeItem}
+          closeOverlay={() => this.setState({ isVisible: false })}
+        />
       </View>
     );
   }

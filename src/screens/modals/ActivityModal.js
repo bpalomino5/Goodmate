@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Header, Icon, CheckBox, Button, Text } from 'react-native-elements';
 import { StyleSheet, View, ScrollView, LayoutAnimation, TouchableOpacity } from 'react-native';
 import { Dropdown } from 'react-native-material-dropdown';
-import firebase from 'react-native-firebase';
+import FireTools from '../../utils/FireTools';
 
 const data = [
   {
@@ -92,8 +92,7 @@ export default class ActivityModal extends Component {
       activities: [{ checked: false, description: '' }],
       first: '',
     };
-    this.usersRef = firebase.firestore().collection('users');
-    this.activitiesRef = firebase.firestore().collection(`${this.props.groupId}/activities`);
+
     this.closeModal = this.closeModal.bind(this);
     this.removeItem = this.removeItem.bind(this);
     this.addItem = this.addItem.bind(this);
@@ -101,8 +100,8 @@ export default class ActivityModal extends Component {
   }
 
   componentWillMount() {
-    const user = firebase.auth().currentUser;
-    const name = user.displayName.split(' ');
+    FireTools.init();
+    const name = FireTools.user.displayName.split(' ');
     this.setState({ first: name[0] });
   }
 
@@ -134,7 +133,7 @@ export default class ActivityModal extends Component {
     });
   }
 
-  postActivities() {
+  async postActivities() {
     const { activities, first } = this.state;
     const selections = [];
     activities.forEach(item => {
@@ -147,16 +146,14 @@ export default class ActivityModal extends Component {
     const date = new Date();
     const time = date.getTime();
 
-    this.activitiesRef
-      .add({
-        name: first,
-        description: selections,
-        likes: 0,
-        time,
-      })
-      .then(() => {
-        this.closeModal();
-      });
+    const activity = {
+      name: first,
+      description: selections,
+      likes: 0,
+      time,
+    };
+    await FireTools.addActivity(activity);
+    this.closeModal();
   }
 
   render() {

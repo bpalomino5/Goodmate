@@ -21,8 +21,8 @@ const GoodHeader = ({ toggleDrawer, openReminderModal }) => (
     centerComponent={{ text: 'Reminders', style: { fontSize: 18, color: '#fff' } }}
     rightComponent={
       <Icon
-        name="plus"
-        type="feather"
+        name="calendar-plus"
+        type="material-community"
         color="white"
         underlayColor="transparent"
         onPress={openReminderModal}

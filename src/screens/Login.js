@@ -12,11 +12,11 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-import firebase from 'react-native-firebase';
 import { Button } from 'react-native-elements';
 import { Navigation } from 'react-native-navigation';
 import LoginForm from '../components/LoginForm';
-import DataStore from '../utils/DataStore';
+// import DataStore from '../utils/DataStore';
+import FireTools from '../utils/FireTools';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -76,19 +76,6 @@ export default class Login extends Component {
     this.openHelpModal = this.openHelpModal.bind(this);
   }
 
-  componentDidMount() {
-    // firebase.auth().onAuthStateChanged(user => {
-    //   if (user !== null && this.state.selectedCategory === 0) {
-    //     DataStore.getData('user-password').then(response => {
-    //       if (response) {
-    //         const cred = firebase.auth.EmailAuthProvider.credential(user.email, response.password);
-    //         this.loginWithCred(cred);
-    //       }
-    //     });
-    //   }
-    // });
-  }
-
   selectCategory(selectedCategory) {
     LayoutAnimation.easeInEaseOut();
     this.setState({
@@ -97,113 +84,93 @@ export default class Login extends Component {
     });
   }
 
-  loginWithCred(credential) {
-    this.setState({ isLoading: true });
-    // Firebase API call
-    firebase
-      .auth()
-      .signInAndRetrieveDataWithCredential(credential)
-      .then(response => {
-        if (response) {
-          // go to Home
-          Navigation.startSingleScreenApp({
-            screen: {
-              screen: 'goodmate.Home',
-              title: 'Home',
-            },
-            drawer: {
-              left: {
-                screen: 'goodmate.Drawer',
-              },
-              style: {
-                drawerShadow: false, // for ios to look nicer
-              },
-            },
-          });
-        }
-      })
-      .catch(error => {
-        // LayoutAnimation.easeInEaseOut();
-        this.setState({
-          isLoading: false,
-          //   isEmailValid: this.loginForm.emailInput.shake(),
-          //   isPasswordValid: this.loginForm.passwordInput.shake(),
-        });
-        console.log(error.code, error.message);
-      });
-  }
-
-  loginWithEmail(email, password) {
-    this.setState({ isLoading: true });
-    // Firebase API call
-    firebase
-      .auth()
-      .signInAndRetrieveDataWithEmailAndPassword(email, password)
-      .then(response => {
-        if (response) {
-          // store password
-          DataStore.storeData('user-password', { password });
-          // go to Home
-          Navigation.startSingleScreenApp({
-            screen: {
-              screen: 'goodmate.Home',
-              title: 'Home',
-            },
-            drawer: {
-              left: {
-                screen: 'goodmate.Drawer',
-              },
-              style: {
-                drawerShadow: false, // for ios to look nicer
-              },
-            },
-          });
-        }
-      })
-      .catch(error => {
-        LayoutAnimation.easeInEaseOut();
-        this.setState({
-          isLoading: false,
-          isEmailValid: this.loginForm.emailInput.shake(),
-          isPasswordValid: password.length >= 8 || this.loginForm.passwordInput.shake(),
-        });
-        console.log(error.code, error.message);
-      });
-  }
-
-  signUp(email, password, passwordConfirmation) {
-    this.setState({ isLoading: true });
-    if (password !== passwordConfirmation) {
-      this.setState({
-        isConfirmationValid: this.loginForm.confirmationInput.shake(),
-        isLoading: false,
-      });
-      return;
+  async loginWithCred(credential) {
+    if (this.loginForm) {
+      this.setState({ isLoading: true });
     }
 
-    firebase
-      .auth()
-      .createUserAndRetrieveDataWithEmailAndPassword(email, password)
-      .then(response => {
-        if (response) {
-          // go to Welcome
-          this.setState({ isLoading: false });
-          this.openWelcomeModal();
-          this.selectCategory(0);
-        }
-      })
-      .catch(error => {
-        // Handle Errors here.
-        // LayoutAnimation.easeInEaseOut();
+    const cred = await FireTools.loginWithCred(credential);
+    if (cred) {
+      Navigation.startSingleScreenApp({
+        screen: {
+          screen: 'goodmate.Home',
+          title: 'Home',
+        },
+        drawer: {
+          left: {
+            screen: 'goodmate.Drawer',
+          },
+          style: {
+            drawerShadow: false, // for ios to look nicer
+          },
+        },
+      });
+    } else {
+      this.setState({ isLoading: false });
+    }
+  }
+
+  async loginWithEmail(email, password) {
+    if (email.trim() !== '' && password.trim() !== '') {
+      this.setState({ isLoading: true });
+      const credential = await FireTools.loginWithEmail(email, password);
+      if (credential) {
+        // store creds
+        // DataStore.storeData('user-email', { email });
+        // DataStore.storeData('user-password', { password });
+        // Go to Home
+        Navigation.startSingleScreenApp({
+          screen: {
+            screen: 'goodmate.Home',
+            title: 'Home',
+          },
+          drawer: {
+            left: {
+              screen: 'goodmate.Drawer',
+            },
+            style: {
+              drawerShadow: false, // for ios to look nicer
+            },
+          },
+        });
+      } else {
         this.setState({
           isLoading: false,
           isEmailValid: this.loginForm.emailInput.shake(),
-          isPasswordValid: password.length >= 8 || this.loginForm.passwordInput.shake(),
+          isPasswordValid: password.length < 8 ? this.loginForm.passwordInput.shake() : false,
+        });
+      }
+    }
+  }
+
+  async signUp(email, password, passwordConfirmation) {
+    if (email.trim() !== '' && password.trim() !== '' && passwordConfirmation.trim() !== '') {
+      this.setState({ isLoading: true });
+      if (password !== passwordConfirmation) {
+        this.setState({
+          isPasswordValid: this.loginForm.passwordInput.shake(),
+          isConfirmationValid: this.loginForm.confirmationInput.shake(),
+          isLoading: false,
+        });
+        return;
+      }
+
+      const credential = await FireTools.createUserWithEmail(email, password);
+      if (credential) {
+        // go to Welcome
+        this.setState({ isLoading: false });
+        this.openWelcomeModal();
+        this.selectCategory(0);
+      } else {
+        this.setState({
+          isLoading: false,
+          isEmailValid: this.loginForm.emailInput.shake(),
+          isPasswordValid: password.length < 8 ? this.loginForm.passwordInput.shake() : false,
           isConfirmationValid:
             password === passwordConfirmation || this.loginForm.confirmationInput.shake(),
         });
-        console.log(error.code, error.message);
-      });
+      }
+    }
   }
 
   openWelcomeModal() {

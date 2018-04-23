@@ -59,8 +59,8 @@ const GoodHeader = ({
     rightComponent={
       primary ? (
         <Icon
-          name="plus"
-          type="feather"
+          name="doc"
+          type="simple-line-icon"
           color={disabled ? 'grey' : 'white'}
           underlayColor="transparent"
           onPress={disabled ? null : openRentModal}
@@ -334,7 +334,7 @@ export default class Rent extends Component {
                   totals={this.state.totals}
                 />
                 <Button
-                  containerStyle={{ marginTop: 20 }}
+                  containerStyle={{ marginTop: 20, marginBottom: 20 }}
                   title="Edit Rent Sheet "
                   buttonStyle={{
                     backgroundColor: 'rgba(92, 99,216, 1)',

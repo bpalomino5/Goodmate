@@ -3,7 +3,7 @@
 */
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Header, Icon, Text } from 'react-native-elements';
+import { Header, Icon, Text, Button } from 'react-native-elements';
 import { TextField } from 'react-native-material-textfield';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import { Dropdown } from 'react-native-material-dropdown';
@@ -65,9 +65,11 @@ export default class AddReminderModal extends Component {
       title: '',
       type: '',
       rid: '',
+      editing: false,
     };
     this.closeModal = this.closeModal.bind(this);
     this.addReminder = this.addReminder.bind(this);
+    this.removeReminder = this.removeReminder.bind(this);
   }
 
   async componentWillMount() {
@@ -79,6 +81,7 @@ export default class AddReminderModal extends Component {
         date: this.props.item.date,
         time: this.props.item.time,
         rid: this.props.item.rid,
+        editing: true,
       });
     }
   }
@@ -104,6 +107,22 @@ export default class AddReminderModal extends Component {
       rid,
     );
 
+    const timestamp = new Date().getTime();
+    const name = FireTools.user.displayName.split(' ')[0];
+    await FireTools.addActivity({
+      description: [`Created new reminder: ${title}`],
+      likes: 0,
+      name,
+      time: timestamp,
+    });
+
+    this.props.onFinish();
+    this.closeModal();
+  }
+
+  async removeReminder() {
+    const { rid } = this.state;
+    await FireTools.removeReminder(rid);
     this.props.onFinish();
     this.closeModal();
   }
@@ -133,6 +152,8 @@ export default class AddReminderModal extends Component {
         <GoodHeader closeModal={this.closeModal} />
         <View style={styles.titleInput}>
           <TextField
+            fontSize={20}
+            labelFontSize={14}
             label="Reminder"
             textColor="white"
             baseColor="white"
@@ -170,6 +191,22 @@ export default class AddReminderModal extends Component {
           value={this.state.type}
           onChangeText={value => this.setState({ type: value })}
         />
+        <View style={{ flex: 1, justifyContent: 'flex-end', marginBottom: 30 }}>
+          {this.state.editing && (
+            <Button
+              title="Delete Reminder "
+              buttonStyle={{
+                backgroundColor: 'rgba(92, 99,216, 1)',
+                width: 300,
+                height: 45,
+                borderColor: 'transparent',
+                borderWidth: 0,
+                borderRadius: 5,
+              }}
+              onPress={this.removeReminder}
+            />
+          )}
+        </View>
         <DateTimePicker
           isVisible={this.state.isDTPickerVisible}
           onConfirm={this.handleDatePicked}

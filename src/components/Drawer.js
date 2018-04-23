@@ -23,8 +23,8 @@ const list = [
   },
   {
     title: 'Reminders',
-    icon: 'av-timer',
-    type: 'material',
+    icon: 'calendar-clock',
+    type: 'material-community',
     screen: 'goodmate.Reminders',
   },
   {

@@ -10,10 +10,68 @@ class FireTools {
     this.user = this.getUser();
   }
 
+  // very important
   getUser() {
     return firebase.auth().currentUser;
   }
 
+  /**
+  |--------------------------------------------------
+  | Home Functions
+  |--------------------------------------------------
+  */
+
+  async removeActivity(aid) {
+    const ref = await this.getGroupRef();
+    if (ref) {
+      await ref.collection('activities').doc(aid).delete();
+    }
+  }
+
+  async addActivity(activity) {
+    const ref = await this.getGroupRef();
+    if (ref) {
+      ref.collection('activities').add(activity);
+    }
+  }
+
+  async addLikeToActivity(aid) {
+    const ref = await this.getGroupRef();
+    if (ref) {
+      const aDoc = await ref
+        .collection('activities')
+        .doc(aid)
+        .get();
+      let likes = 0;
+      likes = aDoc.get('likes');
+      aDoc.ref.update({
+        likes: likes + 1,
+      });
+    }
+  }
+
+  async getActivities() {
+    const activities = [];
+    const ref = await this.getGroupRef();
+    if (ref) {
+      const query = await ref
+        .collection('activities')
+        .orderBy('time', 'desc')
+        .get();
+      query.forEach(doc => {
+        const activity = doc.data();
+        activity.key = doc.id;
+        activities.push(activity);
+      });
+    }
+    return activities;
+  }
+
+  /**
+  |--------------------------------------------------
+  | Settings Functions
+  |--------------------------------------------------
+  */
   async submitSuggestion(description) {
     const feedbackRef = await firebase.firestore().collection('feedback');
     await feedbackRef.add({ description });
@@ -129,6 +187,39 @@ class FireTools {
     await this.user.updatePassword(password);
   }
 
+  async updateUserName(name) {
+    const userRef = firebase
+      .firestore()
+      .collection('users')
+      .doc(this.user.uid);
+    userRef.update({ first: name });
+  }
+
+  /**
+  |--------------------------------------------------
+  | Login Functions
+  |--------------------------------------------------
+  */
+
+  async loginWithCred(credential) {
+    try {
+      const cred = await firebase.auth().signInAndRetrieveDataWithCredential(credential);
+      return cred;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  async createUserWithEmail(email, password) {
+    try {
+      const cred = await firebase
+        .auth()
+        .createUserAndRetrieveDataWithEmailAndPassword(email, password);
+      return cred;
+    } catch (error) {
+      return null;
+    }
+  }
   async loginWithEmail(email, password) {
     try {
       const cred = await firebase.auth().signInAndRetrieveDataWithEmailAndPassword(email, password);
@@ -139,6 +230,7 @@ class FireTools {
     }
   }
 
+  // not being used right now
   getCredential(password) {
     const credential = firebase.auth.EmailAuthProvider.credential({
       email: this.user.email,
@@ -147,23 +239,12 @@ class FireTools {
     return credential;
   }
 
-  async getUserRef() {
-    const userDoc = await firebase
-      .firestore()
-      .collection('users')
-      .doc(this.user.uid)
-      .get();
-    return userDoc;
-  }
-
-  async updateUserName(name) {
-    const userRef = firebase
-      .firestore()
-      .collection('users')
-      .doc(this.user.uid);
-    userRef.update({ first: name });
-  }
-
+  /**
+  |--------------------------------------------------
+  | Reference Functions
+  |--------------------------------------------------
+  */
+  // very important
   async getGroupRef() {
     try {
       const response = await firebase
@@ -175,85 +256,6 @@ class FireTools {
     } catch (error) {
       console.log(error);
       return null;
-    }
-  }
-
-  async getReminder(rid) {
-    try {
-      let rem = null;
-      const ref = await this.getGroupRef();
-      if (ref) {
-        const querySnapshot = await ref.collection('reminders').get();
-        querySnapshot.forEach(doc => {
-          if (doc.id === rid) {
-            rem = doc;
-          }
-        });
-      }
-      return rem;
-    } catch (error) {
-      return null;
-    }
-  }
-
-  async addReminder(reminder, rid) {
-    const reminderRef = await this.getReminder(rid);
-    if (reminderRef) {
-      reminderRef.ref.set(reminder);
-    } else {
-      const ref = await this.getGroupRef();
-      if (ref) {
-        ref.collection('reminders').add(reminder);
-      }
-    }
-  }
-
-  async getReminders() {
-    const reminders = [];
-    const ref = await this.getGroupRef();
-    if (ref) {
-      const query = await ref.collection('reminders').get();
-      query.forEach(doc => {
-        reminders.push({
-          title: doc.get('title'),
-          type: doc.get('type'),
-          date: doc.get('date'),
-          time: doc.get('time'),
-          rid: doc.id,
-        });
-      });
-    }
-    return reminders;
-  }
-
-  async getRent(month, year) {
-    try {
-      let rentSheet = null;
-      const ref = await this.getGroupRef();
-      if (ref) {
-        const rentsSnapshot = await ref.collection('rents').get();
-        rentsSnapshot.forEach(doc => {
-          const date = doc.get('date');
-          if (date.month === month && date.year === year) {
-            rentSheet = doc;
-          }
-        });
-      }
-      return rentSheet;
-    } catch (error) {
-      return null;
-    }
-  }
-
-  async submitRent(rentSheet) {
-    const sheetRef = await this.getRent(rentSheet.date.month, rentSheet.date.year);
-    if (sheetRef) {
-      sheetRef.ref.set(rentSheet);
-    } else {
-      const ref = await this.getGroupRef();
-      if (ref) {
-        ref.collection('rents').add(rentSheet);
-      }
     }
   }
 
@@ -284,6 +286,114 @@ class FireTools {
       return users;
     } catch (error) {
       return null;
+    }
+  }
+
+  // not being used
+  async getUserRef() {
+    const userDoc = await firebase
+      .firestore()
+      .collection('users')
+      .doc(this.user.uid)
+      .get();
+    return userDoc;
+  }
+
+  /**
+  |--------------------------------------------------
+  | Reminder Functions
+  |--------------------------------------------------
+  */
+
+  async removeReminder(rid) {
+    const ref = await this.getGroupRef();
+    if (ref) {
+      await ref.collection('reminders').doc(rid).delete();
+    }
+  }
+
+  async getReminder(rid) {
+    try {
+      let rem = null;
+      const ref = await this.getGroupRef();
+      if (ref) {
+        const querySnapshot = await ref.collection('reminders').get();
+        querySnapshot.forEach(doc => {
+          if (doc.id === rid) {
+            rem = doc;
+          }
+        });
+      }
+      return rem;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  async addReminder(reminder, rid) {
+    const reminderRef = await this.getReminder(rid);
+    if (reminderRef) {
+      reminderRef.ref.set(reminder);
+    } else {
+      const ref = await this.getGroupRef();
+      if (ref) {
+        await ref.collection('reminders').add(reminder);
+      }
+    }
+  }
+
+  async getReminders() {
+    const reminders = [];
+    const ref = await this.getGroupRef();
+    if (ref) {
+      const query = await ref.collection('reminders').get();
+      query.forEach(doc => {
+        reminders.push({
+          title: doc.get('title'),
+          type: doc.get('type'),
+          date: doc.get('date'),
+          time: doc.get('time'),
+          rid: doc.id,
+        });
+      });
+    }
+    return reminders;
+  }
+
+  /**
+  |--------------------------------------------------
+  | Rent Functions
+  |--------------------------------------------------
+  */
+
+  async getRent(month, year) {
+    try {
+      let rentSheet = null;
+      const ref = await this.getGroupRef();
+      if (ref) {
+        const rentsSnapshot = await ref.collection('rents').get();
+        rentsSnapshot.forEach(doc => {
+          const date = doc.get('date');
+          if (date.month === month && date.year === year) {
+            rentSheet = doc;
+          }
+        });
+      }
+      return rentSheet;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  async submitRent(rentSheet) {
+    const sheetRef = await this.getRent(rentSheet.date.month, rentSheet.date.year);
+    if (sheetRef) {
+      sheetRef.ref.set(rentSheet);
+    } else {
+      const ref = await this.getGroupRef();
+      if (ref) {
+        ref.collection('rents').add(rentSheet);
+      }
     }
   }
 }

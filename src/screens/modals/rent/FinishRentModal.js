@@ -239,8 +239,19 @@ export default class FinishRentModal extends Component {
       totals,
       date,
     };
-    // console.log(rentSheet);
+
     await FireTools.submitRent(rentSheet);
+
+    // post activity
+    const timestamp = new Date().getTime();
+    const name = FireTools.user.displayName.split(' ')[0];
+    await FireTools.addActivity({
+      description: [`Added rent sheet: ${date}`],
+      likes: 0,
+      name,
+      time: timestamp,
+    });
+
     this.props.onFinish();
     this.props.navigator.dismissAllModals({
       animationType: 'slide-down',
