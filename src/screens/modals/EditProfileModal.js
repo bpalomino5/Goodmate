@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Header, Icon } from 'react-native-elements';
 import { TextField } from 'react-native-material-textfield';
+import FireTools from '../../utils/FireTools';
 
-const GoodHeader = ({ closeModal }) => (
+const GoodHeader = ({ closeModal, submitUpdates }) => (
   <Header
     statusBarProps={{ backgroundColor: '#5B725A' }}
     backgroundColor="#5B725A"
@@ -12,28 +13,36 @@ const GoodHeader = ({ closeModal }) => (
     }
     centerComponent={{ text: 'Edit Profile', style: { fontSize: 18, color: '#fff' } }}
     rightComponent={
-      <Icon name="check" color="white" underlayColor="transparent" onPress={closeModal} />
+      <Icon name="check" color="white" underlayColor="transparent" onPress={submitUpdates} />
     }
   />
 );
 
-const ProfileItems = () => (
+const ProfileItems = ({ name, onChangeText }) => (
   <View style={{ padding: 15 }}>
     <TextField
-      label="Name"
+      label="Update Username"
       baseColor="grey"
       tintColor="grey"
-      // value={this.state.title}
-      // onChangeText={title => this.setState({ title })}
+      value={name}
+      onChangeText={onChangeText}
     />
-    <TextField label="Email" baseColor="grey" tintColor="grey" />
+    {/* <TextField label="Email" baseColor="grey" tintColor="grey" /> */}
   </View>
 );
 
 export default class EditProfileModal extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      name: '',
+    };
     this.closeModal = this.closeModal.bind(this);
+    this.submitUpdates = this.submitUpdates.bind(this);
+  }
+
+  componentWillMount() {
+    FireTools.init();
   }
 
   closeModal() {
@@ -42,11 +51,19 @@ export default class EditProfileModal extends Component {
     });
   }
 
+  async submitUpdates() {
+    const { name } = this.state;
+    if (name.trim() !== '') {
+      await FireTools.updateUserName(name);
+      this.closeModal();
+    }
+  }
+
   render() {
     return (
       <View style={styles.container}>
-        <GoodHeader closeModal={this.closeModal} />
-        <ProfileItems />
+        <GoodHeader closeModal={this.closeModal} submitUpdates={this.submitUpdates} />
+        <ProfileItems name={this.state.name} onChangeText={name => this.setState({ name })} />
       </View>
     );
   }

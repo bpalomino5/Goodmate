@@ -14,6 +14,45 @@ class FireTools {
     return firebase.auth().currentUser;
   }
 
+  async updatePassword(password) {
+    await this.user.updatePassword(password);
+  }
+
+  async loginWithEmail(email, password) {
+    try {
+      const cred = await firebase.auth().signInAndRetrieveDataWithEmailAndPassword(email, password);
+      return cred;
+    } catch (error) {
+      // console.log(error.code, error.message);
+      return null;
+    }
+  }
+
+  getCredential(password) {
+    const credential = firebase.auth.EmailAuthProvider.credential({
+      email: this.user.email,
+      password,
+    });
+    return credential;
+  }
+
+  async getUserRef() {
+    const userDoc = await firebase
+      .firestore()
+      .collection('users')
+      .doc(this.user.uid)
+      .get();
+    return userDoc;
+  }
+
+  async updateUserName(name) {
+    const userRef = firebase
+      .firestore()
+      .collection('users')
+      .doc(this.user.uid);
+    userRef.update({ first: name });
+  }
+
   async getGroupRef() {
     try {
       const response = await firebase
