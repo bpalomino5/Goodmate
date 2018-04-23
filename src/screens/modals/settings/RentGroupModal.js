@@ -110,7 +110,10 @@ export default class RentGroupModal extends Component {
     this.props.navigator.showModal({
       screen,
       animationType: 'slide-up',
-      navigatorStyle: { navBarHidden: true },
+      navigatorStyle: {
+        navBarHidden: true,
+        statusBarColor: '#546054',
+      },
       passProps: {
         onFinish: () => this.getPrimary(),
       },

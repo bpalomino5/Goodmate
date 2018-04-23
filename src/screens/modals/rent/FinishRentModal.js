@@ -137,7 +137,7 @@ const SheetItem = ({ data, onPress }) => (
 export default class FinishRentModal extends Component {
   static navigatorStyle = {
     navBarHidden: true,
-    statusBarColor: '#5B725A',
+    statusBarColor: '#546054',
   };
 
   constructor(props) {

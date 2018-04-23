@@ -106,7 +106,7 @@ const EmptyActivityFeed = () => (
 export default class Home extends Component {
   static navigatorStyle = {
     navBarHidden: true,
-    statusBarColor: '#5B725A',
+    statusBarColor: '#546054',
   };
 
   constructor(props) {

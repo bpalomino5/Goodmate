@@ -62,7 +62,7 @@ const SettingCard = ({ sectionName, items, onItemPress }) => (
 export default class Settings extends Component {
   static navigatorStyle = {
     navBarHidden: true,
-    statusBarColor: '#5B725A',
+    statusBarColor: '#546054',
   };
 
   constructor(props) {
@@ -93,7 +93,7 @@ export default class Settings extends Component {
       screen,
       navigatorStyle: {
         navBarHidden: true,
-        statusBarColor: '#5B725A',
+        statusBarColor: '#546054',
       },
       animationType: 'slide-up',
     });

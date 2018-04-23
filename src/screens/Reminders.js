@@ -81,7 +81,7 @@ const ReminderItem = ({
 export default class Reminders extends Component {
   static navigatorStyle = {
     navBarHidden: true,
-    statusBarColor: '#5B725A',
+    statusBarColor: '#546054',
   };
 
   constructor(props) {

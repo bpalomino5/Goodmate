@@ -131,7 +131,7 @@ const RentCardItem = ({ title, value }) => (
 export default class Rent extends Component {
   static navigatorStyle = {
     navBarHidden: true,
-    statusBarColor: '#5B725A',
+    statusBarColor: '#546054',
   };
 
   constructor(props) {
@@ -381,6 +381,6 @@ const styles = StyleSheet.create({
     padding: 2,
   },
   primaryContainer: {
-    marginBottom: Platform.OS === 'android' ? 65 : 0,
+    marginBottom: Platform.OS === 'android' ? 75 : 0,
   },
 });
