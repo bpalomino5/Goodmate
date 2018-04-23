@@ -15,6 +15,11 @@ class FireTools {
     return firebase.auth().currentUser;
   }
 
+  async getGroupName() {
+    const ref = await this.getGroupRef();
+    return ref.id;
+  }
+
   /**
   |--------------------------------------------------
   | Home Functions
@@ -24,7 +29,10 @@ class FireTools {
   async removeActivity(aid) {
     const ref = await this.getGroupRef();
     if (ref) {
-      await ref.collection('activities').doc(aid).delete();
+      await ref
+        .collection('activities')
+        .doc(aid)
+        .delete();
     }
   }
 
@@ -137,7 +145,7 @@ class FireTools {
         .firestore()
         .collection('users')
         .doc(this.user.uid);
-      userRef.update({ groupRef: doc.ref });
+      userRef.update({ groupRef: doc.ref, primary: false });
 
       // add to roommates collections in group
       const roommatesRef = doc.ref.collection('roommates');
@@ -145,6 +153,28 @@ class FireTools {
         roommate: this.user.uid,
       });
       success = true;
+    }
+    return success;
+  }
+
+  async createGroup(name) {
+    let success = false;
+    const doc = await firebase
+      .firestore()
+      .collection('groups')
+      .doc(name)
+      .get();
+    if (!doc.exists) {
+      // create group
+      doc.ref.set();
+      success = await this.addUsertoGroup(name);
+
+      // update to primary user
+      const userRef = firebase
+        .firestore()
+        .collection('users')
+        .doc(this.user.uid);
+      userRef.update({ primary: true });
     }
     return success;
   }
@@ -308,7 +338,10 @@ class FireTools {
   async removeReminder(rid) {
     const ref = await this.getGroupRef();
     if (ref) {
-      await ref.collection('reminders').doc(rid).delete();
+      await ref
+        .collection('reminders')
+        .doc(rid)
+        .delete();
     }
   }
 

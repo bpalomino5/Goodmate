@@ -4,7 +4,10 @@ import { StyleSheet, View } from 'react-native';
 import { Header, Icon, Text, Card, ListItem } from 'react-native-elements';
 import FireTools from '../../../utils/FireTools';
 
-const DefaultOptions = [{ title: 'Join a group', screen: 'goodmate.JoinGroupModal' }];
+const DefaultOptions = [
+  { title: 'Join a group', screen: 'goodmate.JoinGroupModal' },
+  { title: 'Create a group', screen: 'goodmate.OnlyCreateGroupModal' },
+];
 const UserOptions = [{ title: 'Leave Group', screen: 'goodmate.LeaveGroupModal' }];
 const PrimaryOptions = [
   { title: 'Assign new primary', screen: 'goodmate.NewPrimaryModal' },
@@ -23,9 +26,11 @@ const GoodHeader = ({ closeModal }) => (
   />
 );
 
-const RoommateView = ({ roommates, options, onItemPress }) => (
+const RoommateView = ({
+  groupName, roommates, options, onItemPress,
+}) => (
   <View>
-    <Card title="Roommates">
+    <Card title={`Group: ${groupName}`}>
       {roommates.map((member, i) => (
         <View
           style={{
@@ -60,6 +65,7 @@ export default class RentGroupModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      groupName: '',
       roommates: [],
       options: [],
     };
@@ -69,6 +75,8 @@ export default class RentGroupModal extends Component {
   async componentWillMount() {
     FireTools.init();
     await this.getPrimary();
+    const groupName = await FireTools.getGroupName();
+    this.setState({ groupName });
   }
 
   async getPrimary() {
@@ -114,6 +122,7 @@ export default class RentGroupModal extends Component {
       <View style={styles.container}>
         <GoodHeader closeModal={this.closeModal} />
         <RoommateView
+          groupName={this.state.groupName}
           roommates={this.state.roommates}
           onItemPress={screen => this.openOptionModal(screen)}
           options={this.state.options}

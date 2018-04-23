@@ -23,6 +23,7 @@ import LeaveGroupModal from './modals/settings/options/LeaveGroupModal';
 import NewPrimaryModal from './modals/settings/options/NewPrimaryModal';
 import RemoveMateModal from './modals/settings/options/RemoveMateModal';
 import JoinGroupModal from './modals/settings/options/JoinGroupModal';
+import OnlyCreateGroupModal from './modals/settings/options/OnlyCreateGroupModal';
 
 import WelcomeModal from './modals/signup/WelcomeModal';
 import UserInfoModal from './modals/signup/UserInfoModal';
@@ -54,4 +55,5 @@ export default function registerScreens() {
   Navigation.registerComponent('goodmate.NewPrimaryModal', () => NewPrimaryModal);
   Navigation.registerComponent('goodmate.RemoveMateModal', () => RemoveMateModal);
   Navigation.registerComponent('goodmate.JoinGroupModal', () => JoinGroupModal);
+  Navigation.registerComponent('goodmate.OnlyCreateGroupModal', () => OnlyCreateGroupModal);
 }
