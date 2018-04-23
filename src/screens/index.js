@@ -8,15 +8,21 @@ import Reminders from './Reminders';
 import Settings from './Settings';
 
 import ActivityModal from './modals/ActivityModal';
-import AddRentModal from './modals/AddRentModal';
-import FinishRentModal from './modals/FinishRentModal';
+import AddRentModal from './modals/rent/AddRentModal';
+import FinishRentModal from './modals/rent/FinishRentModal';
 import AddReminderModal from './modals/AddReminderModal';
-
-import EditProfileModal from './modals/EditProfileModal';
-import ChangePasswordModal from './modals/ChangePasswordModal';
-import RentGroupModal from './modals/RentGroupModal';
-import FeedbackModal from './modals/FeedbackModal';
 import HelpModal from './modals/HelpModal';
+
+import EditProfileModal from './modals/settings/EditProfileModal';
+import ChangePasswordModal from './modals/settings/ChangePasswordModal';
+import RentGroupModal from './modals/settings/RentGroupModal';
+import FeedbackModal from './modals/settings/FeedbackModal';
+
+import DeleteGroupModal from './modals/settings/options/DeleteGroupModal';
+import LeaveGroupModal from './modals/settings/options/LeaveGroupModal';
+import NewPrimaryModal from './modals/settings/options/NewPrimaryModal';
+import RemoveMateModal from './modals/settings/options/RemoveMateModal';
+import JoinGroupModal from './modals/settings/options/JoinGroupModal';
 
 import WelcomeModal from './modals/signup/WelcomeModal';
 import UserInfoModal from './modals/signup/UserInfoModal';
@@ -42,4 +48,10 @@ export default function registerScreens() {
   Navigation.registerComponent('goodmate.WelcomeModal', () => WelcomeModal);
   Navigation.registerComponent('goodmate.UserInfoModal', () => UserInfoModal);
   Navigation.registerComponent('goodmate.CreateGroupModal', () => CreateGroupModal);
+
+  Navigation.registerComponent('goodmate.DeleteGroupModal', () => DeleteGroupModal);
+  Navigation.registerComponent('goodmate.LeaveGroupModal', () => LeaveGroupModal);
+  Navigation.registerComponent('goodmate.NewPrimaryModal', () => NewPrimaryModal);
+  Navigation.registerComponent('goodmate.RemoveMateModal', () => RemoveMateModal);
+  Navigation.registerComponent('goodmate.JoinGroupModal', () => JoinGroupModal);
 }

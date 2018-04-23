@@ -2,8 +2,8 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, ScrollView, LayoutAnimation } from 'react-native';
 import { Header, Icon, Button, Overlay, Text, Input } from 'react-native-elements';
-import RentForm from '../../components/RentForm';
-import FireTools from '../../utils/FireTools';
+import RentForm from '../../../components/RentForm';
+import FireTools from '../../../utils/FireTools';
 
 const GoodHeader = ({ closeModal, openOverlay }) => (
   <Header

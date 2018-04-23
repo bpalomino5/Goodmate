@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Header, Icon, Text, Button } from 'react-native-elements';
 import { TextField } from 'react-native-material-textfield';
+import FireTools from '../../../utils/FireTools';
 
 const GoodHeader = ({ closeModal }) => (
   <Header
@@ -17,13 +18,25 @@ const GoodHeader = ({ closeModal }) => (
 export default class FeedbackModal extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      description: '',
+    };
     this.closeModal = this.closeModal.bind(this);
+    this.submitSuggestion = this.submitSuggestion.bind(this);
   }
 
   closeModal() {
     this.props.navigator.dismissModal({
       animationType: 'slide-down',
     });
+  }
+
+  async submitSuggestion() {
+    const { description } = this.state;
+    if (description.trim() !== '') {
+      await FireTools.submitSuggestion(description);
+      this.closeModal();
+    }
   }
 
   render() {
@@ -42,6 +55,8 @@ export default class FeedbackModal extends Component {
           multiline
           characterRestriction={300}
           maxLength={300}
+          value={this.state.description}
+          onChangeText={description => this.setState({ description })}
         />
         <Button
           buttonStyle={{
@@ -53,7 +68,7 @@ export default class FeedbackModal extends Component {
             borderRadius: 5,
           }}
           title="Submit "
-          onPress={() => console.log('hi')}
+          onPress={this.submitSuggestion}
         />
       </View>
     );

@@ -181,11 +181,6 @@ export default class Login extends Component {
       return;
     }
 
-    // fix for strange errors in creating new user accounts
-    console.ignoredYellowBox = [
-      'Deprecated firebase.User.prototype.createUserWithEmailAndPassword',
-    ];
-
     firebase
       .auth()
       .createUserAndRetrieveDataWithEmailAndPassword(email, password)

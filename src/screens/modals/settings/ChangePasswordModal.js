@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Header, Icon, Overlay, Text, Button, Input } from 'react-native-elements';
 import { TextField } from 'react-native-material-textfield';
-import FireTools from '../../utils/FireTools';
+import FireTools from '../../../utils/FireTools';
 
 const GoodHeader = ({ closeModal, submitUpdate }) => (
   <Header

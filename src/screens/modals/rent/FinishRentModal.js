@@ -4,7 +4,7 @@ import 'intl/locale-data/jsonp/en';
 import React, { Component } from 'react';
 import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native';
 import { Button, Header, Icon, Text, Divider, Overlay, CheckBox } from 'react-native-elements';
-import FireTools from '../../utils/FireTools';
+import FireTools from '../../../utils/FireTools';
 
 const formatter = new Intl.NumberFormat('en-US', {
   style: 'currency',

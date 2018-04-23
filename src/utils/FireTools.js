@@ -14,6 +14,117 @@ class FireTools {
     return firebase.auth().currentUser;
   }
 
+  async submitSuggestion(description) {
+    const feedbackRef = await firebase.firestore().collection('feedback');
+    await feedbackRef.add({ description });
+  }
+
+  async DeleteGroup(name) {
+    let success = false;
+    const doc = await firebase
+      .firestore()
+      .collection('groups')
+      .doc(name)
+      .get();
+
+    if (doc.exists) {
+      // get rids from roommates collection of group
+      const ref = await this.getGroupRef();
+      const rids = [];
+      if (ref) {
+        const querySnapshot = await ref.collection('roommates').get();
+        querySnapshot.forEach(rdoc => {
+          rids.push(rdoc.get('roommate'));
+        });
+      }
+
+      // remove groupRef from each user
+      await Promise.all(rids.map(async rid => {
+        await this.removeRoommate(rid);
+      }));
+
+      // delete group
+      await doc.ref.delete();
+      success = true;
+    }
+    return success;
+  }
+
+  async removeUserFromGroup(name) {
+    let success = false;
+    const doc = await firebase
+      .firestore()
+      .collection('groups')
+      .doc(name)
+      .get();
+
+    if (doc.exists) {
+      await this.removeRoommate(this.user.uid);
+      success = true;
+    }
+    return success;
+  }
+
+  async addUsertoGroup(name) {
+    let success = false;
+    const doc = await firebase
+      .firestore()
+      .collection('groups')
+      .doc(name)
+      .get();
+
+    if (doc.exists) {
+      // add groupRef to user doc
+      const userRef = firebase
+        .firestore()
+        .collection('users')
+        .doc(this.user.uid);
+      userRef.update({ groupRef: doc.ref });
+
+      // add to roommates collections in group
+      const roommatesRef = doc.ref.collection('roommates');
+      roommatesRef.add({
+        roommate: this.user.uid,
+      });
+      success = true;
+    }
+    return success;
+  }
+
+  async removeRoommate(rid) {
+    // remove from roommates collection under group
+    const ref = await this.getGroupRef();
+    if (ref) {
+      const querySnapshot = await ref.collection('roommates').get();
+      querySnapshot.forEach(doc => {
+        if (doc.get('roommate') === rid) {
+          doc.ref.delete();
+        }
+      });
+    }
+
+    // remove groupRef from users doc
+    const userRef = firebase
+      .firestore()
+      .collection('users')
+      .doc(rid);
+    userRef.update({ groupRef: null });
+  }
+
+  async updatePrimary(rid) {
+    const userRef = firebase
+      .firestore()
+      .collection('users')
+      .doc(this.user.uid);
+    userRef.update({ primary: false });
+
+    const otherRef = firebase
+      .firestore()
+      .collection('users')
+      .doc(rid);
+    otherRef.update({ primary: true });
+  }
+
   async updatePassword(password) {
     await this.user.updatePassword(password);
   }

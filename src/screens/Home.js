@@ -96,20 +96,22 @@ export default class Home extends Component {
       .doc(user.uid)
       .get()
       .then(snapshot => {
-        this.setState({ groupId: `groups/${snapshot.get('groupRef').id}` });
         const groupRef = snapshot.get('groupRef');
-        groupRef
-          .collection('activities')
-          .orderBy('time', 'desc')
-          .get()
-          .then(snap => {
-            snap.forEach(doc => {
-              const activity = doc.data();
-              activity.key = doc.id;
-              activities.push(activity);
+        if (groupRef) {
+          this.setState({ groupId: `groups/${snapshot.get('groupRef').id}` });
+          groupRef
+            .collection('activities')
+            .orderBy('time', 'desc')
+            .get()
+            .then(snap => {
+              snap.forEach(doc => {
+                const activity = doc.data();
+                activity.key = doc.id;
+                activities.push(activity);
+              });
+              this.setState({ activities });
             });
-            this.setState({ activities });
-          });
+        }
       });
   }
 
@@ -135,14 +137,16 @@ export default class Home extends Component {
       .get()
       .then(snapshot => {
         const groupRef = snapshot.get('groupRef');
-        const activityRef = groupRef.collection('activities').doc(key);
-        activityRef.get().then(doc => {
-          let likes = 0;
-          likes = doc.get('likes');
-          activityRef.update({
-            likes: likes + 1,
+        if (groupRef) {
+          const activityRef = groupRef.collection('activities').doc(key);
+          activityRef.get().then(doc => {
+            let likes = 0;
+            likes = doc.get('likes');
+            activityRef.update({
+              likes: likes + 1,
+            });
           });
-        });
+        }
       });
   }
 
