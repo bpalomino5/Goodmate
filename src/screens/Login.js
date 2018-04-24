@@ -96,6 +96,9 @@ export default class Login extends Component {
           screen: 'goodmate.Home',
           title: 'Home',
         },
+        appStyle: {
+          orientation: 'portrait',
+        },
         drawer: {
           left: {
             screen: 'goodmate.Drawer',
@@ -123,6 +126,9 @@ export default class Login extends Component {
           screen: {
             screen: 'goodmate.Home',
             title: 'Home',
+          },
+          appStyle: {
+            orientation: 'portrait',
           },
           drawer: {
             left: {
