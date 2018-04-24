@@ -1,4 +1,4 @@
-package com.bpalomino.goodmate;
+package com.bpalomino.gmate;
 
 import com.facebook.react.ReactPackage;
 import com.oblador.vectoricons.VectorIconsPackage;

@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.bpalomino.goodmate"
+    package="com.bpalomino.gmate"
     android:versionCode="1"
     android:versionName="1.0">
 

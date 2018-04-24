@@ -50,7 +50,7 @@
 		C5B681B4846D435899A8FD42 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9DAE3D1AE5B4C4BAF412DBF /* SimpleLineIcons.ttf */; };
 		CDC6C409633047D690FFB5B4 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 09F4859C0FCF44A98278085E /* Feather.ttf */; };
 		D2210B62688D4A1EA898C4FB /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 64D4E20486F04BC28BC785A4 /* Zocial.ttf */; };
-		F9DB3EDE2069C9AC00790A49 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F9DB3EDD2069C9AC00790A49 /* GoogleService-Info.plist */; };
+		F99E3047208F14CF0083A5CB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F99E3046208F14CF0083A5CB /* GoogleService-Info.plist */; };
 		F9DB3EE5206A299F00790A49 /* libReactNativeNavigation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F9DB3EE4206A297B00790A49 /* libReactNativeNavigation.a */; };
 /* End PBXBuildFile section */
 
@@ -385,7 +385,7 @@
 		B7AFA8AA9A1CFD17320E9074 /* Pods-Goodmate.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Goodmate.release.xcconfig"; path = "Pods/Target Support Files/Pods-Goodmate/Pods-Goodmate.release.xcconfig"; sourceTree = "<group>"; };
 		E9DAE3D1AE5B4C4BAF412DBF /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
 		F469977BA5324CF4A725389A /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
-		F9DB3EDD2069C9AC00790A49 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		F99E3046208F14CF0083A5CB /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		F9DB3EDF206A297B00790A49 /* ReactNativeNavigation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ReactNativeNavigation.xcodeproj; path = "../node_modules/react-native-navigation/ios/ReactNativeNavigation.xcodeproj"; sourceTree = "<group>"; };
 		FBC8C743C046423C960F2237 /* libRNFirebase.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFirebase.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -641,7 +641,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				F9DB3EDD2069C9AC00790A49 /* GoogleService-Info.plist */,
+				F99E3046208F14CF0083A5CB /* GoogleService-Info.plist */,
 				13B07FAE1A68108700A75B9A /* Goodmate */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* GoodmateTests */,
@@ -1182,7 +1182,6 @@
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
-				F9DB3EDE2069C9AC00790A49 /* GoogleService-Info.plist in Resources */,
 				070129E9846548C1843605A6 /* Entypo.ttf in Resources */,
 				0B135EFD1BD14AFFB2757268 /* EvilIcons.ttf in Resources */,
 				CDC6C409633047D690FFB5B4 /* Feather.ttf in Resources */,
@@ -1194,6 +1193,7 @@
 				1954B94D9F4F451AA5BEAD7B /* Octicons.ttf in Resources */,
 				C5B681B4846D435899A8FD42 /* SimpleLineIcons.ttf in Resources */,
 				D2210B62688D4A1EA898C4FB /* Zocial.ttf in Resources */,
+				F99E3047208F14CF0083A5CB /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1432,7 +1432,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.bpalomino.goodmate;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bpalomino.gmate;
 				PRODUCT_NAME = Goodmate;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1458,7 +1458,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.bpalomino.goodmate;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bpalomino.gmate;
 				PRODUCT_NAME = Goodmate;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
