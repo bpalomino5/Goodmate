@@ -385,6 +385,7 @@
 		B7AFA8AA9A1CFD17320E9074 /* Pods-Goodmate.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Goodmate.release.xcconfig"; path = "Pods/Target Support Files/Pods-Goodmate/Pods-Goodmate.release.xcconfig"; sourceTree = "<group>"; };
 		E9DAE3D1AE5B4C4BAF412DBF /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
 		F469977BA5324CF4A725389A /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
+		F927B609209136CF00033D5C /* Goodmate.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Goodmate.entitlements; path = Goodmate/Goodmate.entitlements; sourceTree = "<group>"; };
 		F99E3046208F14CF0083A5CB /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		F9DB3EDF206A297B00790A49 /* ReactNativeNavigation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ReactNativeNavigation.xcodeproj; path = "../node_modules/react-native-navigation/ios/ReactNativeNavigation.xcodeproj"; sourceTree = "<group>"; };
 		FBC8C743C046423C960F2237 /* libRNFirebase.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFirebase.a; sourceTree = "<group>"; };
@@ -529,6 +530,7 @@
 		13B07FAE1A68108700A75B9A /* Goodmate */ = {
 			isa = PBXGroup;
 			children = (
+				F927B609209136CF00033D5C /* Goodmate.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -801,6 +803,11 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = FERU9AB922;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -1416,6 +1423,7 @@
 			baseConfigurationReference = 4031C5D3468A6410BB4016B9 /* Pods-Goodmate.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Goodmate/Goodmate.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = FERU9AB922;
@@ -1443,6 +1451,7 @@
 			baseConfigurationReference = B7AFA8AA9A1CFD17320E9074 /* Pods-Goodmate.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Goodmate/Goodmate.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = FERU9AB922;
 				DISPLAY_NAME = Goodmate;
