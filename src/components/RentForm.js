@@ -177,12 +177,15 @@ const RentFormItem = ({
         marginTop: 15,
       }}
     />
-    <Icon
-      name="add-circle-outline"
-      color="green"
-      onPress={addItem}
-      containerStyle={{ marginRight: 5 }}
-    />
-    {removable && <Icon name="remove-circle-outline" color="red" onPress={removeItem} />}
+    {removable === false ? (
+      <Icon
+        name="add-circle-outline"
+        color="green"
+        onPress={addItem}
+        containerStyle={{ marginRight: 5 }}
+      />
+    ) : (
+      <Icon name="remove-circle-outline" color="red" onPress={removeItem} />
+    )}
   </View>
 );

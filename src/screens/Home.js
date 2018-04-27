@@ -1,6 +1,12 @@
 /* eslint class-methods-use-this:0 */
 import React, { Component } from 'react';
-import { StyleSheet, View, ScrollView, TouchableWithoutFeedback } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  TouchableWithoutFeedback,
+  RefreshControl,
+} from 'react-native';
 import { Header, Icon, Text, Overlay, Button } from 'react-native-elements';
 import FireTools from '../utils/FireTools';
 
@@ -115,12 +121,14 @@ export default class Home extends Component {
       activities: [],
       isVisible: false,
       aid: null,
+      refreshing: false,
     };
 
     this.toggleDrawer = this.toggleDrawer.bind(this);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     this.openActivityModal = this.openActivityModal.bind(this);
     this.removeItem = this.removeItem.bind(this);
+    this.onRefresh = this.onRefresh.bind(this);
   }
 
   async componentWillMount() {
@@ -139,6 +147,14 @@ export default class Home extends Component {
     if (event.id === 'willAppear') {
       this.updateActivities();
     }
+  }
+
+  onRefresh() {
+    this.setState({ refreshing: true });
+    // get data
+    this.updateActivities().then(() => {
+      this.setState({ refreshing: false });
+    });
   }
 
   async updateActivities() {
@@ -186,7 +202,11 @@ export default class Home extends Component {
           openActivityModal={this.openActivityModal}
           isVisible={this.state.headerVisible}
         />
-        <ScrollView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />
+          }
+        >
           {this.state.activities.length > 0 ? (
             <ActivityFeed
               activities={this.state.activities}

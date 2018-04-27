@@ -6,7 +6,7 @@
 import 'intl';
 import 'intl/locale-data/jsonp/en';
 import React, { Component } from 'react';
-import { StyleSheet, View, ScrollView, Platform } from 'react-native';
+import { StyleSheet, View, ScrollView } from 'react-native';
 import { Header, Icon, Text, Card, Button } from 'react-native-elements';
 import { Dropdown } from 'react-native-material-dropdown';
 import FireTools from '../utils/FireTools';
@@ -334,7 +334,7 @@ export default class Rent extends Component {
                   totals={this.state.totals}
                 />
                 <Button
-                  containerStyle={{ marginTop: 20, marginBottom: 20 }}
+                  containerStyle={{ marginTop: 10, marginBottom: 10 }}
                   title="Edit Rent Sheet "
                   buttonStyle={{
                     backgroundColor: 'rgba(92, 99,216, 1)',
@@ -381,6 +381,6 @@ const styles = StyleSheet.create({
     padding: 2,
   },
   primaryContainer: {
-    marginBottom: Platform.OS === 'android' ? 75 : 0,
+    flex: 1,
   },
 });

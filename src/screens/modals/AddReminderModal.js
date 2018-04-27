@@ -19,6 +19,7 @@ const GoodHeader = ({ closeModal }) => (
       <Icon name="arrow-back" color="white" underlayColor="transparent" onPress={closeModal} />
     }
     centerComponent={{ text: '', style: { fontSize: 18, color: '#fff' } }}
+    outerContainerStyles={{ height: 80 }}
   />
 );
 

@@ -94,7 +94,6 @@ export default class Drawer extends Component {
             medium
             rounded
             icon={{ name: 'user', type: 'font-awesome' }}
-            onPress={() => console.log('Works!')}
             activeOpacity={0.7}
           />
           <Text style={{ paddingLeft: 10, fontSize: 20, color: 'white' }}>{this.state.name}</Text>

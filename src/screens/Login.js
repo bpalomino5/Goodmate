@@ -133,6 +133,7 @@ export default class Login extends Component {
           drawer: {
             left: {
               screen: 'goodmate.Drawer',
+              fixedWidth: 800,
             },
             style: {
               drawerShadow: false, // for ios to look nicer
