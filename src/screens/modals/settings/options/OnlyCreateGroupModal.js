@@ -23,7 +23,7 @@ export default class OnlyCreateGroupModal extends Component {
     this.state = {
       name: '',
       nameError: false,
-      errorMessage: 'Group name taken',
+      errorMessage: null,
     };
     this.closeModal = this.closeModal.bind(this);
     this.submitUpdate = this.submitUpdate.bind(this);
@@ -47,7 +47,7 @@ export default class OnlyCreateGroupModal extends Component {
         this.props.onFinish();
         this.closeModal();
       } else {
-        this.setState({ nameError: true });
+        this.setState({ nameError: true, errorMessage: 'Group name taken' });
         this.groupInput.shake();
       }
     }

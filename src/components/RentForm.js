@@ -107,7 +107,7 @@ const RentFormCard = ({
   sections,
   updateItemSection,
 }) => (
-  <Card title={title}>
+  <Card title={title} containerStyle={{ margin: 0, marginTop: 15 }}>
     {data.map((item, i) => (
       <RentFormItem
         key={i}
@@ -158,16 +158,14 @@ const RentFormItem = ({
       onChangeText={setSection}
     />
     <Input
-      placeholder="Type"
-      inputStyle={{ flex: 1 }}
+      placeholder="Name"
       value={type}
       onChangeText={typeChange}
-      containerStyle={{ width: 95, marginRight: 5, marginTop: 15 }}
+      containerStyle={{ flex: 1, marginRight: 5, marginTop: 15 }}
     />
     <Icon name="attach-money" size={20} color="black" containerStyle={{ marginTop: 10 }} />
     <Input
       placeholder="Value"
-      inputStyle={{ flex: 1 }}
       value={value}
       onChangeText={valueChange}
       containerStyle={{
@@ -185,7 +183,12 @@ const RentFormItem = ({
         containerStyle={{ marginRight: 5 }}
       />
     ) : (
-      <Icon name="remove-circle-outline" color="red" onPress={removeItem} />
+      <Icon
+        name="remove-circle-outline"
+        color="red"
+        onPress={removeItem}
+        containerStyle={{ marginRight: 5 }}
+      />
     )}
   </View>
 );

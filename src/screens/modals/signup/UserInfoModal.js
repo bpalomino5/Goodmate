@@ -1,38 +1,32 @@
 import React, { Component } from 'react';
 import { Text, View } from 'react-native';
 import { Input, Button } from 'react-native-elements';
-import firebase from 'react-native-firebase';
+import FireTools from '../../../utils/FireTools';
 
 export default class UserInfoModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
       name: '',
-      user: null,
       isLoading: false,
     };
     this.openNextModal = this.openNextModal.bind(this);
   }
 
-  componentDidMount() {
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        this.setState({ user });
-      }
-    });
+  componentWillMount() {
+    FireTools.init();
   }
 
-  openNextModal() {
+  async openNextModal() {
     this.setState({ isLoading: true });
-    const { name, user } = this.state;
-    if (name.length !== 0 && user !== null) {
-      user.updateProfile({ displayName: name }).then(() => {
-        // then move on to next modal
-        this.props.navigator.showModal({
-          screen: 'goodmate.CreateGroupModal',
-          animationType: 'slide-up',
-          navigatorStyle: { navBarHidden: true },
-        });
+    const { name } = this.state;
+    if (name.trim() !== '') {
+      await FireTools.user.updateProfile({ displayName: name });
+      // then move on to next modal
+      this.props.navigator.showModal({
+        screen: 'goodmate.CreateGroupModal',
+        animationType: 'slide-up',
+        navigatorStyle: { navBarHidden: true },
       });
     }
   }
@@ -47,15 +41,13 @@ export default class UserInfoModal extends Component {
           backgroundColor: 'white',
         }}
       >
-        <View style={{ flex: 0, justifyContent: 'flex-start' }}>
-          <Text style={{ marginBottom: 20, marginLeft: 10 }}>YOUR NAME</Text>
-          <Input
-            placeholder="First Last"
-            value={this.state.name}
-            onChangeText={t => this.setState({ name: t })}
-            onSubmitEditing={this.openNextModal}
-          />
-        </View>
+        <Text style={{ marginBottom: 20, marginLeft: 10 }}>YOUR NAME</Text>
+        <Input
+          placeholder="First Last"
+          value={this.state.name}
+          onChangeText={t => this.setState({ name: t })}
+          onSubmitEditing={this.openNextModal}
+        />
         <Button
           containerStyle={{ marginTop: 40 }}
           title="CONTINUE  "

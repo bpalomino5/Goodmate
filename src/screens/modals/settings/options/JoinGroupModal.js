@@ -23,7 +23,7 @@ export default class JoinGroupModal extends Component {
     this.state = {
       name: '',
       nameError: false,
-      errorMessage: 'Group does not exist',
+      errorMessage: null,
     };
     this.closeModal = this.closeModal.bind(this);
     this.submitUpdate = this.submitUpdate.bind(this);
@@ -47,7 +47,7 @@ export default class JoinGroupModal extends Component {
         this.props.onFinish();
         this.closeModal();
       } else {
-        this.setState({ nameError: true });
+        this.setState({ nameError: true, errorMessage: 'Group does not exist' });
         this.groupInput.shake();
       }
     }

@@ -51,7 +51,7 @@ const SettingCard = ({ sectionName, items, onItemPress }) => (
       <ListItem
         key={i}
         title={item.title}
-        hideChevron
+        chevron
         titleContainerStyle={{ marginLeft: 0 }}
         onPress={() => onItemPress(item.screen)}
       />

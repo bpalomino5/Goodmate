@@ -49,7 +49,13 @@ const InfoOverlay = ({ toggleOverlay, isVisible }) => (
       </Text>
     </View>
     <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'flex-end' }}>
-      <Button title="Close " onPress={() => toggleOverlay(false)} />
+      <Button
+        title="Close "
+        onPress={() => toggleOverlay(false)}
+        buttonStyle={{
+          backgroundColor: 'rgba(92, 99,216, 1)',
+        }}
+      />
     </View>
   </Overlay>
 );
@@ -73,6 +79,7 @@ const AssignmentOverlay = ({
         <View key={i}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <CheckBox
+              checkedColor="rgba(92, 99,216, 1)"
               onPress={() => onCheckPress(item)}
               checked={dataItem.uids !== undefined ? item.first in dataItem.uids : null}
             />
@@ -82,7 +89,13 @@ const AssignmentOverlay = ({
       ))}
     </View>
     <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'flex-end' }}>
-      <Button title="Close " onPress={() => toggleOverlay(false)} />
+      <Button
+        title="Close "
+        onPress={() => toggleOverlay(false)}
+        buttonStyle={{
+          backgroundColor: 'rgba(92, 99,216, 1)',
+        }}
+      />
     </View>
   </Overlay>
 );
@@ -246,7 +259,7 @@ export default class FinishRentModal extends Component {
     const timestamp = new Date().getTime();
     const name = FireTools.user.displayName.split(' ')[0];
     await FireTools.addActivity({
-      description: [`Added rent sheet: ${date}`],
+      description: [`Added rent sheet: ${date.month} ${date.year}`],
       likes: 0,
       name,
       time: timestamp,
@@ -298,7 +311,7 @@ export default class FinishRentModal extends Component {
         <InfoOverlay isVisible={infoVisible} toggleOverlay={t => this.displayInfoOverlay(t)} />
         <View style={styles.SubmitSection}>
           <Button
-            containerStyle={{ marginTop: 20 }}
+            containerStyle={{ marginTop: 20, flex: 0, alignSelf: 'center' }}
             title="Submit "
             buttonStyle={{
               backgroundColor: 'rgba(92, 99,216, 1)',

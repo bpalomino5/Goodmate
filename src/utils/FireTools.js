@@ -17,7 +17,7 @@ class FireTools {
 
   async getGroupName() {
     const ref = await this.getGroupRef();
-    return ref.id;
+    return ref ? ref.id : '';
   }
 
   /**
@@ -131,6 +131,18 @@ class FireTools {
     return success;
   }
 
+  async createUser() {
+    const name = this.user.displayName.split(' ');
+
+    const userRef = firebase.firestore().collection('users').doc(this.user.uid);
+    userRef.set({
+      first: name[0],
+      last: name[1],
+      primary: false,
+      groupRef: null,
+    });
+  }
+
   async addUsertoGroup(name) {
     let success = false;
     const doc = await firebase
@@ -218,11 +230,13 @@ class FireTools {
   }
 
   async updateUserName(name) {
+    const n = name.split(' ');
+    await this.user.updateProfile({ displayName: name });
     const userRef = firebase
       .firestore()
       .collection('users')
       .doc(this.user.uid);
-    userRef.update({ first: name });
+    userRef.update({ first: n[0], last: n[1] });
   }
 
   /**

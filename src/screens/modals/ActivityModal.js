@@ -1,6 +1,6 @@
 /* eslint react/no-array-index-key: 0 */
 import React, { Component } from 'react';
-import { Header, Icon, CheckBox, Button, Text } from 'react-native-elements';
+import { Header, Icon, Button, Text } from 'react-native-elements';
 import { StyleSheet, View, ScrollView, LayoutAnimation, TouchableOpacity } from 'react-native';
 import { Dropdown } from 'react-native-material-dropdown';
 import FireTools from '../../utils/FireTools';
@@ -49,26 +49,18 @@ const GoodButton = ({ onPress }) => (
   </TouchableOpacity>
 );
 
-const ActivitySelectionList = ({ activities, updateItem, updateValue }) =>
+const ActivitySelectionList = ({ activities, updateValue }) =>
   activities.map((item, i) => (
     <ActivitySelection
       key={i}
       i={i}
-      updateItem={() => updateItem(i)}
       activities={activities}
       updateValue={value => updateValue(i, value)}
     />
   ));
 
-const ActivitySelection = ({
-  activities, updateItem, i, updateValue,
-}) => (
+const ActivitySelection = ({ updateValue }) => (
   <View style={styles.SelectionRow}>
-    <CheckBox
-      containerStyle={{ alignSelf: 'flex-end' }}
-      checked={activities[i].checked}
-      onIconPress={() => updateItem(i)}
-    />
     <View style={{ flex: 1 }}>
       <Dropdown
         label="Activity"
@@ -89,7 +81,7 @@ export default class ActivityModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activities: [{ checked: false, description: '' }],
+      activities: [{ description: '' }],
       first: '',
     };
 
@@ -111,11 +103,6 @@ export default class ActivityModal extends Component {
     });
   }
 
-  updateItem(i) {
-    this.state.activities[i].checked = !this.state.activities[i].checked;
-    this.forceUpdate();
-  }
-
   updateValue(i, value) {
     this.state.activities[i].description = value;
     this.forceUpdate();
@@ -123,7 +110,7 @@ export default class ActivityModal extends Component {
 
   addItem() {
     LayoutAnimation.easeInEaseOut();
-    this.setState({ activities: [...this.state.activities, { checked: false, description: '' }] });
+    this.setState({ activities: [...this.state.activities, { description: '' }] });
   }
 
   removeItem() {
@@ -137,9 +124,7 @@ export default class ActivityModal extends Component {
     const { activities, first } = this.state;
     const selections = [];
     activities.forEach(item => {
-      if (item.checked) {
-        selections.push(item.description);
-      }
+      selections.push(item.description);
     });
 
     // get time
@@ -164,7 +149,6 @@ export default class ActivityModal extends Component {
           <ScrollView>
             <ActivitySelectionList
               activities={this.state.activities}
-              updateItem={i => this.updateItem(i)}
               updateValue={(i, v) => this.updateValue(i, v)}
             />
           </ScrollView>
@@ -172,12 +156,22 @@ export default class ActivityModal extends Component {
         <View style={styles.ButtonSection}>
           <Button
             title="Add "
-            buttonStyle={{ width: 100, borderRadius: 30, height: 40 }}
+            buttonStyle={{
+              width: 100,
+              borderRadius: 30,
+              height: 40,
+              backgroundColor: 'rgba(92, 99,216, 1)',
+            }}
             onPress={this.addItem}
           />
           <Button
             title="Remove "
-            buttonStyle={{ borderRadius: 30, width: 100, height: 40 }}
+            buttonStyle={{
+              borderRadius: 30,
+              width: 100,
+              height: 40,
+              backgroundColor: 'rgba(92, 99,216, 1)',
+            }}
             onPress={this.removeItem}
           />
         </View>
@@ -197,7 +191,7 @@ const styles = StyleSheet.create({
   SelectionRow: {
     flex: 0,
     flexDirection: 'row',
-    padding: 5,
+    padding: 10,
   },
   ButtonSection: {
     flex: 0,

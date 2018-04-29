@@ -21,7 +21,7 @@ const GoodHeader = ({ closeModal, submitUpdate }) => (
 const MateSelect = ({ names, onSelect }) => (
   <View>
     <Dropdown
-      label="Select new primary"
+      label="Select roommate"
       data={names}
       containerStyle={{ padding: 10 }}
       onChangeText={onSelect}

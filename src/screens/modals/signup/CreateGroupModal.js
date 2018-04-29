@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View } from 'react-native';
 import { Dropdown } from 'react-native-material-dropdown';
 import { Text, Input, Button } from 'react-native-elements';
-import firebase from 'react-native-firebase';
+import FireTools from '../../../utils/FireTools';
 
 const options = [{ value: 'Create a roommate group' }, { value: 'Join a group' }];
 
@@ -11,31 +11,24 @@ export default class CreateGroupModal extends Component {
     super(props);
     this.state = {
       name: '',
-      nameError: false,
-      errorMessage: '',
-      user: firebase.auth().currentUser,
+      errorMessage: null,
       selection: 0,
     };
-    this.groupRef = firebase.firestore().collection('groups');
-    this.usersRef = firebase.firestore().collection('users');
   }
 
-  createGroup() {
+  componentWillMount() {
+    FireTools.init();
+  }
+
+  async createGroup() {
     const { name } = this.state;
-    if (name.length === 0) {
-      this.setState({ errorMessage: 'Please enter a group name', nameError: true });
+    if (name.trim() === '') {
+      this.setState({ errorMessage: 'Please enter a group name' });
       this.groupInput.shake();
     } else {
       // create new group
-      const ref = this.groupRef.doc(name);
-      ref.set();
-
-      // add user to users group, group creator thus primary
-      this.addtoUserGroup(true, ref);
-
-      // add user to roommate group
-      this.addtoRoommateGroup(name);
-
+      await FireTools.createUser();
+      await FireTools.createGroup(name);
       // close modal
       this.props.navigator.dismissAllModals({
         animationType: 'slide-down',
@@ -43,64 +36,27 @@ export default class CreateGroupModal extends Component {
     }
   }
 
-  joinGroup() {
+  async joinGroup() {
     const { name } = this.state;
-    if (name.length === 0) {
-      this.setState({ errorMessage: 'Please enter a group name', nameError: true });
+    if (name.trim() === '') {
+      this.setState({ errorMessage: 'Please enter a group name' });
       this.groupInput.shake();
     } else {
-      // join group
-      this.groupRef
-        .doc(name)
-        .get()
-        .then(doc => {
-          if (doc.exists) {
-            // add to users group in firestore
-            this.addtoUserGroup(false, doc.ref);
-            this.addtoRoommateGroup(doc.id);
-            // close modal
-            this.props.navigator.dismissAllModals({
-              animationType: 'slide-down',
-            });
-          } else {
-            // did not join group
-            this.setState({ nameError: true });
-            this.groupInput.shake();
-          }
+      await FireTools.createUser();
+      const success = await FireTools.addUsertoGroup(name);
+      if (success) {
+        this.props.navigator.dismissAllModals({
+          animationType: 'slide-down',
         });
+      } else {
+        // did not join group
+        this.groupInput.shake();
+      }
     }
-  }
-
-  addtoUserGroup(primary, ref) {
-    const { user } = this.state;
-    const name = user.displayName.split(' ');
-
-    this.usersRef.doc(user.uid).set({
-      first: name[0],
-      last: name[1],
-      primary,
-      groupRef: ref,
-    });
-  }
-
-  addtoRoommateGroup(groupId) {
-    // add roommate uid to roommates collection under group collection
-    const path = `groups/${groupId}/roommates`;
-    firebase
-      .firestore()
-      .collection(path)
-      .add({
-        roommate: this.state.user.uid,
-      });
   }
 
   handleSelection(i) {
-    this.setState({ nameError: false, selection: i });
-    if (i === 0) {
-      this.setState({ errorMessage: 'Group name taken' });
-    } else {
-      this.setState({ errorMessage: 'Group does not exist' });
-    }
+    this.setState({ errorMessage: null, selection: i });
   }
 
   render() {
@@ -132,7 +88,6 @@ export default class CreateGroupModal extends Component {
               }}
               value={this.state.name}
               onChangeText={name => this.setState({ name })}
-              displayError={this.state.nameError}
               placeholder="Anonymous Llamas"
               errorMessage={this.state.errorMessage}
             />
@@ -140,6 +95,7 @@ export default class CreateGroupModal extends Component {
         </View>
         <View style={{ flex: 1, justifyContent: 'flex-end', marginBottom: 20 }}>
           <Button
+            containerStyle={{ flex: 0, alignSelf: 'center' }}
             title="DONE  "
             buttonStyle={{
               backgroundColor: 'rgba(92, 99,216, 1)',

@@ -196,6 +196,7 @@ export default class AddReminderModal extends Component {
           {this.state.editing && (
             <Button
               title="Delete Reminder "
+              containerStyle={{ flex: 0, alignSelf: 'center' }}
               buttonStyle={{
                 backgroundColor: 'rgba(92, 99,216, 1)',
                 width: 300,

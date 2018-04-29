@@ -56,8 +56,7 @@ const ReAuthOverlay = ({
         containerStyle={{ borderBottomColor: 'rgba(0, 0, 0, 0.38)' }}
         onSubmitEditing={() => this.passwordInput.focus()}
         onChangeText={onEmailChange}
-        displayError={isEmailValid}
-        errorMessage="Please enter a valid email address"
+        errorMessage={isEmailValid}
         leftIcon={<Icon name="email-outline" type="material-community" />}
       />
       <Input
@@ -76,14 +75,26 @@ const ReAuthOverlay = ({
         }}
         onSubmitEditing={onLogin}
         onChangeText={onPasswordChange}
-        displayError={isPasswordValid}
-        errorMessage="Please enter at least 8 characters"
+        errorMessage={isPasswordValid}
         leftIcon={<Icon name="lock-outline" type="material-community" />}
       />
     </View>
     <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'flex-end' }}>
-      <Button title="Login " onPress={onLogin} containerStyle={{ marginRight: 10 }} />
-      <Button title="Close " onPress={onClose} />
+      <Button
+        title="Login "
+        onPress={onLogin}
+        containerStyle={{ marginRight: 10 }}
+        buttonStyle={{
+          backgroundColor: 'rgba(92, 99,216, 1)',
+        }}
+      />
+      <Button
+        title="Close "
+        onPress={onClose}
+        buttonStyle={{
+          backgroundColor: 'rgba(92, 99,216, 1)',
+        }}
+      />
     </View>
   </Overlay>
 );
@@ -95,8 +106,8 @@ export default class ChangePasswordModal extends Component {
       npassword: '',
       vpassword: '',
       visible: true,
-      isEmailValid: false,
-      isPasswordValid: false,
+      isEmailValid: null,
+      isPasswordValid: null,
       email: '',
       password: '',
     };
@@ -116,6 +127,11 @@ export default class ChangePasswordModal extends Component {
       const response = await FireTools.loginWithEmail(email, password);
       if (response) {
         this.setState({ visible: false });
+      } else {
+        this.setState({
+          isEmailValid: 'Please enter a valid email address',
+          isPasswordValid: 'Please enter at least 8 characters',
+        });
       }
     }
   }

@@ -67,9 +67,9 @@ export default class Login extends Component {
     this.state = {
       selectedCategory: 0,
       isLoading: false,
-      isEmailValid: true,
-      isPasswordValid: true,
-      isConfirmationValid: true,
+      emailError: null,
+      passwordError: null,
+      confirmError: null,
     };
 
     this.selectCategory = this.selectCategory.bind(this);
@@ -133,7 +133,6 @@ export default class Login extends Component {
           drawer: {
             left: {
               screen: 'goodmate.Drawer',
-              fixedWidth: 800,
             },
             style: {
               drawerShadow: false, // for ios to look nicer
@@ -143,9 +142,11 @@ export default class Login extends Component {
       } else {
         this.setState({
           isLoading: false,
-          isEmailValid: this.loginForm.emailInput.shake(),
-          isPasswordValid: password.length < 8 ? this.loginForm.passwordInput.shake() : false,
+          emailError: 'Please enter a valid email address',
+          passwordError: 'Please enter at least 8 characters',
         });
+        this.loginForm.emailInput.shake();
+        this.loginForm.passwordInput.shake();
       }
     }
   }
@@ -155,10 +156,12 @@ export default class Login extends Component {
       this.setState({ isLoading: true });
       if (password !== passwordConfirmation) {
         this.setState({
-          isPasswordValid: this.loginForm.passwordInput.shake(),
-          isConfirmationValid: this.loginForm.confirmationInput.shake(),
           isLoading: false,
+          passwordError: 'Please enter at least 8 characters',
+          confirmError: 'Please enter the same password',
         });
+        this.loginForm.passwordInput.shake();
+        this.loginForm.confirmationInput.shake();
         return;
       }
 
@@ -171,11 +174,13 @@ export default class Login extends Component {
       } else {
         this.setState({
           isLoading: false,
-          isEmailValid: this.loginForm.emailInput.shake(),
-          isPasswordValid: password.length < 8 ? this.loginForm.passwordInput.shake() : false,
-          isConfirmationValid:
-            password === passwordConfirmation || this.loginForm.confirmationInput.shake(),
+          emailError: 'Please enter a valid email address',
+          passwordError: 'Please enter at least 8 characters',
+          confirmError: 'Please enter the same password',
         });
+        this.loginForm.emailInput.shake();
+        this.loginForm.passwordInput.shake();
+        this.loginForm.confirmationInput.shake();
       }
     }
   }
@@ -197,13 +202,7 @@ export default class Login extends Component {
   }
 
   render() {
-    const {
-      selectedCategory,
-      isLoading,
-      isEmailValid,
-      isPasswordValid,
-      isConfirmationValid,
-    } = this.state;
+    const { selectedCategory, isLoading } = this.state;
 
     const isLoginPage = selectedCategory === 0;
     const isSignUpPage = selectedCategory === 1;
@@ -229,9 +228,9 @@ export default class Login extends Component {
                 isLoading={isLoading}
                 isLoginPage={isLoginPage}
                 isSignUpPage={isSignUpPage}
-                isEmailValid={isEmailValid}
-                isPasswordValid={isPasswordValid}
-                isConfirmationValid={isConfirmationValid}
+                emailErrorMessage={this.state.emailError}
+                passwordErrorMessage={this.state.passwordError}
+                confirmErrorMessage={this.state.confirmError}
                 ref={form => {
                   this.loginForm = form;
                 }}

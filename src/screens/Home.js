@@ -66,10 +66,23 @@ const ItemOverlay = ({ isVisible, closeOverlay, deleteItem }) => (
     height="auto"
   >
     <View>
-      <Text style={{ fontSize: 22, marginBottom: 10 }}>Delete Post</Text>
+      <Text style={{ fontSize: 22, marginBottom: 20 }}>Options</Text>
       <View style={{ flexDirection: 'row' }}>
-        <Button title="Delete " onPress={deleteItem} containerStyle={{ marginRight: 10 }} />
-        <Button title="Close " onPress={closeOverlay} />
+        <Button
+          title="Delete "
+          onPress={deleteItem}
+          containerStyle={{ marginRight: 10 }}
+          buttonStyle={{
+            backgroundColor: 'rgba(92, 99,216, 1)',
+          }}
+        />
+        <Button
+          title="Close "
+          onPress={closeOverlay}
+          buttonStyle={{
+            backgroundColor: 'rgba(92, 99,216, 1)',
+          }}
+        />
       </View>
     </View>
   </Overlay>

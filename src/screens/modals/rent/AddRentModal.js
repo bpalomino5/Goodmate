@@ -53,8 +53,17 @@ const SectionOverlay = ({
           toggleOverlay(false);
           submitSection();
         }}
+        buttonStyle={{
+          backgroundColor: 'rgba(92, 99,216, 1)',
+        }}
       />
-      <Button title="Close " onPress={() => toggleOverlay(false)} />
+      <Button
+        title="Close "
+        onPress={() => toggleOverlay(false)}
+        buttonStyle={{
+          backgroundColor: 'rgba(92, 99,216, 1)',
+        }}
+      />
     </View>
   </Overlay>
 );
@@ -198,7 +207,7 @@ export default class AddRentModal extends Component {
         </View>
         <View style={styles.SubmitSection}>
           <Button
-            containerStyle={{ marginTop: 20 }}
+            containerStyle={{ marginTop: 20, flex: 0, alignSelf: 'center' }}
             title="Next "
             buttonStyle={{
               backgroundColor: 'rgba(92, 99,216, 1)',

@@ -51,6 +51,8 @@ export default class FeedbackModal extends Component {
         </View>
         <TextField
           containerStyle={{ padding: 18 }}
+          baseColor="grey"
+          tintColor="grey"
           label="Write suggestion"
           multiline
           characterRestriction={300}
@@ -59,6 +61,7 @@ export default class FeedbackModal extends Component {
           onChangeText={description => this.setState({ description })}
         />
         <Button
+          containerStyle={{ flex: 0, alignSelf: 'center' }}
           buttonStyle={{
             backgroundColor: 'rgba(92, 99,216, 1)',
             width: 300,

@@ -27,7 +27,6 @@ const ProfileItems = ({ name, onChangeText }) => (
       value={name}
       onChangeText={onChangeText}
     />
-    {/* <TextField label="Email" baseColor="grey" tintColor="grey" /> */}
   </View>
 );
 

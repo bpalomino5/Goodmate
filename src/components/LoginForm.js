@@ -34,8 +34,7 @@ export default class LoginForm extends Component {
           }}
           onSubmitEditing={() => this.passwordInput.focus()}
           onChangeText={e => this.setState({ email: e })}
-          displayError={!this.props.isEmailValid}
-          errorMessage="Please enter a valid email address"
+          errorMessage={this.props.emailErrorMessage}
           leftIcon={<Icon name="email-outline" type="material-community" />}
         />
         <Input
@@ -58,8 +57,7 @@ export default class LoginForm extends Component {
               : () => this.props.login(email, password)
           }
           onChangeText={p => this.setState({ password: p })}
-          displayError={!this.props.isPasswordValid}
-          errorMessage="Please enter at least 8 characters"
+          errorMessage={this.props.passwordErrorMessage}
           leftIcon={<Icon name="lock-outline" type="material-community" />}
         />
         {this.props.isSignUpPage && (
@@ -80,8 +78,7 @@ export default class LoginForm extends Component {
             }}
             onSubmitEditing={() => this.props.signUp(email, password, passwordConfirmation)}
             onChangeText={pc => this.setState({ passwordConfirmation: pc })}
-            displayError={!this.props.isConfirmationValid}
-            errorMessage="Please enter the same password"
+            errorMessage={this.state.confirmErrorMessage}
             leftIcon={<Icon name="lock-outline" type="material-community" />}
           />
         )}

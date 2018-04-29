@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import firebase from 'react-native-firebase';
 import { Navigation } from 'react-native-navigation';
-import { Avatar, Text, List, ListItem, Button } from 'react-native-elements';
+import { Avatar, Text, ListItem, Button } from 'react-native-elements';
 
 // Drawer Sections List
 const list = [
@@ -98,19 +98,27 @@ export default class Drawer extends Component {
           />
           <Text style={{ paddingLeft: 10, fontSize: 20, color: 'white' }}>{this.state.name}</Text>
         </View>
-        <List containerStyle={{ backgroundColor: '#3A3837', paddingBottom: 15 }}>
+        <View style={{ paddingBottom: 15 }}>
           {list.map((item, i) => (
             <ListItem
               key={i}
+              containerStyle={{ backgroundColor: '#3A3837' }}
               title={item.title}
+              topDivider
+              bottomDivider
               titleStyle={{ color: 'white' }}
-              leftIcon={{ name: item.icon, type: item.type }}
+              leftIcon={{ name: item.icon, type: item.type, color: 'white' }}
               hideChevron
               onPress={() => this.openScreen(item.screen)}
             />
           ))}
-        </List>
-        <Button buttonStyle={styles.logoutButton} onPress={this.logout} title="Logout " />
+        </View>
+        <Button
+          containerStyle={{ flex: 0, alignItems: 'center' }}
+          buttonStyle={styles.logoutButton}
+          onPress={this.logout}
+          title="Logout "
+        />
       </View>
     );
   }
@@ -119,6 +127,7 @@ export default class Drawer extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: 280,
     backgroundColor: '#3A3837',
     paddingTop: Platform.OS === 'ios' ? 30 : 15,
   },
@@ -132,5 +141,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     height: 40,
     width: 150,
+    backgroundColor: 'rgba(92, 99,216, 1)',
   },
 });

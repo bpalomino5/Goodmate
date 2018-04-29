@@ -17,6 +17,8 @@ const formatter = new Intl.NumberFormat('en-US', {
   minimumFractionDigits: 2,
 });
 
+const types = [{ value: 'Master' }, { value: 'Personal' }];
+
 const months = [
   { value: 'January' },
   { value: 'Feburary' },
@@ -70,8 +72,20 @@ const GoodHeader = ({
   />
 );
 
-const DateSelection = ({ updateMonth, updateYear }) => (
+const DateSelection = ({
+  updateMonth, updateYear, updateType, typeViewable,
+}) => (
   <View style={styles.dateSelection}>
+    {typeViewable && (
+      <Dropdown
+        containerStyle={{ width: 90, marginRight: 7 }}
+        label="Type"
+        data={types}
+        value="Master"
+        onChangeText={value => updateType(value)}
+        animationDuration={180}
+      />
+    )}
     <Dropdown
       containerStyle={{ flex: 1, marginRight: 7 }}
       label="Month"
@@ -149,6 +163,7 @@ export default class Rent extends Component {
       sheetAvailable: false,
       displayText: 'Please select a date!',
       primary: false,
+      typeViewable: false,
     };
     this.toggleDrawer = this.toggleDrawer.bind(this);
     this.openRentModal = this.openRentModal.bind(this);
@@ -161,7 +176,7 @@ export default class Rent extends Component {
     const roommates = await FireTools.getRoommates();
     roommates.forEach(mate => {
       if (mate.uid === FireTools.user.uid) {
-        this.setState({ primary: mate.primary });
+        this.setState({ primary: mate.primary, typeViewable: mate.primary });
       }
     });
   }
@@ -311,6 +326,20 @@ export default class Rent extends Component {
     }
   }
 
+  async updateType(type) {
+    const { month, year } = this.state;
+    if (type.trim() !== '' && month.trim() !== '' && year.trim() !== '') {
+      // do something
+      if (type === 'Master') {
+        this.setState({ primary: true });
+        await this.getRentSheet(month, year);
+      } else {
+        this.setState({ primary: false });
+        await this.getRentSheet(month, year);
+      }
+    }
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -321,8 +350,10 @@ export default class Rent extends Component {
           primary={this.state.primary}
         />
         <DateSelection
+          typeViewable={this.state.typeViewable}
           updateMonth={month => this.updateMonth(month)}
           updateYear={year => this.updateYear(year)}
+          updateType={type => this.updateType(type)}
         />
         {this.state.sheetAvailable ? (
           <View style={{ flex: 1 }}>
@@ -334,7 +365,12 @@ export default class Rent extends Component {
                   totals={this.state.totals}
                 />
                 <Button
-                  containerStyle={{ marginTop: 10, marginBottom: 10 }}
+                  containerStyle={{
+                    marginTop: 10,
+                    marginBottom: 10,
+                    flex: 0,
+                    alignItems: 'center',
+                  }}
                   title="Edit Rent Sheet "
                   buttonStyle={{
                     backgroundColor: 'rgba(92, 99,216, 1)',
