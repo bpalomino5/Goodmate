@@ -1,4 +1,5 @@
-<!-- [logo]: https://github.com/bpalomino5/G/raw/master/src/common/images/icon48.png "Logo Title Text 2" -->
+![alt text][logo]
+[logo]: https://github.com/bpalomino5/Goodmate/blob/master/res/logo.png "Goodmate Logo"
 
 ## Welcome to Goodmate
 
