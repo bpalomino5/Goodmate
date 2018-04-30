@@ -1,5 +1,4 @@
-![alt text][logo]
-[logo]: https://github.com/bpalomino5/Goodmate/raw/master/res/logo.png "Goodmate Logo"
+![Goodmate logo](https://github.com/bpalomino5/Goodmate/raw/master/res/logo.png "Goodmate Logo")
 
 ## Welcome to Goodmate
 
@@ -17,7 +16,7 @@ Ever been frustrated with your roommates or noticed some maintainence issue that
 
 Get started by downloading the free Goodmate app from the Google Playstore and Itunes Store! Make your life easier and enjoy your roommates company!
 
-Google Play Store: https://play.google.com/store/apps/details?id=com.bpalomino.gmate
+Google Play Store: https://play.google.com/store/apps/details?id=com.bpalomino.gmate<br/>
 Itunes Store: https://itunes.apple.com/us/app/goodmate/id1376384858?mt=8
 
 ## Features
