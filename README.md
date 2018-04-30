@@ -1,4 +1,4 @@
-![Goodmate logo](https://github.com/bpalomino5/Goodmate/raw/master/res/logo.png "Goodmate Logo")
+![Goodmate logo](https://github.com/bpalomino5/Goodmate/raw/master/res/banner.png "Goodmate Logo")
 
 ## Welcome to Goodmate
 
