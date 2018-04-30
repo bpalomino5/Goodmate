@@ -1,5 +1,5 @@
 ![alt text][logo]
-[logo]: https://github.com/bpalomino5/Goodmate/blob/master/res/logo.png "Goodmate Logo"
+[logo]: https://github.com/bpalomino5/Goodmate/raw/master/res/logo.png "Goodmate Logo"
 
 ## Welcome to Goodmate
 
