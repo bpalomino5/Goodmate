@@ -1,4 +1,4 @@
-/* eslint no-param-reassign:0 */
+/* eslint no-param-reassign:0, react/no-array-index-key:0 */
 import React, { Component } from 'react';
 import { StyleSheet, View, ScrollView, LayoutAnimation } from 'react-native';
 import { Header, Icon, Button, Overlay, Text, Input } from 'react-native-elements';
@@ -19,6 +19,30 @@ const GoodHeader = ({ closeModal, openOverlay }) => (
   />
 );
 
+const InfoOverlay = ({ isVisible, toggleOverlay, description }) => (
+  <Overlay
+    borderRadius={5}
+    overlayStyle={{ padding: 15 }}
+    isVisible={isVisible}
+    width="auto"
+    height="auto"
+  >
+    <View>
+      <Text style={{ fontSize: 24, marginBottom: 5 }}>Helpful Tip</Text>
+      <Text style={{ fontSize: 16, color: 'gray', marginBottom: 10 }}>{description}</Text>
+    </View>
+    <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'flex-end' }}>
+      <Button
+        title="Close "
+        onPress={() => toggleOverlay(false)}
+        buttonStyle={{
+          backgroundColor: 'rgba(92, 99,216, 1)',
+        }}
+      />
+    </View>
+  </Overlay>
+);
+
 const SectionOverlay = ({
   isVisible,
   toggleOverlay,
@@ -28,19 +52,26 @@ const SectionOverlay = ({
 }) => (
   <Overlay
     borderRadius={5}
+    containerStyle={{ justifyContent: 'flex-start', marginTop: 45 }}
     overlayStyle={{ padding: 15 }}
     isVisible={isVisible}
     width="auto"
     height="auto"
   >
     <View>
-      <Text style={{ fontSize: 24, marginBottom: 5 }}>Add Section</Text>
+      <Text style={{ fontSize: 24, marginBottom: 5 }}>Sections</Text>
       <Text style={{ fontSize: 16, color: 'gray', marginBottom: 10 }}>
-        Sections are useful for grouping rent & bill items
+        Sections are used for grouping individual base & bill items into added totals. Create at
+        least one section to group all your items under one total payment. Assign that section to
+        each row under the section dropdown.
+      </Text>
+      <Text style={{ fontSize: 16, color: 'gray', marginBottom: 10 }}>
+        i.e. Apartment Total, Utilities Total
       </Text>
       <Input
+        label="Add new section"
         placeholder="Section Name"
-        containerStyle={{ marginBottom: 10 }}
+        containerStyle={{ marginBottom: 10, marginTop: 15 }}
         value={sectionValue}
         onChangeText={text => onChangeText(text)}
       />
@@ -78,8 +109,10 @@ export default class AddRentModal extends Component {
     super(props);
     this.state = {
       isOverlayOpen: false,
+      isInfoVisible: false,
       sections: [],
       sectionValue: '',
+      description: '',
     };
     this.closeModal = this.closeModal.bind(this);
     this.addSection = this.addSection.bind(this);
@@ -191,6 +224,23 @@ export default class AddRentModal extends Component {
     });
   }
 
+  infoPress(t) {
+    let description = '';
+    if (t === 'base') {
+      description =
+        "Base items are used to show values that don't change per month such as bedroom prices.\ni.e. Bedroom 1: $500, Master Bedroom: $1000";
+    } else {
+      description =
+        'Bill items are used to show the rent values that do change per month such as utility bills.\n i.e. Electricity: $50, Internet: $100';
+    }
+    this.setState({ isInfoVisible: true, description });
+  }
+
+  infoToggle(open) {
+    LayoutAnimation.easeInEaseOut();
+    this.setState({ isInfoVisible: open });
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -199,6 +249,7 @@ export default class AddRentModal extends Component {
           <ScrollView>
             <RentForm
               sections={this.state.sections}
+              infoPress={t => this.infoPress(t)}
               ref={refs => {
                 this.rentRef = refs;
               }}
@@ -206,19 +257,21 @@ export default class AddRentModal extends Component {
           </ScrollView>
         </View>
         <View style={styles.SubmitSection}>
-          <Button
-            containerStyle={{ marginTop: 20, flex: 0, alignSelf: 'center' }}
-            title="Next "
-            buttonStyle={{
-              backgroundColor: 'rgba(92, 99,216, 1)',
-              width: 300,
-              height: 45,
-              borderColor: 'transparent',
-              borderWidth: 0,
-              borderRadius: 5,
-            }}
-            onPress={this.openFinishModal}
-          />
+          {!this.state.isOverlayOpen && (
+            <Button
+              containerStyle={{ marginTop: 20, flex: 0, alignSelf: 'center' }}
+              title="Next "
+              buttonStyle={{
+                backgroundColor: 'rgba(92, 99,216, 1)',
+                width: 300,
+                height: 45,
+                borderColor: 'transparent',
+                borderWidth: 0,
+                borderRadius: 5,
+              }}
+              onPress={this.openFinishModal}
+            />
+          )}
         </View>
         <SectionOverlay
           isVisible={this.state.isOverlayOpen}
@@ -226,6 +279,11 @@ export default class AddRentModal extends Component {
           sectionValue={this.state.sectionValue}
           onChangeText={text => this.setState({ sectionValue: text })}
           submitSection={this.addSection}
+        />
+        <InfoOverlay
+          isVisible={this.state.isInfoVisible}
+          toggleOverlay={toggle => this.infoToggle(toggle)}
+          description={this.state.description}
         />
       </View>
     );

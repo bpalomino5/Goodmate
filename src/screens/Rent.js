@@ -10,6 +10,7 @@ import { StyleSheet, View, ScrollView } from 'react-native';
 import { Header, Icon, Text, Card, Button } from 'react-native-elements';
 import { Dropdown } from 'react-native-material-dropdown';
 import FireTools from '../utils/FireTools';
+import DataStore from '../utils/DataStore';
 
 const formatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -73,7 +74,7 @@ const GoodHeader = ({
 );
 
 const DateSelection = ({
-  updateMonth, updateYear, updateType, typeViewable,
+  updateMonth, updateYear, updateType, typeViewable, monthVal, yearVal,
 }) => (
   <View style={styles.dateSelection}>
     {typeViewable && (
@@ -90,6 +91,7 @@ const DateSelection = ({
       containerStyle={{ flex: 1, marginRight: 7 }}
       label="Month"
       data={months}
+      value={monthVal}
       onChangeText={value => updateMonth(value)}
       animationDuration={180}
     />
@@ -97,6 +99,7 @@ const DateSelection = ({
       containerStyle={{ width: 100 }}
       label="Year"
       data={years}
+      value={yearVal}
       onChangeText={value => updateYear(value)}
       animationDuration={180}
     />
@@ -171,7 +174,7 @@ export default class Rent extends Component {
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
-  async componentDidMount() {
+  async componentWillMount() {
     FireTools.init();
     const roommates = await FireTools.getRoommates();
     roommates.forEach(mate => {
@@ -179,6 +182,12 @@ export default class Rent extends Component {
         this.setState({ primary: mate.primary, typeViewable: mate.primary });
       }
     });
+
+    const date = await DataStore.getData('date');
+    if (date) {
+      await this.getRentSheet(date.month, date.year);
+      this.setState({ month: date.month, year: date.year, dateSelected: true });
+    }
   }
 
   onNavigatorEvent(event) {
@@ -192,6 +201,7 @@ export default class Rent extends Component {
   }
 
   async getRentSheet(month, year) {
+    await DataStore.storeData('date', { month, year });
     const { primary } = this.state;
     const sheetRef = await FireTools.getRent(month, year);
     if (sheetRef) {
@@ -354,6 +364,8 @@ export default class Rent extends Component {
           updateMonth={month => this.updateMonth(month)}
           updateYear={year => this.updateYear(year)}
           updateType={type => this.updateType(type)}
+          monthVal={this.state.month}
+          yearVal={this.state.year}
         />
         {this.state.sheetAvailable ? (
           <View style={{ flex: 1 }}>

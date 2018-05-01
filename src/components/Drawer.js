@@ -6,6 +6,7 @@ import { Platform, StyleSheet, View } from 'react-native';
 import firebase from 'react-native-firebase';
 import { Navigation } from 'react-native-navigation';
 import { Avatar, Text, ListItem, Button } from 'react-native-elements';
+import FireTools from '../utils/FireTools';
 
 // Drawer Sections List
 const list = [
@@ -46,10 +47,8 @@ export default class Drawer extends Component {
   }
 
   componentWillMount() {
-    const user = firebase.auth().currentUser;
-    if (user) {
-      this.setState({ name: user.displayName });
-    }
+    FireTools.init();
+    this.setState({ name: FireTools.user.displayName });
   }
 
   logout() {

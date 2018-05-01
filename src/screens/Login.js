@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
+import firebase from 'react-native-firebase';
 import { Button } from 'react-native-elements';
 import { Navigation } from 'react-native-navigation';
 import LoginForm from '../components/LoginForm';
@@ -71,9 +72,40 @@ export default class Login extends Component {
       passwordError: null,
       confirmError: null,
     };
-
+    this.unsubscriber = null;
     this.selectCategory = this.selectCategory.bind(this);
     this.openHelpModal = this.openHelpModal.bind(this);
+  }
+
+  componentWillMount() {
+    this.unsubscriber = firebase.auth().onAuthStateChanged(user => {
+      // go to Home
+      if (user != null) {
+        Navigation.startSingleScreenApp({
+          screen: {
+            screen: 'goodmate.Home',
+            title: 'Home',
+          },
+          appStyle: {
+            orientation: 'portrait',
+          },
+          drawer: {
+            left: {
+              screen: 'goodmate.Drawer',
+            },
+            style: {
+              drawerShadow: false, // for ios to look nicer
+            },
+          },
+        });
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    if (this.unsubscriber) {
+      this.unsubscriber();
+    }
   }
 
   selectCategory(selectedCategory) {
@@ -115,30 +147,12 @@ export default class Login extends Component {
 
   async loginWithEmail(email, password) {
     if (email.trim() !== '' && password.trim() !== '') {
-      this.setState({ isLoading: true });
+      if (this.loginForm) {
+        this.setState({ isLoading: true });
+      }
       const credential = await FireTools.loginWithEmail(email, password);
       if (credential) {
-        // store creds
-        // DataStore.storeData('user-email', { email });
-        // DataStore.storeData('user-password', { password });
-        // Go to Home
-        Navigation.startSingleScreenApp({
-          screen: {
-            screen: 'goodmate.Home',
-            title: 'Home',
-          },
-          appStyle: {
-            orientation: 'portrait',
-          },
-          drawer: {
-            left: {
-              screen: 'goodmate.Drawer',
-            },
-            style: {
-              drawerShadow: false, // for ios to look nicer
-            },
-          },
-        });
+        // user state will change from null to value, will fire listener defined above
       } else {
         this.setState({
           isLoading: false,

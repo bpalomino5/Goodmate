@@ -3,7 +3,7 @@
 */
 import React, { Component } from 'react';
 import { View, LayoutAnimation } from 'react-native';
-import { Icon, Input, Card } from 'react-native-elements';
+import { Icon, Input, Card, Text, Divider } from 'react-native-elements';
 import { Dropdown } from 'react-native-material-dropdown';
 
 export default class RentForm extends Component {
@@ -81,6 +81,7 @@ export default class RentForm extends Component {
           updateItemType={(i, text) => this.updateItemType(i, text, this.state.baseItems)}
           updateItemValue={(i, text) => this.updateItemValue(i, text, this.state.baseItems)}
           updateItemSection={(i, text) => this.updateItemSection(i, text, this.state.baseItems)}
+          infoPress={() => this.props.infoPress('base')}
         />
         <RentFormCard
           title="Bill Items"
@@ -91,6 +92,7 @@ export default class RentForm extends Component {
           updateItemType={(i, text) => this.updateItemType(i, text, this.state.billItems)}
           updateItemValue={(i, text) => this.updateItemValue(i, text, this.state.billItems)}
           updateItemSection={(i, text) => this.updateItemSection(i, text, this.state.billItems)}
+          infoPress={() => this.props.infoPress('bill')}
         />
       </View>
     );
@@ -106,8 +108,47 @@ const RentFormCard = ({
   removeItem,
   sections,
   updateItemSection,
+  infoPress,
 }) => (
-  <Card title={title} containerStyle={{ margin: 0, marginTop: 15 }}>
+  <Card containerStyle={{ margin: 0, marginTop: 15 }}>
+    <View
+      style={{
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+      }}
+    >
+      <View style={{ flex: 1, justifyContent: 'center', marginLeft: 20 }}>
+        <Text
+          style={{
+            fontSize: 18,
+            fontWeight: '800',
+            textAlign: 'center',
+            color: '#3A4451',
+            marginBottom: 15,
+          }}
+        >
+          {title}
+        </Text>
+      </View>
+      <View
+        style={{
+          flex: 0,
+          alignItems: 'flex-end',
+          justifyContent: 'flex-start',
+          marginRight: 5,
+        }}
+      >
+        <Icon
+          name="info"
+          type="feather"
+          color="black"
+          underlayColor="transparent"
+          onPress={infoPress}
+        />
+      </View>
+    </View>
+    <Divider />
     {data.map((item, i) => (
       <RentFormItem
         key={i}

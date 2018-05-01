@@ -13,6 +13,7 @@ export default class CreateGroupModal extends Component {
       name: '',
       errorMessage: null,
       selection: 0,
+      isLoading: false,
     };
   }
 
@@ -21,15 +22,17 @@ export default class CreateGroupModal extends Component {
   }
 
   async createGroup() {
+    this.setState({ isLoading: true });
     const { name } = this.state;
     if (name.trim() === '') {
-      this.setState({ errorMessage: 'Please enter a group name' });
+      this.setState({ isLoading: false, errorMessage: 'Please enter a group name' });
       this.groupInput.shake();
     } else {
       // create new group
       await FireTools.createUser();
       await FireTools.createGroup(name);
       // close modal
+      this.setState({ isLoading: false });
       this.props.navigator.dismissAllModals({
         animationType: 'slide-down',
       });
@@ -37,13 +40,15 @@ export default class CreateGroupModal extends Component {
   }
 
   async joinGroup() {
+    this.setState({ isLoading: true });
     const { name } = this.state;
     if (name.trim() === '') {
-      this.setState({ errorMessage: 'Please enter a group name' });
+      this.setState({ isLoading: false, errorMessage: 'Please enter a group name' });
       this.groupInput.shake();
     } else {
       await FireTools.createUser();
       const success = await FireTools.addUsertoGroup(name);
+      this.setState({ isLoading: false });
       if (success) {
         this.props.navigator.dismissAllModals({
           animationType: 'slide-down',
@@ -105,6 +110,8 @@ export default class CreateGroupModal extends Component {
               borderWidth: 0,
               borderRadius: 5,
             }}
+            loading={this.state.isLoading}
+            disabled={this.state.isLoading}
             onPress={this.state.selection === 0 ? () => this.createGroup() : () => this.joinGroup()}
           />
         </View>

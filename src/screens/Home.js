@@ -144,9 +144,8 @@ export default class Home extends Component {
     this.onRefresh = this.onRefresh.bind(this);
   }
 
-  async componentWillMount() {
+  componentWillMount() {
     FireTools.init();
-    this.updateActivities();
   }
 
   onNavigatorEvent(event) {
@@ -257,7 +256,7 @@ const styles = StyleSheet.create({
     flex: 0,
     flexDirection: 'row',
     justifyContent: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: 'white',
     padding: 15,
   },
   nameStyle: {
