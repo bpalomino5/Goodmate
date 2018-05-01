@@ -1,6 +1,6 @@
 /* eslint no-param-reassign:0, react/no-array-index-key:0 */
 import React, { Component } from 'react';
-import { StyleSheet, View, ScrollView, LayoutAnimation } from 'react-native';
+import { StyleSheet, View, ScrollView, LayoutAnimation, Platform, Keyboard } from 'react-native';
 import { Header, Icon, Button, Overlay, Text, Input } from 'react-native-elements';
 import RentForm from '../../../components/RentForm';
 import FireTools from '../../../utils/FireTools';
@@ -45,14 +45,14 @@ const InfoOverlay = ({ isVisible, toggleOverlay, description }) => (
 
 const SectionOverlay = ({
   isVisible,
-  toggleOverlay,
   sectionValue,
   onChangeText,
-  submitSection,
+  onAdd,
+  onClose,
 }) => (
   <Overlay
     borderRadius={5}
-    containerStyle={{ justifyContent: 'flex-start', marginTop: 45 }}
+    containerStyle={{ justifyContent: 'flex-start', marginTop: Platform.OS === 'ios' ? 70 : 45 }}
     overlayStyle={{ padding: 15 }}
     isVisible={isVisible}
     width="auto"
@@ -80,17 +80,14 @@ const SectionOverlay = ({
       <Button
         title="Add "
         containerStyle={{ marginRight: 5 }}
-        onPress={() => {
-          toggleOverlay(false);
-          submitSection();
-        }}
+        onPress={onAdd}
         buttonStyle={{
           backgroundColor: 'rgba(92, 99,216, 1)',
         }}
       />
       <Button
         title="Close "
-        onPress={() => toggleOverlay(false)}
+        onPress={onClose}
         buttonStyle={{
           backgroundColor: 'rgba(92, 99,216, 1)',
         }}
@@ -117,12 +114,38 @@ export default class AddRentModal extends Component {
     this.closeModal = this.closeModal.bind(this);
     this.addSection = this.addSection.bind(this);
     this.openFinishModal = this.openFinishModal.bind(this);
+    this.onAdd = this.onAdd.bind(this);
+    this.onClose = this.onClose.bind(this);
   }
 
   componentDidMount() {
     FireTools.init();
     if (this.props.base !== undefined) {
       this.loadRentData();
+    }
+  }
+
+  onAdd() {
+    if (Platform.OS === 'ios') {
+      this.toggleOverlay(false);
+      this.addSection();
+    } else {
+      Keyboard.dismiss();
+      setTimeout(() => {
+        this.toggleOverlay(false);
+        this.addSection();
+      }, 100);
+    }
+  }
+
+  onClose() {
+    if (Platform.OS === 'ios') {
+      this.toggleOverlay(false);
+    } else {
+      Keyboard.dismiss();
+      setTimeout(() => {
+        this.toggleOverlay(false);
+      }, 100);
     }
   }
 
@@ -220,6 +243,7 @@ export default class AddRentModal extends Component {
         bills,
         date: this.props.date,
         onFinish: this.props.onFinish,
+        editing: this.props.editing,
       },
     });
   }
@@ -256,10 +280,10 @@ export default class AddRentModal extends Component {
             />
           </ScrollView>
         </View>
-        <View style={styles.SubmitSection}>
-          {!this.state.isOverlayOpen && (
+        {!this.state.isOverlayOpen && (
+          <View style={styles.SubmitSection}>
             <Button
-              containerStyle={{ marginTop: 20, flex: 0, alignSelf: 'center' }}
+              containerStyle={{ alignSelf: 'center' }}
               title="Next "
               buttonStyle={{
                 backgroundColor: 'rgba(92, 99,216, 1)',
@@ -271,14 +295,15 @@ export default class AddRentModal extends Component {
               }}
               onPress={this.openFinishModal}
             />
-          )}
-        </View>
+          </View>
+        )}
+
         <SectionOverlay
           isVisible={this.state.isOverlayOpen}
-          toggleOverlay={toggle => this.toggleOverlay(toggle)}
           sectionValue={this.state.sectionValue}
           onChangeText={text => this.setState({ sectionValue: text })}
-          submitSection={this.addSection}
+          onAdd={this.onAdd}
+          onClose={this.onClose}
         />
         <InfoOverlay
           isVisible={this.state.isInfoVisible}
@@ -301,5 +326,6 @@ const styles = StyleSheet.create({
   SubmitSection: {
     flex: 0,
     padding: 10,
+    marginTop: 20,
   },
 });

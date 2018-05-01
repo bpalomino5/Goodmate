@@ -258,11 +258,18 @@ export default class FinishRentModal extends Component {
     // post activity
     const timestamp = new Date().getTime();
     const name = FireTools.user.displayName.split(' ')[0];
+    let desc = '';
+    if (this.props.editing) {
+      desc = `Edited rent sheet: ${date.month} ${date.year}`;
+    } else {
+      desc = `Added rent sheet: ${date.month} ${date.year}`;
+    }
     await FireTools.addActivity({
-      description: [`Added rent sheet: ${date.month} ${date.year}`],
+      description: [desc],
       likes: 0,
       name,
       time: timestamp,
+      created_by: FireTools.user.uid,
     });
 
     this.props.onFinish();

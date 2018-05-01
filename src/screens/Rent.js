@@ -292,6 +292,7 @@ export default class Rent extends Component {
       screen: 'goodmate.AddRentModal',
       animationType: 'slide-up',
       passProps: {
+        editing: false,
         date: JSON.stringify(date),
         onFinish: () => this.getRentSheet(month, year),
       },
@@ -308,6 +309,7 @@ export default class Rent extends Component {
       screen: 'goodmate.AddRentModal',
       animationType: 'slide-up',
       passProps: {
+        editing: true,
         base: JSON.stringify(base),
         bills: JSON.stringify(bills),
         date: JSON.stringify(date),

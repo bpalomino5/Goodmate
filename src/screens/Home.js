@@ -57,7 +57,9 @@ const GoodHeader = ({ toggleDrawer, openActivityModal }) => (
   />
 );
 
-const ItemOverlay = ({ isVisible, closeOverlay, deleteItem }) => (
+const ItemOverlay = ({
+  isVisible, closeOverlay, deleteItem, isCreator,
+}) => (
   <Overlay
     borderRadius={5}
     overlayStyle={{ margin: 20 }}
@@ -68,14 +70,16 @@ const ItemOverlay = ({ isVisible, closeOverlay, deleteItem }) => (
     <View>
       <Text style={{ fontSize: 22, marginBottom: 20 }}>Options</Text>
       <View style={{ flexDirection: 'row' }}>
-        <Button
-          title="Delete "
-          onPress={deleteItem}
-          containerStyle={{ marginRight: 10 }}
-          buttonStyle={{
-            backgroundColor: 'rgba(92, 99,216, 1)',
-          }}
-        />
+        {isCreator && (
+          <Button
+            title="Delete "
+            onPress={deleteItem}
+            containerStyle={{ marginRight: 10 }}
+            buttonStyle={{
+              backgroundColor: 'rgba(92, 99,216, 1)',
+            }}
+          />
+        )}
         <Button
           title="Close "
           onPress={closeOverlay}
@@ -94,7 +98,7 @@ const ActivityFeed = ({ activities, addLike, onItemSelect }) =>
       key={item.key}
       item={item}
       addLike={() => addLike(item.key)}
-      onLongPress={() => onItemSelect(item.key)}
+      onLongPress={() => onItemSelect(item.key, item.created_by)}
     />
   ));
 
@@ -135,6 +139,7 @@ export default class Home extends Component {
       isVisible: false,
       aid: null,
       refreshing: false,
+      creator: false,
     };
 
     this.toggleDrawer = this.toggleDrawer.bind(this);
@@ -195,8 +200,8 @@ export default class Home extends Component {
     await this.updateActivities();
   }
 
-  openOverlay(aid) {
-    this.setState({ aid, isVisible: true });
+  openOverlay(aid, uid) {
+    this.setState({ aid, creator: uid === FireTools.user.uid, isVisible: true });
   }
 
   async removeItem() {
@@ -223,13 +228,14 @@ export default class Home extends Component {
             <ActivityFeed
               activities={this.state.activities}
               addLike={key => this.addLike(key)}
-              onItemSelect={aid => this.openOverlay(aid)}
+              onItemSelect={(aid, uid) => this.openOverlay(aid, uid)}
             />
           ) : (
             <EmptyActivityFeed />
           )}
         </ScrollView>
         <ItemOverlay
+          isCreator={this.state.creator}
           isVisible={this.state.isVisible}
           deleteItem={this.removeItem}
           closeOverlay={() => this.setState({ isVisible: false })}

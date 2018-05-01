@@ -136,6 +136,7 @@ export default class ActivityModal extends Component {
       description: selections,
       likes: 0,
       time,
+      created_by: FireTools.user.uid,
     };
     await FireTools.addActivity(activity);
     this.closeModal();

@@ -82,7 +82,7 @@ export default class AddReminderModal extends Component {
         date: this.props.item.date,
         time: this.props.item.time,
         rid: this.props.item.rid,
-        editing: true,
+        editing: this.props.item.created_by === FireTools.user.uid,
       });
     }
   }
@@ -95,7 +95,7 @@ export default class AddReminderModal extends Component {
 
   async addReminder() {
     const {
-      date, time, title, type, rid,
+      date, time, title, type, rid, editing,
     } = this.state;
 
     await FireTools.addReminder(
@@ -104,17 +104,25 @@ export default class AddReminderModal extends Component {
         time,
         title,
         type,
+        created_by: FireTools.user.uid,
       },
       rid,
     );
 
     const timestamp = new Date().getTime();
     const name = FireTools.user.displayName.split(' ')[0];
+    let desc = '';
+    if (editing) {
+      desc = `Edited reminder: ${title}`;
+    } else {
+      desc = `Created new reminder: ${title}`;
+    }
     await FireTools.addActivity({
-      description: [`Created new reminder: ${title}`],
+      description: [desc],
       likes: 0,
       name,
       time: timestamp,
+      created_by: FireTools.user.uid,
     });
 
     this.props.onFinish();

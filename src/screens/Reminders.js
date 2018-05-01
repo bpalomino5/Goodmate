@@ -97,7 +97,7 @@ export default class Reminders extends Component {
 
   async componentWillMount() {
     FireTools.init();
-    this.getReminders();
+    await this.getReminders();
   }
 
   onNavigatorEvent(event) {

@@ -400,6 +400,7 @@ class FireTools {
           type: doc.get('type'),
           date: doc.get('date'),
           time: doc.get('time'),
+          created_by: doc.get('created_by'),
           rid: doc.id,
         });
       });
