@@ -18,10 +18,21 @@ import io.invertase.firebase.fabric.crashlytics.RNFirebaseCrashlyticsPackage; //
 import java.util.Arrays;
 import java.util.List;
 
-
 import com.reactnativenavigation.NavigationApplication;
+import com.reactnativenavigation.react.NavigationReactNativeHost;
+import com.reactnativenavigation.react.ReactGateway;
 
  public class MainApplication extends NavigationApplication {
+    @Override
+    protected ReactGateway createReactGateway() {
+        ReactNativeHost host = new NavigationReactNativeHost(this, isDebug(), createAdditionalReactPackages()) {
+            @Override
+            protected String getJSMainModuleName() {
+                return "index";
+            }
+        };
+        return new ReactGateway(this, isDebug(), host);
+    }
 
      @Override
      public boolean isDebug() {
@@ -54,8 +65,8 @@ import com.reactnativenavigation.NavigationApplication;
          return getPackages();
      }
 
-    @Override
-    public String getJSMainModuleName() {
-        return "index";
-    }
+    // @Override
+    // public String getJSMainModuleName() {
+    //     return "index";
+    // }
  }

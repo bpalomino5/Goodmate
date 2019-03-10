@@ -4,15 +4,38 @@ import registerScreens from './src/screens';
 
 registerScreens();
 
-Navigation.startSingleScreenApp({
-  screen: {
-    screen: 'goodmate.Login',
-    title: 'Login',
-    navigatorStyle: {
-      navBarHidden: true,
+Navigation.setRoot({
+  root: {
+    stack: {
+      children: [
+        {
+          component: {
+            name: 'goodmate.Login',
+          },
+        },
+      ],
+      options: {
+        topBar: {
+          visible: false,
+          title: {
+            text: 'Login',
+          },
+        },
+        layout: ['portrait'],
+      },
     },
   },
-  appStyle: {
-    orientation: 'portrait',
-  },
 });
+
+// Navigation.startSingleScreenApp({
+//   screen: {
+//     screen: 'goodmate.Login',
+//     title: 'Login',
+//     navigatorStyle: {
+//       navBarHidden: true,
+//     },
+//   },
+//   appStyle: {
+//     orientation: 'portrait',
+//   },
+// });
