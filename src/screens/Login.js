@@ -24,8 +24,8 @@ const SCREEN_HEIGHT = Dimensions.get('window').height;
 const BG_IMAGE = require('../assets/bg2.jpg');
 
 // Enable LayoutAnimation on Android
-UIManager.setLayoutAnimationEnabledExperimental &&
-  UIManager.setLayoutAnimationEnabledExperimental(true);
+UIManager.setLayoutAnimationEnabledExperimental
+  && UIManager.setLayoutAnimationEnabledExperimental(true);
 
 const TabSelector = ({ selected }) => (
   <View style={styles.selectorContainer}>
@@ -44,7 +44,7 @@ const TitleSection = () => (
 const OptionSelector = ({ isLoginPage, isSignUpPage, selectCategory }) => (
   <View style={{ flexDirection: 'row' }}>
     <Button
-      clear
+      type="clear"
       activeOpacity={0.7}
       onPress={() => selectCategory(0)}
       containerStyle={{ flex: 1 }}
@@ -52,7 +52,7 @@ const OptionSelector = ({ isLoginPage, isSignUpPage, selectCategory }) => (
       title="Login "
     />
     <Button
-      clear
+      type="clear"
       activeOpacity={0.7}
       onPress={() => selectCategory(1)}
       containerStyle={{ flex: 1 }}
@@ -77,27 +77,42 @@ export default class Login extends Component {
     this.openHelpModal = this.openHelpModal.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.unsubscriber = firebase.auth().onAuthStateChanged(user => {
       // go to Home
       if (user != null) {
-        Navigation.startSingleScreenApp({
-          screen: {
-            screen: 'goodmate.Home',
-            title: 'Home',
-          },
-          appStyle: {
-            orientation: 'portrait',
-          },
-          drawer: {
-            left: {
-              screen: 'goodmate.Drawer',
-            },
-            style: {
-              drawerShadow: false, // for ios to look nicer
+        Navigation.setRoot({
+          root: {
+            component: {
+              name: 'goodmate.Home',
+              options: {
+                topBar: {
+                  title: {
+                    text: 'Home',
+                  },
+                },
+                layout: ['portrait'],
+              },
             },
           },
         });
+        // Navigation.startSingleScreenApp({
+        //   screen: {
+        //     screen: 'goodmate.Home',
+        //     title: 'Home',
+        //   },
+        //   appStyle: {
+        //     orientation: 'portrait',
+        //   },
+        //   drawer: {
+        //     left: {
+        //       screen: 'goodmate.Drawer',
+        //     },
+        //     style: {
+        //       drawerShadow: false, // for ios to look nicer
+        //     },
+        //   },
+        // });
       }
     });
   }
@@ -200,18 +215,27 @@ export default class Login extends Component {
   }
 
   openWelcomeModal() {
-    this.props.navigator.showModal({
-      screen: 'goodmate.WelcomeModal',
-      animationType: 'slide-up',
-      navigatorStyle: { navBarHidden: true },
+    Navigation.showModal({
+      component: {
+        name: 'goodmate.WelcomeModal',
+        options: {
+          animationType: 'slide-up',
+        },
+      },
     });
   }
 
   openHelpModal() {
-    this.props.navigator.showModal({
-      screen: 'goodmate.HelpModal',
-      animationType: 'slide-up',
-      navigatorStyle: { navBarHidden: true },
+    Navigation.showModal({
+      component: {
+        name: 'goodmate.HelpModal',
+        options: {
+          // topBar: {
+          //   visible: false,
+          // },
+          animationType: 'slide-up',
+        },
+      },
     });
   }
 

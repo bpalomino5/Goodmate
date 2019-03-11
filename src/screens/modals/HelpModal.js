@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { Text, View } from 'react-native';
-import { Header, Input, Button, Icon } from 'react-native-elements';
+import { Navigation } from 'react-native-navigation';
+import {
+  Header, Input, Button, Icon,
+} from 'react-native-elements';
 import firebase from 'react-native-firebase';
 
 const ForgotView = ({ onSubmit, onChangeText }) => (
@@ -41,11 +44,7 @@ export default class HelpModal extends Component {
     this.resetPassword = this.resetPassword.bind(this);
   }
 
-  closeModal = () => {
-    this.props.navigator.dismissModal({
-      animationType: 'slide-up',
-    });
-  };
+  closeModal = () => Navigation.dismissModal(this.props.componentId);
 
   resetPassword() {
     const { email } = this.state;

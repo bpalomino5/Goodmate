@@ -4,27 +4,23 @@ import registerScreens from './src/screens';
 
 registerScreens();
 
-Navigation.setRoot({
-  root: {
-    stack: {
-      children: [
-        {
-          component: {
-            name: 'goodmate.Login',
+Navigation.events().registerAppLaunchedListener(() => {
+  Navigation.setRoot({
+    root: {
+      component: {
+        name: 'goodmate.Login',
+        options: {
+          topBar: {
+            visible: false,
+            title: {
+              text: 'Login',
+            },
           },
+          layout: ['portrait'],
         },
-      ],
-      options: {
-        topBar: {
-          visible: false,
-          title: {
-            text: 'Login',
-          },
-        },
-        layout: ['portrait'],
       },
     },
-  },
+  });
 });
 
 // Navigation.startSingleScreenApp({
