@@ -9,6 +9,8 @@ import {
 } from 'react-native';
 import { Header, Icon, Text, Overlay, Button } from 'react-native-elements';
 import FireTools from '../utils/FireTools';
+import { Navigation } from 'react-native-navigation';
+import { toggleDrawer } from '../components/navigation'
 
 function formatTime(t) {
   const today = new Date().toLocaleDateString('en-US', {
@@ -127,11 +129,6 @@ const EmptyActivityFeed = () => (
 );
 
 export default class Home extends Component {
-  static navigatorStyle = {
-    navBarHidden: true,
-    statusBarColor: '#546054',
-  };
-
   constructor(props) {
     super(props);
     this.state = {
@@ -142,28 +139,14 @@ export default class Home extends Component {
       creator: false,
     };
 
-    this.toggleDrawer = this.toggleDrawer.bind(this);
-    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     this.openActivityModal = this.openActivityModal.bind(this);
     this.removeItem = this.removeItem.bind(this);
     this.onRefresh = this.onRefresh.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     FireTools.init();
-  }
-
-  onNavigatorEvent(event) {
-    if (event.type === 'DeepLink') {
-      if (event.link !== 'goodmate.Home') {
-        this.props.navigator.resetTo({
-          screen: event.link,
-        });
-      }
-    }
-    if (event.id === 'willAppear') {
-      this.updateActivities();
-    }
+    this.onRefresh()
   }
 
   onRefresh() {
@@ -181,17 +164,14 @@ export default class Home extends Component {
     }
   }
 
-  toggleDrawer() {
-    this.props.navigator.toggleDrawer({
-      side: 'left',
-      animated: true,
-    });
-  }
-
   openActivityModal() {
-    this.props.navigator.showModal({
-      screen: 'goodmate.ActivityModal',
-      animationType: 'slide-up',
+    Navigation.showModal({
+      component: {
+        name: 'goodmate.ActivityModal',
+        options: {
+          animationType: 'slide-up',
+        },
+      },
     });
   }
 
@@ -215,7 +195,7 @@ export default class Home extends Component {
     return (
       <View style={styles.container}>
         <GoodHeader
-          toggleDrawer={this.toggleDrawer}
+          toggleDrawer={() => toggleDrawer(this.props.componentId)}
           openActivityModal={this.openActivityModal}
           isVisible={this.state.headerVisible}
         />

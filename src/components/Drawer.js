@@ -5,7 +5,10 @@ import React, { Component } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import firebase from 'react-native-firebase';
 import { Navigation } from 'react-native-navigation';
-import { Avatar, Text, ListItem, Button } from 'react-native-elements';
+import {
+  Avatar, Text, ListItem, Button,
+} from 'react-native-elements';
+import { goToLogin } from './navigation';
 import FireTools from '../utils/FireTools';
 
 // Drawer Sections List
@@ -46,7 +49,7 @@ export default class Drawer extends Component {
     this.openScreen = this.openScreen.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     FireTools.init();
     this.setState({ name: FireTools.user.displayName });
   }
@@ -56,15 +59,7 @@ export default class Drawer extends Component {
       .auth()
       .signOut()
       .then(() => {
-        Navigation.startSingleScreenApp({
-          screen: {
-            screen: 'goodmate.Login',
-            title: 'Login',
-            navigatorStyle: {
-              navBarHidden: true,
-            },
-          },
-        });
+        goToLogin();
       })
       .catch(error => {
         console.log(error.code, error.message);
@@ -72,17 +67,32 @@ export default class Drawer extends Component {
   }
 
   toggleDrawer() {
-    this.props.navigator.toggleDrawer({
-      side: 'left',
-      animated: true,
+    Navigation.mergeOptions(this.props.componentId, {
+      sideMenu: {
+        left: {
+          visible: false,
+        },
+      },
     });
   }
 
+  goToScreen = screen => {
+    Navigation.setStackRoot('Stack', {
+      component: {
+        name: screen,
+        options: {
+          topBar: {
+            visible: false,
+            height: 0,
+          },
+        },
+      },
+    });
+  };
+
   openScreen(s) {
     this.toggleDrawer();
-    this.props.navigator.handleDeepLink({
-      link: s,
-    });
+    this.goToScreen(s);
   }
 
   render() {

@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Header, Icon, Text, Button } from 'react-native-elements';
+import {
+  Header, Icon, Text, Button,
+} from 'react-native-elements';
 import { TextField } from 'react-native-material-textfield';
+import { Navigation } from 'react-native-navigation';
 import FireTools from '../../../utils/FireTools';
 
 const GoodHeader = ({ closeModal }) => (
@@ -21,15 +24,10 @@ export default class FeedbackModal extends Component {
     this.state = {
       description: '',
     };
-    this.closeModal = this.closeModal.bind(this);
     this.submitSuggestion = this.submitSuggestion.bind(this);
   }
 
-  closeModal() {
-    this.props.navigator.dismissModal({
-      animationType: 'slide-down',
-    });
-  }
+  closeModal = () => Navigation.dismissModal(this.props.componentId);
 
   async submitSuggestion() {
     const { description } = this.state;

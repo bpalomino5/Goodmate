@@ -1,8 +1,13 @@
 /* eslint react/no-array-index-key: 0 */
 import React, { Component } from 'react';
-import { Header, Icon, Button, Text } from 'react-native-elements';
-import { StyleSheet, View, ScrollView, LayoutAnimation, TouchableOpacity } from 'react-native';
+import {
+  Header, Icon, Button, Text,
+} from 'react-native-elements';
+import {
+  StyleSheet, View, ScrollView, LayoutAnimation, TouchableOpacity,
+} from 'react-native';
 import { Dropdown } from 'react-native-material-dropdown';
+import { Navigation } from 'react-native-navigation';
 import FireTools from '../../utils/FireTools';
 
 const data = [
@@ -49,15 +54,14 @@ const GoodButton = ({ onPress }) => (
   </TouchableOpacity>
 );
 
-const ActivitySelectionList = ({ activities, updateValue }) =>
-  activities.map((item, i) => (
-    <ActivitySelection
-      key={i}
-      i={i}
-      activities={activities}
-      updateValue={value => updateValue(i, value)}
-    />
-  ));
+const ActivitySelectionList = ({ activities, updateValue }) => activities.map((item, i) => (
+  <ActivitySelection
+    key={i}
+    i={i}
+    activities={activities}
+    updateValue={value => updateValue(i, value)}
+  />
+));
 
 const ActivitySelection = ({ updateValue }) => (
   <View style={styles.SelectionRow}>
@@ -73,11 +77,6 @@ const ActivitySelection = ({ updateValue }) => (
 );
 
 export default class ActivityModal extends Component {
-  static navigatorStyle = {
-    navBarHidden: true,
-    statusBarColor: '#546054',
-  };
-
   constructor(props) {
     super(props);
     this.state = {
@@ -85,23 +84,18 @@ export default class ActivityModal extends Component {
       first: '',
     };
 
-    this.closeModal = this.closeModal.bind(this);
     this.removeItem = this.removeItem.bind(this);
     this.addItem = this.addItem.bind(this);
     this.postActivities = this.postActivities.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     FireTools.init();
     const name = FireTools.user.displayName.split(' ');
     this.setState({ first: name[0] });
   }
 
-  closeModal() {
-    this.props.navigator.dismissModal({
-      animationType: 'slide-down',
-    });
-  }
+  closeModal = () => Navigation.dismissModal(this.props.componentId);
 
   updateValue(i, value) {
     this.state.activities[i].description = value;

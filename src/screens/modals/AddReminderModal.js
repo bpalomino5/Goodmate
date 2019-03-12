@@ -8,6 +8,7 @@ import { TextField } from 'react-native-material-textfield';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import { Dropdown } from 'react-native-material-dropdown';
 import FireTools from '../../utils/FireTools';
+import { Navigation } from 'react-native-navigation'
 
 const types = [{ value: 'Bill' }, { value: 'Chore' }];
 
@@ -51,11 +52,6 @@ const SettingItem = ({
 );
 
 export default class AddReminderModal extends Component {
-  static navigatorStyle = {
-    navBarHidden: true,
-    statusBarColor: '#5B725A',
-  };
-
   constructor(props) {
     super(props);
     this.state = {
@@ -68,12 +64,11 @@ export default class AddReminderModal extends Component {
       rid: '',
       editing: false,
     };
-    this.closeModal = this.closeModal.bind(this);
     this.addReminder = this.addReminder.bind(this);
     this.removeReminder = this.removeReminder.bind(this);
   }
 
-  async componentWillMount() {
+  async componentDidMount() {
     FireTools.init();
     if (this.props.item !== undefined) {
       this.setState({
@@ -87,11 +82,7 @@ export default class AddReminderModal extends Component {
     }
   }
 
-  closeModal() {
-    this.props.navigator.dismissModal({
-      animationType: 'slide-down',
-    });
-  }
+  closeModal = () => Navigation.dismissModal(this.props.componentId);
 
   async addReminder() {
     const {

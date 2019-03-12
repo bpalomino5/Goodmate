@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Header, Icon, Text, Input } from 'react-native-elements';
+import {
+  Header, Icon, Text, Input,
+} from 'react-native-elements';
+import { Navigation } from 'react-native-navigation';
 import FireTools from '../../../../utils/FireTools';
 
 const GoodHeader = ({ closeModal, submitUpdate }) => (
@@ -25,19 +28,14 @@ export default class DeleteGroupModal extends Component {
       nameError: false,
       errorMessage: null,
     };
-    this.closeModal = this.closeModal.bind(this);
     this.submitUpdate = this.submitUpdate.bind(this);
   }
 
-  async componentWillMount() {
+  async componentDidMount() {
     FireTools.init();
   }
 
-  closeModal() {
-    this.props.navigator.dismissModal({
-      animationType: 'slide-down',
-    });
-  }
+  closeModal = () => Navigation.dismissModal(this.props.componentId);
 
   async submitUpdate() {
     const { name } = this.state;

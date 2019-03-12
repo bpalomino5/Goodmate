@@ -4,6 +4,7 @@ import { StyleSheet, View, ScrollView, LayoutAnimation, Platform, Keyboard } fro
 import { Header, Icon, Button, Overlay, Text, Input } from 'react-native-elements';
 import RentForm from '../../../components/RentForm';
 import FireTools from '../../../utils/FireTools';
+import { Navigation } from 'react-native-navigation'
 
 const GoodHeader = ({ closeModal, openOverlay }) => (
   <Header
@@ -97,11 +98,6 @@ const SectionOverlay = ({
 );
 
 export default class AddRentModal extends Component {
-  static navigatorStyle = {
-    navBarHidden: true,
-    statusBarColor: '#546054',
-  };
-
   constructor(props) {
     super(props);
     this.state = {
@@ -111,7 +107,6 @@ export default class AddRentModal extends Component {
       sectionValue: '',
       description: '',
     };
-    this.closeModal = this.closeModal.bind(this);
     this.addSection = this.addSection.bind(this);
     this.openFinishModal = this.openFinishModal.bind(this);
     this.onAdd = this.onAdd.bind(this);
@@ -212,11 +207,7 @@ export default class AddRentModal extends Component {
     this.setState({ sections });
   }
 
-  closeModal() {
-    this.props.navigator.dismissModal({
-      animationType: 'slide-down',
-    });
-  }
+  closeModal = () => Navigation.dismissModal(this.props.componentId);
 
   toggleOverlay(open) {
     LayoutAnimation.easeInEaseOut();
@@ -235,15 +226,19 @@ export default class AddRentModal extends Component {
     const base = JSON.stringify(this.rentRef.state.baseItems);
     const bills = JSON.stringify(this.rentRef.state.billItems);
 
-    this.props.navigator.showModal({
-      screen: 'goodmate.FinishRentModal',
-      animationType: 'slide-up',
-      passProps: {
-        base,
-        bills,
-        date: this.props.date,
-        onFinish: this.props.onFinish,
-        editing: this.props.editing,
+    Navigation.showModal({
+      component: {
+        name: 'goodmate.FinishRentModal',
+        passProps: {
+          base,
+          bills,
+          date: this.props.date,
+          onFinish: this.props.onFinish,
+          editing: this.props.editing,
+        },
+        options: {
+          animationType: 'slide-up',
+        },
       },
     });
   }

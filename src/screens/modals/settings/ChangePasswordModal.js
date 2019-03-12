@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Header, Icon, Overlay, Text, Button, Input } from 'react-native-elements';
+import {
+  Header, Icon, Overlay, Text, Button, Input,
+} from 'react-native-elements';
 import { TextField } from 'react-native-material-textfield';
+import { Navigation } from 'react-native-navigation';
 import FireTools from '../../../utils/FireTools';
 
 const GoodHeader = ({ closeModal, submitUpdate }) => (
@@ -111,13 +114,12 @@ export default class ChangePasswordModal extends Component {
       email: '',
       password: '',
     };
-    this.closeModal = this.closeModal.bind(this);
     this.submitUpdate = this.submitUpdate.bind(this);
     this.onLogin = this.onLogin.bind(this);
     this.onClose = this.onClose.bind(this);
   }
 
-  async componentWillMount() {
+  async componentDidMount() {
     FireTools.init();
   }
 
@@ -140,11 +142,7 @@ export default class ChangePasswordModal extends Component {
     this.closeModal();
   }
 
-  closeModal() {
-    this.props.navigator.dismissModal({
-      animationType: 'slide-down',
-    });
-  }
+  closeModal = () => Navigation.dismissModal(this.props.componentId);
 
   async submitUpdate() {
     const { npassword, vpassword } = this.state;

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Text, View } from 'react-native';
 import { Input, Button } from 'react-native-elements';
+import { Navigation } from 'react-native-navigation';
 import FireTools from '../../../utils/FireTools';
 
 export default class UserInfoModal extends Component {
@@ -13,7 +14,7 @@ export default class UserInfoModal extends Component {
     this.openNextModal = this.openNextModal.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     FireTools.init();
   }
 
@@ -23,11 +24,19 @@ export default class UserInfoModal extends Component {
     if (name.trim() !== '') {
       await FireTools.user.updateProfile({ displayName: name });
       // then move on to next modal
-      this.props.navigator.showModal({
-        screen: 'goodmate.CreateGroupModal',
-        animationType: 'slide-up',
-        navigatorStyle: { navBarHidden: true },
+      Navigation.showModal({
+        component: {
+          name: 'goodmate.CreateGroupModal',
+          options: {
+            animationType: 'slide-up',
+          },
+        },
       });
+      // this.props.navigator.showModal({
+      //   screen: 'goodmate.CreateGroupModal',
+      //   animationType: 'slide-up',
+      //   navigatorStyle: { navBarHidden: true },
+      // });
     }
   }
 

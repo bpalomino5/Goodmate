@@ -1,7 +1,10 @@
 /* eslint react/no-array-index-key: 0 */
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Header, Icon, Text, Card, ListItem } from 'react-native-elements';
+import {
+  Header, Icon, Text, Card, ListItem,
+} from 'react-native-elements';
+import { Navigation } from 'react-native-navigation';
 import FireTools from '../../../utils/FireTools';
 
 const DefaultOptions = [
@@ -69,10 +72,9 @@ export default class RentGroupModal extends Component {
       roommates: [],
       options: [],
     };
-    this.closeModal = this.closeModal.bind(this);
   }
 
-  async componentWillMount() {
+  async componentDidMount() {
     FireTools.init();
     await this.getPrimary();
     const groupName = await FireTools.getGroupName();
@@ -100,24 +102,31 @@ export default class RentGroupModal extends Component {
     this.setState({ roommates });
   }
 
-  closeModal() {
-    this.props.navigator.dismissModal({
-      animationType: 'slide-down',
-    });
-  }
+  closeModal = () => Navigation.dismissModal(this.props.componentId);
 
   openOptionModal(screen) {
-    this.props.navigator.showModal({
-      screen,
-      animationType: 'slide-up',
-      navigatorStyle: {
-        navBarHidden: true,
-        statusBarColor: '#546054',
-      },
-      passProps: {
-        onFinish: () => this.getPrimary(),
+    Navigation.showModal({
+      component: {
+        name: screen,
+        passProps: {
+          onFinish: () => this.getPrimary(),
+        },
+        options: {
+          animationType: 'slide-up',
+        },
       },
     });
+    // this.props.navigator.showModal({
+    //   screen,
+    //   animationType: 'slide-up',
+    //   navigatorStyle: {
+    //     navBarHidden: true,
+    //     statusBarColor: '#546054',
+    //   },
+    //   passProps: {
+    //     onFinish: () => this.getPrimary(),
+    //   },
+    // });
   }
 
   render() {

@@ -1,15 +1,21 @@
 /* eslint react/no-array-index-key: 0
  */
 import React, { Component } from 'react';
-import { ScrollView, StyleSheet, View, TouchableOpacity } from 'react-native';
-import { Header, Icon, Text, Divider } from 'react-native-elements';
+import {
+  ScrollView, StyleSheet, View, TouchableOpacity,
+} from 'react-native';
+import {
+  Header, Icon, Text, Divider,
+} from 'react-native-elements';
+import { Navigation } from 'react-native-navigation';
 import FireTools from '../utils/FireTools';
+import { toggleDrawer } from '../components/navigation';
 
 const GoodHeader = ({ toggleDrawer, openReminderModal }) => (
   <Header
     statusBarProps={{ backgroundColor: '#546054' }}
     backgroundColor="#5B725A"
-    leftComponent={
+    leftComponent={(
       <Icon
         name="menu"
         type="Feather"
@@ -17,9 +23,9 @@ const GoodHeader = ({ toggleDrawer, openReminderModal }) => (
         underlayColor="transparent"
         onPress={toggleDrawer}
       />
-    }
+)}
     centerComponent={{ text: 'Reminders', style: { fontSize: 18, color: '#fff' } }}
-    rightComponent={
+    rightComponent={(
       <Icon
         name="calendar-plus"
         type="material-community"
@@ -27,7 +33,7 @@ const GoodHeader = ({ toggleDrawer, openReminderModal }) => (
         underlayColor="transparent"
         onPress={openReminderModal}
       />
-    }
+)}
   />
 );
 
@@ -79,35 +85,18 @@ const ReminderItem = ({
 );
 
 export default class Reminders extends Component {
-  static navigatorStyle = {
-    navBarHidden: true,
-    statusBarColor: '#546054',
-  };
-
   constructor(props) {
     super(props);
     this.state = {
       reminders: [],
     };
 
-    this.toggleDrawer = this.toggleDrawer.bind(this);
-    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
     this.openReminderModal = this.openReminderModal.bind(this);
   }
 
-  async componentWillMount() {
+  async componentDidMount() {
     FireTools.init();
     await this.getReminders();
-  }
-
-  onNavigatorEvent(event) {
-    if (event.type === 'DeepLink') {
-      if (event.link !== 'goodmate.Reminders') {
-        this.props.navigator.resetTo({
-          screen: event.link,
-        });
-      }
-    }
   }
 
   async getReminders() {
@@ -117,30 +106,31 @@ export default class Reminders extends Component {
     }
   }
 
-  toggleDrawer() {
-    this.props.navigator.toggleDrawer({
-      side: 'left',
-      animated: true,
-    });
-  }
-
   openReminderModal() {
-    this.props.navigator.showModal({
-      screen: 'goodmate.AddReminderModal',
-      animationType: 'slide-up',
-      passProps: {
-        onFinish: () => this.getReminders(),
+    Navigation.showModal({
+      component: {
+        name: 'goodmate.AddReminderModal',
+        passProps: {
+          onFinish: () => this.getReminders(),
+        },
+        options: {
+          animationType: 'slide-up',
+        },
       },
     });
   }
 
   handleItemPress = item => {
-    this.props.navigator.showModal({
-      screen: 'goodmate.AddReminderModal',
-      animationType: 'slide-up',
-      passProps: {
-        item,
-        onFinish: () => this.getReminders(),
+    Navigation.showModal({
+      component: {
+        name: 'goodmate.AddReminderModal',
+        passProps: {
+          item,
+          onFinish: () => this.getReminders(),
+        },
+        options: {
+          animationType: 'slide-up',
+        },
       },
     });
   };
@@ -148,7 +138,10 @@ export default class Reminders extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <GoodHeader toggleDrawer={this.toggleDrawer} openReminderModal={this.openReminderModal} />
+        <GoodHeader
+          toggleDrawer={() => toggleDrawer(this.props.componentId)}
+          openReminderModal={this.openReminderModal}
+        />
         <ReminderList reminders={this.state.reminders} onItemPress={this.handleItemPress} />
       </View>
     );

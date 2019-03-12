@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Header, Icon } from 'react-native-elements';
 import { Dropdown } from 'react-native-material-dropdown';
+import { Navigation } from 'react-native-navigation';
 import FireTools from '../../../../utils/FireTools';
 
 const GoodHeader = ({ closeModal, submitUpdate }) => (
@@ -37,11 +38,10 @@ export default class NewPrimaryModal extends Component {
       names: [],
       selected: '',
     };
-    this.closeModal = this.closeModal.bind(this);
     this.submitUpdate = this.submitUpdate.bind(this);
   }
 
-  async componentWillMount() {
+  async componentDidMount() {
     FireTools.init();
     const roommates = await FireTools.getRoommates();
     const data = [];
@@ -53,11 +53,7 @@ export default class NewPrimaryModal extends Component {
     this.setState({ roommates, names: data });
   }
 
-  closeModal() {
-    this.props.navigator.dismissModal({
-      animationType: 'slide-down',
-    });
-  }
+  closeModal = () => Navigation.dismissModal(this.props.componentId);
 
   async submitUpdate() {
     const { roommates, selected } = this.state;

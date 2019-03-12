@@ -6,11 +6,13 @@
 import 'intl';
 import 'intl/locale-data/jsonp/en';
 import React, { Component } from 'react';
+import { Navigation } from 'react-native-navigation';
 import { StyleSheet, View, ScrollView } from 'react-native';
 import { Header, Icon, Text, Card, Button } from 'react-native-elements';
 import { Dropdown } from 'react-native-material-dropdown';
 import FireTools from '../utils/FireTools';
 import DataStore from '../utils/DataStore';
+import { toggleDrawer } from '../components/navigation'
 
 const formatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -146,11 +148,6 @@ const RentCardItem = ({ title, value }) => (
 );
 
 export default class Rent extends Component {
-  static navigatorStyle = {
-    navBarHidden: true,
-    statusBarColor: '#546054',
-  };
-
   constructor(props) {
     super(props);
     this.state = {
@@ -168,13 +165,12 @@ export default class Rent extends Component {
       primary: false,
       typeViewable: false,
     };
-    this.toggleDrawer = this.toggleDrawer.bind(this);
+
     this.openRentModal = this.openRentModal.bind(this);
     this.editRentSheet = this.editRentSheet.bind(this);
-    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
-  async componentWillMount() {
+  async componentDidMount() {
     FireTools.init();
     const roommates = await FireTools.getRoommates();
     roommates.forEach(mate => {
@@ -187,16 +183,6 @@ export default class Rent extends Component {
     if (date) {
       await this.getRentSheet(date.month, date.year);
       this.setState({ month: date.month, year: date.year, dateSelected: true });
-    }
-  }
-
-  onNavigatorEvent(event) {
-    if (event.type === 'DeepLink') {
-      if (event.link !== 'goodmate.Rent') {
-        this.props.navigator.resetTo({
-          screen: event.link,
-        });
-      }
     }
   }
 
@@ -277,24 +263,21 @@ export default class Rent extends Component {
     });
   }
 
-  toggleDrawer() {
-    this.props.navigator.toggleDrawer({
-      side: 'left',
-      animated: true,
-    });
-  }
-
   openRentModal() {
     const { month, year } = this.state;
     const date = { month, year };
 
-    this.props.navigator.showModal({
-      screen: 'goodmate.AddRentModal',
-      animationType: 'slide-up',
-      passProps: {
-        editing: false,
-        date: JSON.stringify(date),
-        onFinish: () => this.getRentSheet(month, year),
+    Navigation.showModal({
+      component: {
+        name: 'goodmate.AddRentModal',
+        passProps: {
+          editing: false,
+          date: JSON.stringify(date),
+          onFinish: () => this.getRentSheet(month, year),
+        },
+        options: {
+          animationType: 'slide-up',
+        },
       },
     });
   }
@@ -305,15 +288,19 @@ export default class Rent extends Component {
     } = this.state;
     const date = { month, year };
 
-    this.props.navigator.showModal({
-      screen: 'goodmate.AddRentModal',
-      animationType: 'slide-up',
-      passProps: {
-        editing: true,
-        base: JSON.stringify(base),
-        bills: JSON.stringify(bills),
-        date: JSON.stringify(date),
-        onFinish: () => this.getRentSheet(month, year),
+    Navigation.showModal({
+      component: {
+        name: 'goodmate.AddRentModal',
+        passProps: {
+          editing: true,
+          base: JSON.stringify(base),
+          bills: JSON.stringify(bills),
+          date: JSON.stringify(date),
+          onFinish: () => this.getRentSheet(month, year),
+        },
+        options: {
+          animationType: 'slide-up',
+        },
       },
     });
   }
@@ -356,7 +343,7 @@ export default class Rent extends Component {
     return (
       <View style={styles.container}>
         <GoodHeader
-          toggleDrawer={this.toggleDrawer}
+          toggleDrawer={() => toggleDrawer(this.props.componentId)}
           openRentModal={this.openRentModal}
           disabled={this.state.sheetAvailable || this.state.dateSelected === false}
           primary={this.state.primary}

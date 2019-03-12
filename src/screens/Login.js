@@ -15,6 +15,7 @@ import {
 import firebase from 'react-native-firebase';
 import { Button } from 'react-native-elements';
 import { Navigation } from 'react-native-navigation';
+import { goToHome } from '../components/navigation';
 import LoginForm from '../components/LoginForm';
 // import DataStore from '../utils/DataStore';
 import FireTools from '../utils/FireTools';
@@ -79,40 +80,8 @@ export default class Login extends Component {
 
   componentDidMount() {
     this.unsubscriber = firebase.auth().onAuthStateChanged(user => {
-      // go to Home
       if (user != null) {
-        Navigation.setRoot({
-          root: {
-            component: {
-              name: 'goodmate.Home',
-              options: {
-                topBar: {
-                  title: {
-                    text: 'Home',
-                  },
-                },
-                layout: ['portrait'],
-              },
-            },
-          },
-        });
-        // Navigation.startSingleScreenApp({
-        //   screen: {
-        //     screen: 'goodmate.Home',
-        //     title: 'Home',
-        //   },
-        //   appStyle: {
-        //     orientation: 'portrait',
-        //   },
-        //   drawer: {
-        //     left: {
-        //       screen: 'goodmate.Drawer',
-        //     },
-        //     style: {
-        //       drawerShadow: false, // for ios to look nicer
-        //     },
-        //   },
-        // });
+        goToHome();
       }
     });
   }
@@ -131,34 +100,18 @@ export default class Login extends Component {
     });
   }
 
-  async loginWithCred(credential) {
-    if (this.loginForm) {
-      this.setState({ isLoading: true });
-    }
+  // async loginWithCred(credential) {
+  //   if (this.loginForm) {
+  //     this.setState({ isLoading: true });
+  //   }
 
-    const cred = await FireTools.loginWithCred(credential);
-    if (cred) {
-      Navigation.startSingleScreenApp({
-        screen: {
-          screen: 'goodmate.Home',
-          title: 'Home',
-        },
-        appStyle: {
-          orientation: 'portrait',
-        },
-        drawer: {
-          left: {
-            screen: 'goodmate.Drawer',
-          },
-          style: {
-            drawerShadow: false, // for ios to look nicer
-          },
-        },
-      });
-    } else {
-      this.setState({ isLoading: false });
-    }
-  }
+  //   const cred = await FireTools.loginWithCred(credential);
+  //   if (cred) {
+  //     goToHome();
+  //   } else {
+  //     this.setState({ isLoading: false });
+  //   }
+  // }
 
   async loginWithEmail(email, password) {
     if (email.trim() !== '' && password.trim() !== '') {
@@ -230,9 +183,6 @@ export default class Login extends Component {
       component: {
         name: 'goodmate.HelpModal',
         options: {
-          // topBar: {
-          //   visible: false,
-          // },
           animationType: 'slide-up',
         },
       },

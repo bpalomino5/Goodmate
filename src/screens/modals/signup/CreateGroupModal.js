@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View } from 'react-native';
 import { Dropdown } from 'react-native-material-dropdown';
 import { Text, Input, Button } from 'react-native-elements';
+import { Navigation } from 'react-native-navigation';
 import FireTools from '../../../utils/FireTools';
 
 const options = [{ value: 'Create a roommate group' }, { value: 'Join a group' }];
@@ -17,9 +18,11 @@ export default class CreateGroupModal extends Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     FireTools.init();
   }
+
+  closeModal = () => Navigation.dismissModal(this.props.componentId);
 
   async createGroup() {
     this.setState({ isLoading: true });
@@ -33,9 +36,7 @@ export default class CreateGroupModal extends Component {
       await FireTools.createGroup(name);
       // close modal
       this.setState({ isLoading: false });
-      this.props.navigator.dismissAllModals({
-        animationType: 'slide-down',
-      });
+      this.closeModal();
     }
   }
 

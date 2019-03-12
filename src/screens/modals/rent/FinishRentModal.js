@@ -5,6 +5,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native';
 import { Button, Header, Icon, Text, Divider, Overlay, CheckBox } from 'react-native-elements';
 import FireTools from '../../../utils/FireTools';
+import { Navigation } from 'react-native-navigation'
 
 const formatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -148,11 +149,6 @@ const SheetItem = ({ data, onPress }) => (
 );
 
 export default class FinishRentModal extends Component {
-  static navigatorStyle = {
-    navBarHidden: true,
-    statusBarColor: '#546054',
-  };
-
   constructor(props) {
     super(props);
     this.state = {
@@ -163,11 +159,10 @@ export default class FinishRentModal extends Component {
       dataItem: {},
       infoVisible: false,
     };
-    this.closeModal = this.closeModal.bind(this);
     this.submitRent = this.submitRent.bind(this);
   }
 
-  async componentWillMount() {
+  async componentDidMount() {
     FireTools.init();
     if (this.props.base !== undefined) {
       const base = JSON.parse(this.props.base);
@@ -193,11 +188,7 @@ export default class FinishRentModal extends Component {
     this.forceUpdate();
   }
 
-  closeModal() {
-    this.props.navigator.dismissModal({
-      animationType: 'slide-down',
-    });
-  }
+  closeModal = () => Navigation.dismissModal(this.props.componentId);
 
   async submitRent() {
     const base = [];

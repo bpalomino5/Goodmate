@@ -1,7 +1,11 @@
 /* eslint react/no-array-index-key: 0 */
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Header, Icon, Text, Card, ListItem } from 'react-native-elements';
+import {
+  Header, Icon, Text, Card, ListItem,
+} from 'react-native-elements';
+import { Navigation } from 'react-native-navigation';
+import { toggleDrawer } from '../components/navigation';
 
 const profileItems = [
   { title: 'Edit profile', screen: 'goodmate.EditProfileModal' },
@@ -16,7 +20,7 @@ const GoodHeader = ({ toggleDrawer }) => (
   <Header
     statusBarProps={{ backgroundColor: '#546054' }}
     backgroundColor="#5B725A"
-    leftComponent={
+    leftComponent={(
       <Icon
         name="menu"
         type="Feather"
@@ -24,7 +28,7 @@ const GoodHeader = ({ toggleDrawer }) => (
         underlayColor="transparent"
         onPress={toggleDrawer}
       />
-    }
+)}
     centerComponent={{ text: 'Settings', style: { fontSize: 18, color: '#fff' } }}
   />
 );
@@ -60,49 +64,29 @@ const SettingCard = ({ sectionName, items, onItemPress }) => (
 );
 
 export default class Settings extends Component {
-  static navigatorStyle = {
-    navBarHidden: true,
-    statusBarColor: '#546054',
-  };
-
-  constructor(props) {
-    super(props);
-    this.toggleDrawer = this.toggleDrawer.bind(this);
-    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
-  }
-
-  onNavigatorEvent(event) {
-    if (event.type === 'DeepLink') {
-      if (event.link !== 'goodmate.Settings') {
-        this.props.navigator.resetTo({
-          screen: event.link,
-        });
-      }
-    }
-  }
-
-  toggleDrawer() {
-    this.props.navigator.toggleDrawer({
-      side: 'left',
-      animated: true,
-    });
-  }
-
   openModal = screen => {
-    this.props.navigator.showModal({
-      screen,
-      navigatorStyle: {
-        navBarHidden: true,
-        statusBarColor: '#546054',
+    Navigation.showModal({
+      component: {
+        name: screen,
+        options: {
+          animationType: 'slide-up',
+        },
       },
-      animationType: 'slide-up',
     });
+    // this.props.navigator.showModal({
+    //   screen,
+    //   navigatorStyle: {
+    //     navBarHidden: true,
+    //     statusBarColor: '#546054',
+    //   },
+    //   animationType: 'slide-up',
+    // });
   };
 
   render() {
     return (
       <View style={styles.container}>
-        <GoodHeader toggleDrawer={this.toggleDrawer} />
+        <GoodHeader toggleDrawer={() => toggleDrawer(this.props.componentId)} />
         <SettingsList onItemPress={screen => this.openModal(screen)} />
       </View>
     );

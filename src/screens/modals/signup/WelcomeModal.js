@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
-import { View, ImageBackground, Dimensions, StyleSheet } from 'react-native';
+import {
+  View, ImageBackground, Dimensions, StyleSheet,
+} from 'react-native';
 import { Text } from 'react-native-elements';
+import { Navigation } from 'react-native-navigation';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -9,11 +12,19 @@ const BG_IMAGE = require('../../../assets/bg2.jpg');
 export default class WelcomeModal extends Component {
   componentDidMount() {
     setTimeout(() => {
-      this.props.navigator.showModal({
-        screen: 'goodmate.UserInfoModal',
-        animationType: 'slide-up',
-        navigatorStyle: { navBarHidden: true },
+      Navigation.showModal({
+        component: {
+          name: 'goodmate.UserInfoModal',
+          options: {
+            animationType: 'slide-up',
+          },
+        },
       });
+      // this.props.navigator.showModal({
+      //   screen: 'goodmate.UserInfoModal',
+      //   animationType: 'slide-up',
+      //   navigatorStyle: { navBarHidden: true },
+      // });
     }, 3000);
   }
 
