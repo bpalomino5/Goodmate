@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Text, View } from 'react-native';
 import { Input, Button } from 'react-native-elements';
 import { Navigation } from 'react-native-navigation';
-import FireTools from '../../../utils/FireTools';
+import FireTools from '../../../../utils/FireTools';
 
 export default class UserInfoModal extends Component {
   constructor(props) {

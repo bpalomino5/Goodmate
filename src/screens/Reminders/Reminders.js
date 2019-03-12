@@ -8,8 +8,8 @@ import {
   Header, Icon, Text, Divider,
 } from 'react-native-elements';
 import { Navigation } from 'react-native-navigation';
-import FireTools from '../utils/FireTools';
-import { toggleDrawer } from '../components/navigation';
+import FireTools from '../../utils/FireTools';
+import { toggleDrawer } from '../../components/navigation';
 
 const GoodHeader = ({ toggleDrawer, openReminderModal }) => (
   <Header

@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { Dropdown } from 'react-native-material-dropdown';
 import { Navigation } from 'react-native-navigation';
-import FireTools from '../../utils/FireTools';
+import FireTools from '../../../utils/FireTools';
 
 const data = [
   {

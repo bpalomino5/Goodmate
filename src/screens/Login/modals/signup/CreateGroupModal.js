@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { Dropdown } from 'react-native-material-dropdown';
 import { Text, Input, Button } from 'react-native-elements';
 import { Navigation } from 'react-native-navigation';
-import FireTools from '../../../utils/FireTools';
+import FireTools from '../../../../utils/FireTools';
 
 const options = [{ value: 'Create a roommate group' }, { value: 'Join a group' }];
 

@@ -1,33 +1,33 @@
 import { Navigation } from 'react-native-navigation';
 
-import Login from './Login';
-import Home from './Home';
+import Login from './Login/Login';
+import Home from './Home/Home';
 import Drawer from '../components/Drawer';
-import Rent from './Rent';
-import Reminders from './Reminders';
-import Settings from './Settings';
+import Rent from './Rent/Rent';
+import Reminders from './Reminders/Reminders';
+import Settings from './Settings/Settings';
 
-import ActivityModal from './modals/ActivityModal';
-import AddRentModal from './modals/rent/AddRentModal';
-import FinishRentModal from './modals/rent/FinishRentModal';
-import AddReminderModal from './modals/AddReminderModal';
-import HelpModal from './modals/HelpModal';
+import ActivityModal from './Home/modals/ActivityModal';
+import AddRentModal from './Rent/modals/AddRentModal';
+import FinishRentModal from './Rent/modals/FinishRentModal';
+import AddReminderModal from './Reminders/modals/AddReminderModal';
+import HelpModal from './Login/modals/HelpModal';
 
-import EditProfileModal from './modals/settings/EditProfileModal';
-import ChangePasswordModal from './modals/settings/ChangePasswordModal';
-import RentGroupModal from './modals/settings/RentGroupModal';
-import FeedbackModal from './modals/settings/FeedbackModal';
+import EditProfileModal from './Settings/modals/EditProfileModal';
+import ChangePasswordModal from './Settings/modals/ChangePasswordModal';
+import RentGroupModal from './Settings/modals/RentGroupModal';
+import FeedbackModal from './Settings/modals/FeedbackModal';
 
-import DeleteGroupModal from './modals/settings/options/DeleteGroupModal';
-import LeaveGroupModal from './modals/settings/options/LeaveGroupModal';
-import NewPrimaryModal from './modals/settings/options/NewPrimaryModal';
-import RemoveMateModal from './modals/settings/options/RemoveMateModal';
-import JoinGroupModal from './modals/settings/options/JoinGroupModal';
-import OnlyCreateGroupModal from './modals/settings/options/OnlyCreateGroupModal';
+import DeleteGroupModal from './Settings/modals/options/DeleteGroupModal';
+import LeaveGroupModal from './Settings/modals/options/LeaveGroupModal';
+import NewPrimaryModal from './Settings/modals/options/NewPrimaryModal';
+import RemoveMateModal from './Settings/modals/options/RemoveMateModal';
+import JoinGroupModal from './Settings/modals/options/JoinGroupModal';
+import OnlyCreateGroupModal from './Settings/modals/options/OnlyCreateGroupModal';
 
-import WelcomeModal from './modals/signup/WelcomeModal';
-import UserInfoModal from './modals/signup/UserInfoModal';
-import CreateGroupModal from './modals/signup/CreateGroupModal';
+import WelcomeModal from './Login/modals/signup/WelcomeModal';
+import UserInfoModal from './Login/modals/signup/UserInfoModal';
+import CreateGroupModal from './Login/modals/signup/CreateGroupModal';
 
 export default function registerScreens() {
   Navigation.registerComponent('goodmate.Login', () => Login);

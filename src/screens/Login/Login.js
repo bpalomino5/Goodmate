@@ -15,14 +15,14 @@ import {
 import firebase from 'react-native-firebase';
 import { Button } from 'react-native-elements';
 import { Navigation } from 'react-native-navigation';
-import { goToHome } from '../components/navigation';
-import LoginForm from '../components/LoginForm';
+import { goToHome } from '../../components/navigation';
+import LoginForm from './components/LoginForm';
 // import DataStore from '../utils/DataStore';
-import FireTools from '../utils/FireTools';
+import FireTools from '../../utils/FireTools';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
-const BG_IMAGE = require('../assets/bg2.jpg');
+const BG_IMAGE = require('../../assets/bg2.jpg');
 
 // Enable LayoutAnimation on Android
 UIManager.setLayoutAnimationEnabledExperimental

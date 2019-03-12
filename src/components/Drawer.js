@@ -40,21 +40,14 @@ const list = [
 ];
 
 export default class Drawer extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      name: '',
-    };
-    this.logout = this.logout.bind(this);
-    this.openScreen = this.openScreen.bind(this);
-  }
+  state = { name: '' };
 
   componentDidMount() {
     FireTools.init();
     this.setState({ name: FireTools.user.displayName });
   }
 
-  logout() {
+  logout = () => {
     firebase
       .auth()
       .signOut()
@@ -64,9 +57,9 @@ export default class Drawer extends Component {
       .catch(error => {
         console.log(error.code, error.message);
       });
-  }
+  };
 
-  toggleDrawer() {
+  toggleDrawer = () => {
     Navigation.mergeOptions(this.props.componentId, {
       sideMenu: {
         left: {
@@ -74,7 +67,7 @@ export default class Drawer extends Component {
         },
       },
     });
-  }
+  };
 
   goToScreen = screen => {
     Navigation.setStackRoot('Stack', {
@@ -90,12 +83,13 @@ export default class Drawer extends Component {
     });
   };
 
-  openScreen(s) {
+  openScreen = s => {
     this.toggleDrawer();
     this.goToScreen(s);
-  }
+  };
 
   render() {
+    const { name } = this.state;
     return (
       <View style={styles.container}>
         <View style={styles.profileContainer}>
@@ -105,7 +99,7 @@ export default class Drawer extends Component {
             icon={{ name: 'user', type: 'font-awesome' }}
             activeOpacity={0.7}
           />
-          <Text style={{ paddingLeft: 10, fontSize: 20, color: 'white' }}>{this.state.name}</Text>
+          <Text style={{ paddingLeft: 10, fontSize: 20, color: 'white' }}>{name}</Text>
         </View>
         <View style={{ paddingBottom: 15 }}>
           {list.map((item, i) => (

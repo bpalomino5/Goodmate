@@ -7,10 +7,12 @@ import {
   TouchableWithoutFeedback,
   RefreshControl,
 } from 'react-native';
-import { Header, Icon, Text, Overlay, Button } from 'react-native-elements';
-import FireTools from '../utils/FireTools';
+import {
+  Header, Icon, Text, Overlay, Button,
+} from 'react-native-elements';
 import { Navigation } from 'react-native-navigation';
-import { toggleDrawer } from '../components/navigation'
+import FireTools from '../../utils/FireTools';
+import { toggleDrawer } from '../../components/navigation';
 
 function formatTime(t) {
   const today = new Date().toLocaleDateString('en-US', {
@@ -37,7 +39,7 @@ const GoodHeader = ({ toggleDrawer, openActivityModal }) => (
   <Header
     statusBarProps={{ backgroundColor: '#546054' }}
     backgroundColor="#5B725A"
-    leftComponent={
+    leftComponent={(
       <Icon
         name="menu"
         type="Feather"
@@ -45,9 +47,9 @@ const GoodHeader = ({ toggleDrawer, openActivityModal }) => (
         underlayColor="transparent"
         onPress={toggleDrawer}
       />
-    }
+)}
     centerComponent={{ text: 'Home', style: { fontSize: 18, color: '#fff' } }}
-    rightComponent={
+    rightComponent={(
       <Icon
         name="pencil"
         type="entypo"
@@ -55,7 +57,7 @@ const GoodHeader = ({ toggleDrawer, openActivityModal }) => (
         underlayColor="transparent"
         onPress={openActivityModal}
       />
-    }
+)}
   />
 );
 
@@ -94,15 +96,14 @@ const ItemOverlay = ({
   </Overlay>
 );
 
-const ActivityFeed = ({ activities, addLike, onItemSelect }) =>
-  activities.map(item => (
-    <ActivityItem
-      key={item.key}
-      item={item}
-      addLike={() => addLike(item.key)}
-      onLongPress={() => onItemSelect(item.key, item.created_by)}
-    />
-  ));
+const ActivityFeed = ({ activities, addLike, onItemSelect }) => activities.map(item => (
+  <ActivityItem
+    key={item.key}
+    item={item}
+    addLike={() => addLike(item.key)}
+    onLongPress={() => onItemSelect(item.key, item.created_by)}
+  />
+));
 
 const ActivityItem = ({ item, addLike, onLongPress }) => (
   <TouchableWithoutFeedback onLongPress={onLongPress}>
@@ -112,11 +113,19 @@ const ActivityItem = ({ item, addLike, onLongPress }) => (
         <View style={{ marginBottom: 5 }}>
           <Text style={{ fontSize: 13, color: 'grey' }}>{formatTime(item.time)}</Text>
         </View>
-        {item.description.map(desc => <Text key={desc}>{desc}</Text>)}
+        {item.description.map(desc => (
+          <Text key={desc}>{desc}</Text>
+        ))}
       </View>
       <View style={{ alignSelf: 'center' }}>
         <Icon name="thumbs-up" type="feather" onPress={addLike} />
-        {item.likes > 0 && <Text style={{ marginTop: 5 }}>{item.likes} likes</Text>}
+        {item.likes > 0 && (
+        <Text style={{ marginTop: 5 }}>
+          {item.likes}
+          {' '}
+likes
+        </Text>
+        )}
       </View>
     </View>
   </TouchableWithoutFeedback>
@@ -146,7 +155,7 @@ export default class Home extends Component {
 
   componentDidMount() {
     FireTools.init();
-    this.onRefresh()
+    this.onRefresh();
   }
 
   onRefresh() {

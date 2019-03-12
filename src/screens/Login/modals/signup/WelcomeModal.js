@@ -7,7 +7,7 @@ import { Navigation } from 'react-native-navigation';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
-const BG_IMAGE = require('../../../assets/bg2.jpg');
+const BG_IMAGE = require('../../../../assets/bg2.jpg');
 
 export default class WelcomeModal extends Component {
   componentDidMount() {

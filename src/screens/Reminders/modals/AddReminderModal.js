@@ -7,7 +7,7 @@ import { Header, Icon, Text, Button } from 'react-native-elements';
 import { TextField } from 'react-native-material-textfield';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import { Dropdown } from 'react-native-material-dropdown';
-import FireTools from '../../utils/FireTools';
+import FireTools from '../../../utils/FireTools';
 import { Navigation } from 'react-native-navigation'
 
 const types = [{ value: 'Bill' }, { value: 'Chore' }];

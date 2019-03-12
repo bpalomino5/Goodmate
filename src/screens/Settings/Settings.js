@@ -5,7 +5,7 @@ import {
   Header, Icon, Text, Card, ListItem,
 } from 'react-native-elements';
 import { Navigation } from 'react-native-navigation';
-import { toggleDrawer } from '../components/navigation';
+import { toggleDrawer } from '../../components/navigation';
 
 const profileItems = [
   { title: 'Edit profile', screen: 'goodmate.EditProfileModal' },
