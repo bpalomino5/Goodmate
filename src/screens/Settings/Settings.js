@@ -8,12 +8,12 @@ import { Navigation } from 'react-native-navigation';
 import { toggleDrawer } from '../../components/navigation';
 
 const profileItems = [
-  { title: 'Edit profile', screen: 'goodmate.EditProfileModal' },
-  { title: 'Change Password', screen: 'goodmate.ChangePasswordModal' },
+  { title: 'Edit profile', screen: 'EditProfileModal' },
+  { title: 'Change Password', screen: 'ChangePasswordModal' },
 ];
 const generalItems = [
-  { title: 'Rent Group', screen: 'goodmate.RentGroupModal' },
-  { title: 'Send feedback', screen: 'goodmate.FeedbackModal' },
+  { title: 'Rent Group', screen: 'RentGroupModal' },
+  { title: 'Send feedback', screen: 'FeedbackModal' },
 ];
 
 const GoodHeader = ({ toggleDrawer }) => (

@@ -5,7 +5,7 @@ export const goToHome = () => Navigation.setRoot({
     sideMenu: {
       left: {
         component: {
-          name: 'goodmate.Drawer',
+          name: 'Drawer',
           options: {
             topBar: {
               visible: false,
@@ -20,7 +20,7 @@ export const goToHome = () => Navigation.setRoot({
           children: [
             {
               component: {
-                name: 'goodmate.Home',
+                name: 'Home',
                 options: {
                   topBar: {
                     visible: false,
@@ -48,7 +48,7 @@ export const goToLogin = () => Navigation.setRoot({
           children: [
             {
               component: {
-                name: 'goodmate.Login',
+                name: 'Login',
                 options: {
                   topBar: {
                     visible: false,

@@ -269,7 +269,7 @@ export default class Rent extends Component {
 
     Navigation.showModal({
       component: {
-        name: 'goodmate.AddRentModal',
+        name: 'AddRentModal',
         passProps: {
           editing: false,
           date: JSON.stringify(date),
@@ -290,7 +290,7 @@ export default class Rent extends Component {
 
     Navigation.showModal({
       component: {
-        name: 'goodmate.AddRentModal',
+        name: 'AddRentModal',
         passProps: {
           editing: true,
           base: JSON.stringify(base),
