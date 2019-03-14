@@ -10,22 +10,11 @@ const ForgotView = ({ onSubmit, onChangeText }) => (
   <View style={styles.forgetView}>
     <Text> Forgot your password? </Text>
     <Text>Please enter your email to reset your password</Text>
-    <Input
-      containerStyle={{ marginTop: 10, paddingLeft: 20, paddingRight: 20 }}
-      placeholder="Email"
-      onChangeText={onChangeText}
-    />
+    <Input containerStyle={styles.inputStyle} placeholder="Email" onChangeText={onChangeText} />
     <Button
       containerStyle={{ marginTop: 30 }}
       title="Submit "
-      buttonStyle={{
-        backgroundColor: 'rgba(92, 99,216, 1)',
-        width: 300,
-        height: 45,
-        borderColor: 'transparent',
-        borderWidth: 0,
-        borderRadius: 5,
-      }}
+      buttonStyle={styles.submitButton}
       onPress={onSubmit}
     />
   </View>
@@ -90,5 +79,18 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  inputStyle: {
+    marginTop: 10,
+    paddingLeft: 20,
+    paddingRight: 20,
+  },
+  submitButton: {
+    backgroundColor: 'rgba(92, 99,216, 1)',
+    width: 300,
+    height: 45,
+    borderColor: 'transparent',
+    borderWidth: 0,
+    borderRadius: 5,
   },
 });

@@ -31,6 +31,14 @@ const Header = () => (
   </View>
 );
 
+const LoginPageContainer = ({ children }) => (
+  <View style={styles.container}>
+    <ImageBackground source={BG_IMAGE} style={styles.bgImage}>
+      <View>{children}</View>
+    </ImageBackground>
+  </View>
+);
+
 class Login extends Component {
   state = {
     selectedCategory: 0,
@@ -50,26 +58,22 @@ class Login extends Component {
     const isSignUpPage = selectedCategory === 1;
 
     return (
-      <View style={styles.container}>
-        <ImageBackground source={BG_IMAGE} style={styles.bgImage}>
-          <View>
-            <KeyboardAvoidingView contentContainerStyle={styles.loginContainer} behavior="position">
-              <Header />
-              <OptionSelector
-                isLoginPage={isLoginPage}
-                isSignUpPage={isSignUpPage}
-                selectCategory={v => this.selectCategory(v)}
-              />
-              <RegistrationForm
-                selectCategory={this.selectCategory}
-                isLoginPage={isLoginPage}
-                isSignUpPage={isSignUpPage}
-              />
-            </KeyboardAvoidingView>
-            <HelpButton />
-          </View>
-        </ImageBackground>
-      </View>
+      <LoginPageContainer>
+        <KeyboardAvoidingView contentContainerStyle={styles.loginContainer} behavior="position">
+          <Header />
+          <OptionSelector
+            isLoginPage={isLoginPage}
+            isSignUpPage={isSignUpPage}
+            selectCategory={v => this.selectCategory(v)}
+          />
+          <RegistrationForm
+            selectCategory={this.selectCategory}
+            isLoginPage={isLoginPage}
+            isSignUpPage={isSignUpPage}
+          />
+        </KeyboardAvoidingView>
+        <HelpButton />
+      </LoginPageContainer>
     );
   }
 }

@@ -23,30 +23,59 @@ formatTime = t => {
   return `${formatted}${time}`;
 };
 
-const ActivityItem = ({ item, addLike, onLongPress }) => (
+const ItemTitle = ({ title }) => <Text style={styles.nameStyle}>{title}</Text>;
+
+const ItemTimeStamp = ({ time }) => (
+  <View style={{ marginBottom: 5 }}>
+    <Text style={{ fontSize: 13, color: 'grey' }}>{formatTime(time)}</Text>
+  </View>
+);
+
+const ItemBody = ({ description }) => (
+  <>
+    {description.map(desc => (
+      <Text key={desc}>{desc}</Text>
+    ))}
+  </>
+);
+
+const ItemDetails = ({ name, time, description }) => (
+  <View style={{ flex: 1 }}>
+    <ItemTitle title={name} />
+    <ItemTimeStamp time={time} />
+    <ItemBody description={description} />
+  </View>
+);
+
+const LikesView = ({ likes }) => (
+  <>
+    {likes > 0 && (
+      <Text style={{ marginTop: 5 }}>
+        {likes}
+        &nbsp;likes
+      </Text>
+    )}
+  </>
+);
+
+const LikeButton = ({ likes, addLike }) => (
+  <View style={{ alignSelf: 'center' }}>
+    <Icon name="thumbs-up" type="feather" onPress={addLike} />
+    <LikesView likes={likes} />
+  </View>
+);
+
+const ActivityItemContainer = ({ children, onLongPress }) => (
   <TouchableWithoutFeedback onLongPress={onLongPress}>
-    <View style={styles.row}>
-      <View style={{ flex: 1 }}>
-        <Text style={styles.nameStyle}>{item.name}</Text>
-        <View style={{ marginBottom: 5 }}>
-          <Text style={{ fontSize: 13, color: 'grey' }}>{formatTime(item.time)}</Text>
-        </View>
-        {item.description.map(desc => (
-          <Text key={desc}>{desc}</Text>
-        ))}
-      </View>
-      <View style={{ alignSelf: 'center' }}>
-        <Icon name="thumbs-up" type="feather" onPress={addLike} />
-        {item.likes > 0 && (
-        <Text style={{ marginTop: 5 }}>
-          {item.likes}
-          {' '}
-likes
-        </Text>
-        )}
-      </View>
-    </View>
+    <View style={styles.row}>{children}</View>
   </TouchableWithoutFeedback>
+);
+
+const ActivityItem = ({ item, addLike, onLongPress }) => (
+  <ActivityItemContainer onLongPress={onLongPress}>
+    <ItemDetails name={item.name} time={item.time} description={item.description} />
+    <LikeButton likes={item.likes} addLike={addLike} />
+  </ActivityItemContainer>
 );
 
 const styles = StyleSheet.create({

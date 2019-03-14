@@ -3,35 +3,34 @@
 */
 import React, { Component } from 'react';
 import { View, LayoutAnimation } from 'react-native';
-import { Icon, Input, Card, Text, Divider } from 'react-native-elements';
+import {
+  Icon, Input, Card, Text, Divider,
+} from 'react-native-elements';
 import { Dropdown } from 'react-native-material-dropdown';
 
 export default class RentForm extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      baseItems: [
-        {
-          section: '',
-          type: '',
-          value: '',
-          removable: false,
-          uids: {},
-        },
-      ],
-      billItems: [
-        {
-          section: '',
-          type: '',
-          value: '',
-          removable: false,
-          uids: {},
-        },
-      ],
-    };
-  }
+  state = {
+    baseItems: [
+      {
+        section: '',
+        type: '',
+        value: '',
+        removable: false,
+        uids: {},
+      },
+    ],
+    billItems: [
+      {
+        section: '',
+        type: '',
+        value: '',
+        removable: false,
+        uids: {},
+      },
+    ],
+  };
 
-  addItem(key, state) {
+  addItem = (key, state) => {
     LayoutAnimation.easeInEaseOut();
     this.setState({
       [key]: [
@@ -45,54 +44,56 @@ export default class RentForm extends Component {
         },
       ],
     });
-  }
+  };
 
-  removeItem(key, state, index) {
+  removeItem = (key, state, index) => {
     LayoutAnimation.easeInEaseOut();
     this.setState({
       [key]: state.filter((_, i) => i !== index),
     });
-  }
+  };
 
-  updateItemValue(i, text, state) {
+  updateItemValue = (i, text, state) => {
     state[i].value = text;
     this.forceUpdate();
-  }
+  };
 
-  updateItemType(i, type, state) {
+  updateItemType = (i, type, state) => {
     state[i].type = type;
     this.forceUpdate();
-  }
+  };
 
-  updateItemSection(i, section, state) {
+  updateItemSection = (i, section, state) => {
     state[i].section = section;
     this.forceUpdate();
-  }
+  };
 
   render() {
+    const { sections, infoPress } = this.props;
+    const { baseItems, billItems } = this.state;
     return (
       <View>
         <RentFormCard
           title="Base Rent Items"
-          data={this.state.baseItems}
-          sections={this.props.sections}
-          addItem={() => this.addItem('baseItems', this.state.baseItems)}
-          removeItem={i => this.removeItem('baseItems', this.state.baseItems, i)}
-          updateItemType={(i, text) => this.updateItemType(i, text, this.state.baseItems)}
-          updateItemValue={(i, text) => this.updateItemValue(i, text, this.state.baseItems)}
-          updateItemSection={(i, text) => this.updateItemSection(i, text, this.state.baseItems)}
-          infoPress={() => this.props.infoPress('base')}
+          data={baseItems}
+          sections={sections}
+          addItem={() => this.addItem('baseItems', baseItems)}
+          removeItem={i => this.removeItem('baseItems', baseItems, i)}
+          updateItemType={(i, text) => this.updateItemType(i, text, baseItems)}
+          updateItemValue={(i, text) => this.updateItemValue(i, text, baseItems)}
+          updateItemSection={(i, text) => this.updateItemSection(i, text, baseItems)}
+          infoPress={() => infoPress('base')}
         />
         <RentFormCard
           title="Bill Items"
-          data={this.state.billItems}
-          sections={this.props.sections}
-          addItem={() => this.addItem('billItems', this.state.billItems)}
-          removeItem={i => this.removeItem('billItems', this.state.billItems, i)}
-          updateItemType={(i, text) => this.updateItemType(i, text, this.state.billItems)}
-          updateItemValue={(i, text) => this.updateItemValue(i, text, this.state.billItems)}
-          updateItemSection={(i, text) => this.updateItemSection(i, text, this.state.billItems)}
-          infoPress={() => this.props.infoPress('bill')}
+          data={billItems}
+          sections={sections}
+          addItem={() => this.addItem('billItems', billItems)}
+          removeItem={i => this.removeItem('billItems', billItems, i)}
+          updateItemType={(i, text) => this.updateItemType(i, text, billItems)}
+          updateItemValue={(i, text) => this.updateItemValue(i, text, billItems)}
+          updateItemSection={(i, text) => this.updateItemSection(i, text, billItems)}
+          infoPress={() => infoPress('bill')}
         />
       </View>
     );
