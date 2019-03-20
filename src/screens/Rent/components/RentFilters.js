@@ -28,33 +28,38 @@ const years = [
 ];
 
 const RentFilters = ({
-  updateMonth, updateYear, updateType, typeViewable, monthVal, yearVal,
+  updateMonth,
+  updateYear,
+  updateType,
+  isGroupPrimary,
+  monthVal,
+  yearVal,
 }) => (
   <View style={styles.dateSelection}>
-    {typeViewable && (
+    {isGroupPrimary && (
       <Dropdown
-        containerStyle={{ width: 90, marginRight: 7 }}
+        containerStyle={{ width: 90, marginRight: 7, marginLeft: 7 }}
         label="Type"
         data={types}
         value="Master"
-        onChangeText={value => updateType(value)}
+        onChangeText={updateType}
         animationDuration={180}
       />
     )}
     <Dropdown
-      containerStyle={{ flex: 1, marginRight: 7 }}
+      containerStyle={{ width: '30%', marginRight: 3 }}
       label="Month"
       data={months}
       value={monthVal}
-      onChangeText={value => updateMonth(value)}
+      onChangeText={updateMonth}
       animationDuration={180}
     />
     <Dropdown
-      containerStyle={{ width: 100 }}
+      containerStyle={{ width: '20%', marginRight: 7 }}
       label="Year"
       data={years}
       value={yearVal}
-      onChangeText={value => updateYear(value)}
+      onChangeText={updateYear}
       animationDuration={180}
     />
   </View>

@@ -12,8 +12,8 @@ import Settings from './Settings/Settings';
 import ActivityModal from './Home/components/modals/ActivityModal';
 
 // Rent Modals
-import AddRentModal from './Rent/components/modals/AddRentModal';
-import FinishRentModal from './Rent/components/modals/FinishRentModal';
+import AddRentModal from './Rent/components/modals/AddRentModal/AddRentModal';
+import FinishRentModal from './Rent/components/modals/FinishRentModal/FinishRentModal';
 
 // Reminders Modals
 import AddReminderModal from './Reminders/components/modals/AddReminderModal';

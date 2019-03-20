@@ -1,6 +1,6 @@
 /* eslint class-methods-use-this:0 */
 import React, { Component } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, YellowBox } from 'react-native';
 // tools
 import { Navigation } from 'react-native-navigation';
 import FireTools from '../../utils/FireTools';
@@ -9,6 +9,8 @@ import { toggleDrawer } from '../../components/navigation';
 import Header from './components/Header';
 import ItemOverlay from './components/ItemOverlay';
 import ActivityList from './components/Activity/ActivityList';
+
+YellowBox.ignoreWarnings(['relay:check']);
 
 class Home extends Component {
   state = {

@@ -4,7 +4,7 @@
 */
 import React, { Component } from 'react';
 import { Navigation } from 'react-native-navigation';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, LayoutAnimation } from 'react-native';
 import {
   Header, Icon, Text, Button,
 } from 'react-native-elements';
@@ -58,43 +58,30 @@ const DefaultView = ({ description }) => (
 );
 
 const RentSheetView = ({
-  base,
-  bills,
-  totals,
-  userbase,
-  userbills,
-  usertotals,
-  primary,
-  editRentSheet,
+  base, bills, totals, primary, editRentSheet,
 }) => (
   <View style={{ flex: 1 }}>
-    {primary ? (
-      <View style={styles.primaryContainer}>
-        <RentSheet base={base} bills={bills} totals={totals} />
+    <View style={styles.primaryContainer}>
+      <RentSheet base={base} bills={bills} totals={totals} />
+      {primary && (
         <Button
           containerStyle={styles.buttonContainer}
           title="Edit Rent Sheet "
           buttonStyle={styles.editButton}
           onPress={editRentSheet}
         />
-      </View>
-    ) : (
-      <RentSheet base={userbase} bills={userbills} totals={usertotals} />
-    )}
+      )}
+    </View>
   </View>
 );
 
-export default class Rent extends Component {
+class Rent extends Component {
   state = {
-    dateSelected: false,
     month: '',
     year: '',
     base: [],
     bills: [],
     totals: [],
-    userbase: [],
-    userbills: [],
-    usertotals: [],
     sheetAvailable: false,
     displayText: 'Please select a date!',
     primary: false,
@@ -113,8 +100,20 @@ export default class Rent extends Component {
     const date = await DataStore.getData('date');
     if (date) {
       await this.getRentSheet(date.month, date.year);
-      this.setState({ month: date.month, year: date.year, dateSelected: true });
+      this.setState({ month: date.month, year: date.year });
     }
+  };
+
+  prepRentData = data => {
+    const rent = [];
+    data.forEach((item, i) => {
+      if (i > 0) {
+        rent.push({ ...item, removable: true, value: item.value.toString() });
+      } else {
+        rent.push({ ...item, removable: false, value: item.value.toString() });
+      }
+    });
+    return rent;
   };
 
   getRentSheet = async (month, year) => {
@@ -122,11 +121,9 @@ export default class Rent extends Component {
     const { primary } = this.state;
     const sheetRef = await FireTools.getRent(month, year);
     if (sheetRef) {
-      const base = sheetRef.get('base');
-      const bills = sheetRef.get('bills');
+      const base = this.prepRentData(sheetRef.get('base'));
+      const bills = this.prepRentData(sheetRef.get('bills'));
       const totals = sheetRef.get('totals');
-      const userbase = sheetRef.get('base');
-      const userbills = sheetRef.get('bills');
       if (base != null && bills != null && totals != null) {
         if (primary) {
           // display master sheet
@@ -138,73 +135,89 @@ export default class Rent extends Component {
           });
         } else {
           // display normal user sheet
-          this.reviseRentSheet(userbase, userbills);
+          this.getPersonalSheet();
         }
       }
     } else {
-      this.setState({ sheetAvailable: false, displayText: 'No rent sheet created yet!' });
+      this.setState({ base: [], bills: [], totals: [], sheetAvailable: false, displayText: 'No rent sheet created yet!' });
     }
   };
 
-  reviseRentSheet = (userbase, userbills) => {
-    const usertotals = [];
+  getPersonalSheet = () => {
+    const { base, bills } = this.state;
+    const personalTotals = [];
 
-    userbase.forEach((item, i) => {
-      const index = usertotals.findIndex(t => t.section === item.section);
+    base.forEach((item, i) => {
+      const index = personalTotals.findIndex(t => t.section === item.section);
       const ids = Object.values(item.uids);
       if (ids.length > 0) {
         if (ids.indexOf(FireTools.user.uid) === -1) {
           // do not display
-          delete userbase[i];
+          delete base[i];
         } else {
           // divide by length
-          userbase[i].value = item.value / ids.length;
+          base[i].value = item.value / ids.length;
 
           if (index === -1) {
-            usertotals.push({ value: userbase[i].value, section: item.section });
+            personalTotals.push({ value: base[i].value, section: item.section });
           } else {
-            usertotals[index].value += userbase[i].value;
+            personalTotals[index].value += base[i].value;
           }
         }
       }
     });
 
-    userbills.forEach((item, i) => {
-      const index = usertotals.findIndex(t => t.section === item.section);
+    bills.forEach((item, i) => {
+      const index = personalTotals.findIndex(t => t.section === item.section);
       const ids = Object.values(item.uids);
       if (ids.indexOf(FireTools.user.uid) === -1) {
         // do not display
-        delete userbills[i];
+        delete bills[i];
       } else {
-        userbills[i].value = item.value / ids.length;
+        bills[i].value = item.value / ids.length;
 
         if (index === -1) {
-          usertotals.push({ value: userbills[i].value, section: item.section });
+          personalTotals.push({ value: bills[i].value, section: item.section });
         } else {
-          usertotals[index].value += userbills[i].value;
+          personalTotals[index].value += bills[i].value;
         }
       }
     });
 
-    this.setState({
-      userbase,
-      userbills,
-      usertotals,
-      sheetAvailable: true,
-    });
+    this.setState({ totals: personalTotals, sheetAvailable: true });
   };
 
   openRentModal = () => {
     const { month, year } = this.state;
     const date = { month, year };
+    const base = [
+      {
+        section: '',
+        type: '',
+        value: '',
+        removable: false,
+        uids: {},
+      },
+    ];
+    const bills = [
+      {
+        section: '',
+        type: '',
+        value: '',
+        removable: false,
+        uids: {},
+      },
+    ];
 
     Navigation.showModal({
       component: {
         name: 'AddRentModal',
         passProps: {
           editing: false,
-          date: JSON.stringify(date),
-          onFinish: this.getRentSheet(month, year),
+          date,
+          base,
+          bills,
+          onFinish: () => this.getRentSheet(month, year)
         },
         options: {
           animationType: 'slide-up',
@@ -224,10 +237,10 @@ export default class Rent extends Component {
         name: 'AddRentModal',
         passProps: {
           editing: true,
-          base: JSON.stringify(base),
-          bills: JSON.stringify(bills),
-          date: JSON.stringify(date),
-          onFinish: this.getRentSheet(month, year),
+          base,
+          bills,
+          date,
+          onFinish: () => this.getRentSheet(month, year)
         },
         options: {
           animationType: 'slide-up',
@@ -236,30 +249,25 @@ export default class Rent extends Component {
     });
   };
 
-  updateMonth = month => {
+  updateMonth = async month => {
     const { year } = this.state;
     if (year.trim() !== '') {
-      this.getRentSheet(month, year);
-      this.setState({ month, dateSelected: true });
-    } else {
-      this.setState({ month });
+      await this.getRentSheet(month, year);
     }
+    this.setState({ month });
   };
 
-  updateYear = year => {
+  updateYear = async year => {
     const { month } = this.state;
     if (month.trim() !== '') {
-      this.getRentSheet(month, year);
-      this.setState({ year, dateSelected: true });
-    } else {
-      this.setState({ year });
+      await this.getRentSheet(month, year);
     }
+    this.setState({ year });
   };
 
   updateType = async type => {
     const { month, year } = this.state;
     if (type.trim() !== '' && month.trim() !== '' && year.trim() !== '') {
-      // do something
       if (type === 'Master') {
         this.setState({ primary: true });
         await this.getRentSheet(month, year);
@@ -274,7 +282,6 @@ export default class Rent extends Component {
     const { componentId } = this.props;
     const {
       sheetAvailable,
-      dateSelected,
       primary,
       typeViewable,
       month,
@@ -283,10 +290,8 @@ export default class Rent extends Component {
       bills,
       totals,
       displayText,
-      userbase,
-      userbills,
-      usertotals,
     } = this.state;
+    const dateSelected = month !== '' && year !== '';
     return (
       <View style={styles.container}>
         <GoodHeader
@@ -296,10 +301,10 @@ export default class Rent extends Component {
           primary={primary}
         />
         <RentFilters
-          typeViewable={typeViewable}
-          updateMonth={month => this.updateMonth(month)}
-          updateYear={year => this.updateYear(year)}
-          updateType={type => this.updateType(type)}
+          isGroupPrimary={typeViewable}
+          updateMonth={this.updateMonth}
+          updateYear={this.updateYear}
+          updateType={this.updateType}
           monthVal={month}
           yearVal={year}
         />
@@ -309,9 +314,6 @@ export default class Rent extends Component {
             base={base}
             bills={bills}
             totals={totals}
-            userbase={userbase}
-            userbills={userbills}
-            usertotals={usertotals}
             editRentSheet={this.editRentSheet}
           />
         ) : (
@@ -346,3 +348,5 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
 });
+
+export default Rent;
