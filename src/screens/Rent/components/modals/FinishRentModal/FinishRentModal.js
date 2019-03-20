@@ -5,7 +5,7 @@ import { Button, Header, Icon } from 'react-native-elements';
 import { Navigation } from 'react-native-navigation';
 import FireTools from '../../../../../utils/FireTools';
 
-import RentSheet from './RentSheet';
+import RentSheet from './RentSheet/RentSheet';
 import InfoOverlay from './InfoOverlay';
 import AssignmentOverlay from './AssignmentOverlay';
 
@@ -42,8 +42,8 @@ const SubmitButton = ({ onPress }) => (
 
 class FinishRentModal extends Component {
   state = {
-    base: [],
-    bills: [],
+    main: [],
+    utilities: [],
     isVisible: false,
     roommates: [],
     dataItem: {},
@@ -52,9 +52,9 @@ class FinishRentModal extends Component {
 
   componentDidMount = async () => {
     FireTools.init();
-    const { base, bills } = this.props;
+    const { main, utilities } = this.props;
     const roommates = await FireTools.getRoommates();
-    this.setState({ base, bills, roommates });
+    this.setState({ main, utilities, roommates });
   };
 
   onCheckPress = item => {
@@ -72,15 +72,15 @@ class FinishRentModal extends Component {
   closeModal = () => Navigation.dismissModal(this.props.componentId);
 
   submitRent = async () => {
-    const { base, bills } = this.state;
+    const { main, utilities } = this.state;
     const { date, onFinish } = this.props;
 
-    let _base = [];
-    let _bills = [];
+    let _main = [];
+    let _utilities = [];
     const totals = [];
 
     // strip removables from data and calc totals
-    _base = base.map(item => {
+    _main = main.map(item => {
       const value = parseFloat(item.value);
       const index = totals.findIndex(t => t.section === item.section);
       if (index === -1) {
@@ -93,11 +93,11 @@ class FinishRentModal extends Component {
         // in totals, update totals
         totals[index].value += value;
       }
-      delete item.removable;
+      // delete item.removable;
       return { ...item, value };
     });
 
-    _bills = bills.map(item => {
+    _utilities = utilities.map(item => {
       const value = parseFloat(item.value);
       const index = totals.findIndex(t => t.section === item.section);
       if (index === -1) {
@@ -109,13 +109,13 @@ class FinishRentModal extends Component {
         totals[index].value += value;
       }
 
-      delete item.removable;
+      // delete item.removable;
       return { ...item, value };
     });
 
     await FireTools.submitRent({
-      base: _base,
-      bills: _bills,
+      base: _main,
+      bills: _utilities,
       totals,
       date,
     });
@@ -142,11 +142,11 @@ class FinishRentModal extends Component {
   };
 
   openOverlay = (i, name) => {
-    const { base, bills } = this.state;
-    if (name === 'base') {
-      this.setState({ dataItem: base[i] });
+    const { main, utilities } = this.state;
+    if (name === 'main') {
+      this.setState({ dataItem: main[i] });
     } else {
-      this.setState({ dataItem: bills[i] });
+      this.setState({ dataItem: utilities[i] });
     }
     this.setState({ isVisible: true });
   };
@@ -157,12 +157,12 @@ class FinishRentModal extends Component {
 
   render() {
     const {
-      isVisible, base, bills, roommates, dataItem, infoVisible,
+      isVisible, main, utilities, roommates, dataItem, infoVisible,
     } = this.state;
     return (
       <View style={styles.container}>
         <GoodHeader closeModal={this.closeModal} infoPress={this.displayInfoOverlay} />
-        <RentSheet base={base} bills={bills} onItemPress={this.openOverlay} />
+        <RentSheet main={main} utilities={utilities} onItemPress={this.openOverlay} />
         <SubmitButton onPress={this.submitRent} />
         <AssignmentOverlay
           isVisible={isVisible}

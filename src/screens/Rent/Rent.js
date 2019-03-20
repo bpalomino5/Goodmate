@@ -4,10 +4,8 @@
 */
 import React, { Component } from 'react';
 import { Navigation } from 'react-native-navigation';
-import { StyleSheet, View, LayoutAnimation } from 'react-native';
-import {
-  Header, Icon, Text, Button,
-} from 'react-native-elements';
+import { StyleSheet, View } from 'react-native';
+import { Header, Icon, Text } from 'react-native-elements';
 import FireTools from '../../utils/FireTools';
 import DataStore from '../../utils/DataStore';
 import { toggleDrawer } from '../../components/navigation';
@@ -57,20 +55,10 @@ const DefaultView = ({ description }) => (
   </View>
 );
 
-const RentSheetView = ({
-  base, bills, totals, primary, editRentSheet,
-}) => (
+const RentSheetView = ({ main, utilities, totals }) => (
   <View style={{ flex: 1 }}>
     <View style={styles.primaryContainer}>
-      <RentSheet base={base} bills={bills} totals={totals} />
-      {primary && (
-        <Button
-          containerStyle={styles.buttonContainer}
-          title="Edit Rent Sheet "
-          buttonStyle={styles.editButton}
-          onPress={editRentSheet}
-        />
-      )}
+      <RentSheet main={main} utilities={utilities} totals={totals} />
     </View>
   </View>
 );
@@ -79,8 +67,8 @@ class Rent extends Component {
   state = {
     month: '',
     year: '',
-    base: [],
-    bills: [],
+    main: [],
+    utilities: [],
     totals: [],
     sheetAvailable: false,
     displayText: 'Please select a date!',
@@ -108,9 +96,9 @@ class Rent extends Component {
     const rent = [];
     data.forEach((item, i) => {
       if (i > 0) {
-        rent.push({ ...item, removable: true, value: item.value.toString() });
+        rent.push({ ...item, value: item.value.toString() });
       } else {
-        rent.push({ ...item, removable: false, value: item.value.toString() });
+        rent.push({ ...item, value: item.value.toString() });
       }
     });
     return rent;
@@ -121,15 +109,15 @@ class Rent extends Component {
     const { primary } = this.state;
     const sheetRef = await FireTools.getRent(month, year);
     if (sheetRef) {
-      const base = this.prepRentData(sheetRef.get('base'));
-      const bills = this.prepRentData(sheetRef.get('bills'));
+      const main = this.prepRentData(sheetRef.get('base'));
+      const utilities = this.prepRentData(sheetRef.get('bills'));
       const totals = sheetRef.get('totals');
-      if (base != null && bills != null && totals != null) {
+      if (main != null && utilities != null && totals != null) {
         if (primary) {
           // display master sheet
           this.setState({
-            base,
-            bills,
+            main,
+            utilities,
             totals,
             sheetAvailable: true,
           });
@@ -139,47 +127,53 @@ class Rent extends Component {
         }
       }
     } else {
-      this.setState({ base: [], bills: [], totals: [], sheetAvailable: false, displayText: 'No rent sheet created yet!' });
+      this.setState({
+        main: [],
+        utilities: [],
+        totals: [],
+        sheetAvailable: false,
+        displayText: 'No rent sheet created yet!',
+      });
     }
   };
 
   getPersonalSheet = () => {
-    const { base, bills } = this.state;
+    const { main, utilities } = this.state;
     const personalTotals = [];
 
-    base.forEach((item, i) => {
+    main.forEach((item, i) => {
       const index = personalTotals.findIndex(t => t.section === item.section);
       const ids = Object.values(item.uids);
       if (ids.length > 0) {
         if (ids.indexOf(FireTools.user.uid) === -1) {
           // do not display
-          delete base[i];
+          delete main[i];
         } else {
           // divide by length
-          base[i].value = item.value / ids.length;
+          main[i].value = item.value / ids.length;
 
           if (index === -1) {
-            personalTotals.push({ value: base[i].value, section: item.section });
+            personalTotals.push({ value: main[i].value, section: item.section });
           } else {
-            personalTotals[index].value += base[i].value;
+            personalTotals[index].value += main[i].value;
           }
         }
       }
     });
 
-    bills.forEach((item, i) => {
+    utilities.forEach((item, i) => {
       const index = personalTotals.findIndex(t => t.section === item.section);
       const ids = Object.values(item.uids);
       if (ids.indexOf(FireTools.user.uid) === -1) {
         // do not display
-        delete bills[i];
+        delete utilities[i];
       } else {
-        bills[i].value = item.value / ids.length;
+        utilities[i].value = item.value / ids.length;
 
         if (index === -1) {
-          personalTotals.push({ value: bills[i].value, section: item.section });
+          personalTotals.push({ value: utilities[i].value, section: item.section });
         } else {
-          personalTotals[index].value += bills[i].value;
+          personalTotals[index].value += utilities[i].value;
         }
       }
     });
@@ -190,21 +184,19 @@ class Rent extends Component {
   openRentModal = () => {
     const { month, year } = this.state;
     const date = { month, year };
-    const base = [
+    const main = [
       {
         section: '',
         type: '',
         value: '',
-        removable: false,
         uids: {},
       },
     ];
-    const bills = [
+    const utilities = [
       {
         section: '',
         type: '',
         value: '',
-        removable: false,
         uids: {},
       },
     ];
@@ -215,9 +207,9 @@ class Rent extends Component {
         passProps: {
           editing: false,
           date,
-          base,
-          bills,
-          onFinish: () => this.getRentSheet(month, year)
+          main,
+          utilities,
+          onFinish: () => this.getRentSheet(month, year),
         },
         options: {
           animationType: 'slide-up',
@@ -228,7 +220,7 @@ class Rent extends Component {
 
   editRentSheet = () => {
     const {
-      base, bills, month, year,
+      main, utilities, month, year,
     } = this.state;
     const date = { month, year };
 
@@ -237,10 +229,10 @@ class Rent extends Component {
         name: 'AddRentModal',
         passProps: {
           editing: true,
-          base,
-          bills,
+          main,
+          utilities,
           date,
-          onFinish: () => this.getRentSheet(month, year)
+          onFinish: () => this.getRentSheet(month, year),
         },
         options: {
           animationType: 'slide-up',
@@ -286,8 +278,8 @@ class Rent extends Component {
       typeViewable,
       month,
       year,
-      base,
-      bills,
+      main,
+      utilities,
       totals,
       displayText,
     } = this.state;
@@ -296,8 +288,8 @@ class Rent extends Component {
       <View style={styles.container}>
         <GoodHeader
           toggleDrawer={() => toggleDrawer(componentId)}
-          openRentModal={this.openRentModal}
-          disabled={sheetAvailable || dateSelected === false}
+          openRentModal={sheetAvailable ? this.editRentSheet : this.openRentModal}
+          disabled={dateSelected === false}
           primary={primary}
         />
         <RentFilters
@@ -309,13 +301,7 @@ class Rent extends Component {
           yearVal={year}
         />
         {sheetAvailable ? (
-          <RentSheetView
-            primary={primary}
-            base={base}
-            bills={bills}
-            totals={totals}
-            editRentSheet={this.editRentSheet}
-          />
+          <RentSheetView main={main} utilities={utilities} totals={totals} />
         ) : (
           <DefaultView description={displayText} />
         )}
@@ -327,25 +313,12 @@ class Rent extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E3E1DE',
+    backgroundColor: 'white',
+    // backgroundColor: '#E3E1DE',
   },
 
   primaryContainer: {
     flex: 1,
-  },
-  buttonContainer: {
-    marginTop: 10,
-    marginBottom: 10,
-    flex: 0,
-    alignItems: 'center',
-  },
-  editButton: {
-    backgroundColor: 'rgba(92, 99,216, 1)',
-    width: 300,
-    height: 45,
-    borderColor: 'transparent',
-    borderWidth: 0,
-    borderRadius: 5,
   },
 });
 

@@ -18,15 +18,15 @@ const RentCardItem = ({ title, value }) => (
   </View>
 );
 
-const RentSheet = ({ base, bills, totals }) => (
+const RentSheet = ({ main, utilities, totals }) => (
   <ScrollView>
-    <Card title="Base" titleStyle={{ alignSelf: 'flex-start' }}>
-      {base.map((item, i) => (
+    <Card title="Main" titleStyle={{ alignSelf: 'flex-start' }}>
+      {main.map((item, i) => (
         <RentCardItem key={i} title={item.type} value={formatter.format(item.value)} />
       ))}
     </Card>
-    <Card title="Bills" titleStyle={{ alignSelf: 'flex-start' }}>
-      {bills.map((item, i) => (
+    <Card title="Utilities" titleStyle={{ alignSelf: 'flex-start' }}>
+      {utilities.map((item, i) => (
         <RentCardItem key={i} title={item.type} value={formatter.format(item.value)} />
       ))}
     </Card>

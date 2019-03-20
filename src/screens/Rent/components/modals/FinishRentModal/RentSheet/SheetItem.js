@@ -12,13 +12,21 @@ const formatter = new Intl.NumberFormat('en-US', {
 
 const ItemSection = ({ section }) => (
   <View style={styles.itemSection}>
-    <Text style={styles.sectionText}>{section}</Text>
+    {section === '' ? (
+      <Text style={[styles.sectionText, styles.preview]}>Section</Text>
+    ) : (
+      <Text style={styles.sectionText}>{section}</Text>
+    )}
   </View>
 );
 
 const ItemDetails = ({ uids, type }) => (
   <View style={styles.itemDetails}>
-    <Text style={styles.itemType}>{type}</Text>
+    {type === '' ? (
+      <Text style={[styles.itemType, styles.preview]}>Bill Name</Text>
+    ) : (
+      <Text style={styles.itemType}>{type}</Text>
+    )}
     <View style={styles.detailView}>
       {Object.keys(uids).map((item, i) => (
         <Text key={i} style={styles.detailText}>
@@ -57,7 +65,7 @@ const styles = StyleSheet.create({
   itemValue: {
     flex: 0,
     marginRight: 10,
-    alignItems: 'center',
+    alignItems: 'flex-end',
     justifyContent: 'center',
     width: 90,
   },
@@ -66,8 +74,9 @@ const styles = StyleSheet.create({
   itemType: { fontSize: 20, marginBottom: 4 },
   detailView: { flexDirection: 'row' },
   detailText: { fontSize: 14, color: 'grey' },
-  itemSection: { alignSelf: 'center', margin: 10, width: 65 },
+  itemSection: { marginLeft: 10, width: 100 },
   sectionText: { fontSize: 20 },
+  preview: { color: 'grey' },
 });
 
 export default SheetItem;
