@@ -1,36 +1,42 @@
 /* eslint react/no-array-index-key: 0 */
 import React, { Component } from 'react';
 import {
-  Header, Icon, Button, Text,
+  Header, Icon, Text, CheckBox,
 } from 'react-native-elements';
 import {
-  StyleSheet, View, ScrollView, LayoutAnimation, TouchableOpacity,
+  StyleSheet, View, ScrollView, TouchableOpacity,
 } from 'react-native';
-import { Dropdown } from 'react-native-material-dropdown';
 import { Navigation } from 'react-native-navigation';
 import FireTools from '../../../../utils/FireTools';
 
 const data = [
   {
     value: 'Cleaned the bathroom',
+    checked: false,
   },
   {
     value: 'Cleaned the kitchen',
+    checked: false,
   },
   {
     value: 'Vacuumed the floors',
+    checked: false,
   },
   {
     value: 'Took out the trash',
+    checked: false,
   },
   {
     value: 'Bought more dish soap',
+    checked: false,
   },
   {
     value: 'Washed the dishes',
+    checked: false,
   },
   {
     value: 'Bought more sponges',
+    checked: false,
   },
 ];
 
@@ -54,121 +60,76 @@ const GoodButton = ({ onPress }) => (
   </TouchableOpacity>
 );
 
-const ActivitySelectionList = ({ activities, updateValue }) => activities.map((item, i) => (
-  <ActivitySelection
-    key={i}
-    i={i}
-    activities={activities}
-    updateValue={value => updateValue(i, value)}
-  />
-));
+const ActivityCheckBox = ({ title, checked, onPress }) => (
+  <CheckBox title={title} checked={checked} onPress={onPress} />
+);
 
-const ActivitySelection = ({ updateValue }) => (
-  <View style={styles.SelectionRow}>
-    <View style={{ flex: 1 }}>
-      <Dropdown
-        label="Activity"
-        data={data}
-        animationDuration={150}
-        onChangeText={value => updateValue(value)}
+const OptionsSelector = ({ options, onSelected }) => (
+  <View>
+    {options.map((item, i) => (
+      <ActivityCheckBox
+        title={item.value}
+        key={i}
+        checked={item.checked}
+        onPress={() => onSelected(i)}
       />
-    </View>
+    ))}
   </View>
 );
 
-export default class ActivityModal extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      activities: [{ description: '' }],
-      first: '',
-    };
+class ActivityModal extends Component {
+  state = {
+    options: [],
+    first: '',
+  };
 
-    this.removeItem = this.removeItem.bind(this);
-    this.addItem = this.addItem.bind(this);
-    this.postActivities = this.postActivities.bind(this);
-  }
-
-  componentDidMount() {
+  componentDidMount = () => {
     FireTools.init();
     const name = FireTools.user.displayName.split(' ');
-    this.setState({ first: name[0] });
-  }
+    this.setState({ first: name[0], options: data });
+  };
 
   closeModal = () => Navigation.dismissModal(this.props.componentId);
 
-  updateValue(i, value) {
-    this.state.activities[i].description = value;
-    this.forceUpdate();
-  }
-
-  addItem() {
-    LayoutAnimation.easeInEaseOut();
-    this.setState({ activities: [...this.state.activities, { description: '' }] });
-  }
-
-  removeItem() {
-    LayoutAnimation.easeInEaseOut();
-    this.setState({
-      activities: this.state.activities.filter((_, i) => i !== this.state.activities.length - 1),
-    });
-  }
-
-  async postActivities() {
-    const { activities, first } = this.state;
+  postActivities = async () => {
+    const { options, first } = this.state;
     const selections = [];
-    activities.forEach(item => {
-      selections.push(item.description);
+    options.forEach(item => {
+      if (item.checked) {
+        selections.push(item.value);
+      }
     });
-
-    // get time
-    const date = new Date();
-    const time = date.getTime();
 
     const activity = {
       name: first,
       description: selections,
       likes: 0,
-      time,
+      time: new Date().getTime(),
       created_by: FireTools.user.uid,
     };
     await FireTools.addActivity(activity);
+    this.setState({ options: data });
     this.closeModal();
-  }
+  };
+
+  onActivitySelect = index => {
+    const options = [...this.state.options];
+    options[index].checked = !options[index].checked;
+    this.setState({ options });
+  };
 
   render() {
+    const { options } = this.state;
     return (
       <View style={styles.container}>
         <GoodHeader closeModal={this.closeModal} onPost={this.postActivities} />
         <View style={styles.InputSection}>
+          <View style={styles.headerText}>
+            <Text h4>Select every activity you did!</Text>
+          </View>
           <ScrollView>
-            <ActivitySelectionList
-              activities={this.state.activities}
-              updateValue={(i, v) => this.updateValue(i, v)}
-            />
+            <OptionsSelector options={options} onSelected={this.onActivitySelect} />
           </ScrollView>
-        </View>
-        <View style={styles.ButtonSection}>
-          <Button
-            title="Add "
-            buttonStyle={{
-              width: 100,
-              borderRadius: 30,
-              height: 40,
-              backgroundColor: 'rgba(92, 99,216, 1)',
-            }}
-            onPress={this.addItem}
-          />
-          <Button
-            title="Remove "
-            buttonStyle={{
-              borderRadius: 30,
-              width: 100,
-              height: 40,
-              backgroundColor: 'rgba(92, 99,216, 1)',
-            }}
-            onPress={this.removeItem}
-          />
         </View>
       </View>
     );
@@ -180,18 +141,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
   },
+  headerText: {
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginBottom: 10,
+    marginTop: 10,
+  },
   InputSection: {
     flex: 1,
-  },
-  SelectionRow: {
-    flex: 0,
-    flexDirection: 'row',
-    padding: 10,
-  },
-  ButtonSection: {
-    flex: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    padding: 10,
+    padding: 5,
   },
 });
+
+export default ActivityModal;
