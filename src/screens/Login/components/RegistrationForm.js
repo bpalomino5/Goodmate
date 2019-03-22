@@ -17,11 +17,14 @@ class RegistrationForm extends Component {
     emailError: null,
     passwordError: null,
     confirmError: null,
+    authFlag: false,
   };
 
   componentDidMount() {
     this.unsubscriber = firebase.auth().onAuthStateChanged(user => {
-      if (user != null) {
+      const { authFlag } = this.state;
+      if (user != null && !authFlag) {
+        this.setState({ authFlag: true });
         goToHome();
       }
     });

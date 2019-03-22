@@ -26,12 +26,11 @@ class Home extends Component {
     this.onRefresh();
   };
 
-  onRefresh = () => {
+  onRefresh = async () => {
     this.setState({ refreshing: true });
     // get data
-    this.updateActivities().then(() => {
-      this.setState({ refreshing: false });
-    });
+    await this.updateActivities();
+    this.setState({ refreshing: false });
   };
 
   updateActivities = async () => {

@@ -83,9 +83,9 @@ export default class Drawer extends Component {
     });
   };
 
-  openScreen = s => {
+  openScreen = screen => {
     this.toggleDrawer();
-    this.goToScreen(s);
+    this.goToScreen(screen);
   };
 
   render() {

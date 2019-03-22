@@ -15,7 +15,7 @@ class Reminders extends Component {
   };
 
   componentDidMount = async () => {
-    FireTools.init();
+    await FireTools.init();
     await this.getReminders();
   };
 
