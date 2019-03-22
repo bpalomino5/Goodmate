@@ -3,7 +3,6 @@ import { StyleSheet, View } from 'react-native';
 import {
   Header, Icon, Overlay, Text, Button, Input,
 } from 'react-native-elements';
-import { TextField } from 'react-native-material-textfield';
 import { Navigation } from 'react-native-navigation';
 import FireTools from '../../../../../utils/FireTools';
 
@@ -39,91 +38,87 @@ const ReAuthOverlay = ({
     width="auto"
     height="auto"
   >
-    <View>
-      <Text style={{ fontSize: 24, marginBottom: 5 }}>Reauthenticate to update</Text>
-      <Text style={{ fontSize: 16, color: 'gray', marginBottom: 10 }}>
-        Please re-login in order to securly update your password.
-      </Text>
-    </View>
-    <View style={{ marginBottom: 20 }}>
-      <Input
-        value={email}
-        keyboardAppearance="light"
-        autoFocus={false}
-        autoCapitalize="none"
-        autoCorrect={false}
-        keyboardType="email-address"
-        returnKeyType="next"
-        inputStyle={{ marginLeft: 10 }}
-        placeholder="Email"
-        containerStyle={{ borderBottomColor: 'rgba(0, 0, 0, 0.38)' }}
-        onSubmitEditing={() => this.passwordInput.focus()}
-        onChangeText={onEmailChange}
-        errorMessage={isEmailValid}
-        leftIcon={<Icon name="email-outline" type="material-community" />}
-      />
-      <Input
-        value={password}
-        keyboardAppearance="light"
-        autoCapitalize="none"
-        autoCorrect={false}
-        secureTextEntry
-        returnKeyType="done"
-        blurOnSubmit
-        containerStyle={{ marginTop: 16, borderBottomColor: 'rgba(0, 0, 0, 0.38)' }}
-        inputStyle={{ marginLeft: 10 }}
-        placeholder="Password"
-        ref={input => {
-          this.passwordInput = input;
-        }}
-        onSubmitEditing={onLogin}
-        onChangeText={onPasswordChange}
-        errorMessage={isPasswordValid}
-        leftIcon={<Icon name="lock-outline" type="material-community" />}
-      />
-    </View>
-    <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'flex-end' }}>
-      <Button
-        title="Login "
-        onPress={onLogin}
-        containerStyle={{ marginRight: 10 }}
-        buttonStyle={{
-          backgroundColor: 'rgba(92, 99,216, 1)',
-        }}
-      />
-      <Button
-        title="Close "
-        onPress={onClose}
-        buttonStyle={{
-          backgroundColor: 'rgba(92, 99,216, 1)',
-        }}
-      />
-    </View>
+    <>
+      <View>
+        <Text style={{ fontSize: 24, marginBottom: 5 }}>Reauthenticate to update</Text>
+        <Text style={{ fontSize: 16, color: 'gray', marginBottom: 10 }}>
+          Please re-login in order to securly update your password.
+        </Text>
+      </View>
+      <View style={{ marginBottom: 20 }}>
+        <Input
+          value={email}
+          keyboardAppearance="light"
+          autoFocus={false}
+          autoCapitalize="none"
+          autoCorrect={false}
+          keyboardType="email-address"
+          returnKeyType="next"
+          inputStyle={{ marginLeft: 10 }}
+          placeholder="Email"
+          containerStyle={{ borderBottomColor: 'rgba(0, 0, 0, 0.38)' }}
+          onSubmitEditing={() => this.passwordInput.focus()}
+          onChangeText={onEmailChange}
+          errorMessage={isEmailValid}
+          leftIcon={<Icon name="email-outline" type="material-community" />}
+        />
+        <Input
+          value={password}
+          keyboardAppearance="light"
+          autoCapitalize="none"
+          autoCorrect={false}
+          secureTextEntry
+          returnKeyType="done"
+          blurOnSubmit
+          containerStyle={{ marginTop: 16, borderBottomColor: 'rgba(0, 0, 0, 0.38)' }}
+          inputStyle={{ marginLeft: 10 }}
+          placeholder="Password"
+          ref={input => {
+            this.passwordInput = input;
+          }}
+          onSubmitEditing={onLogin}
+          onChangeText={onPasswordChange}
+          errorMessage={isPasswordValid}
+          leftIcon={<Icon name="lock-outline" type="material-community" />}
+        />
+      </View>
+      <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'flex-end' }}>
+        <Button
+          title="Login"
+          onPress={onLogin}
+          containerStyle={{ marginRight: 10 }}
+          buttonStyle={{
+            backgroundColor: 'rgba(92, 99,216, 1)',
+          }}
+        />
+        <Button
+          title="Close"
+          onPress={onClose}
+          buttonStyle={{
+            backgroundColor: 'rgba(92, 99,216, 1)',
+          }}
+        />
+      </View>
+    </>
   </Overlay>
 );
 
-export default class ChangePasswordModal extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      npassword: '',
-      vpassword: '',
-      visible: true,
-      isEmailValid: null,
-      isPasswordValid: null,
-      email: '',
-      password: '',
-    };
-    this.submitUpdate = this.submitUpdate.bind(this);
-    this.onLogin = this.onLogin.bind(this);
-    this.onClose = this.onClose.bind(this);
-  }
+class ChangePasswordModal extends Component {
+  state = {
+    npassword: '',
+    vpassword: '',
+    visible: true,
+    isEmailValid: null,
+    isPasswordValid: null,
+    email: '',
+    password: '',
+  };
 
-  async componentDidMount() {
+  componentDidMount = async () => {
     FireTools.init();
-  }
+  };
 
-  async onLogin() {
+  onLogin = async () => {
     const { email, password } = this.state;
     if (email.trim() !== '' && password.trim() !== '') {
       const response = await FireTools.loginWithEmail(email, password);
@@ -136,15 +131,17 @@ export default class ChangePasswordModal extends Component {
         });
       }
     }
-  }
+  };
 
-  onClose() {
-    this.closeModal();
-  }
+  onClose = () => {
+    this.setState({ visible: false });
+    // weird behavior overlay needs to close first
+    setTimeout(this.closeModal, 100);
+  };
 
   closeModal = () => Navigation.dismissModal(this.props.componentId);
 
-  async submitUpdate() {
+  submitUpdate = async () => {
     const { npassword, vpassword } = this.state;
     if (npassword.trim() !== '' && vpassword.trim() !== '') {
       if (npassword === vpassword) {
@@ -152,7 +149,7 @@ export default class ChangePasswordModal extends Component {
         this.closeModal();
       }
     }
-  }
+  };
 
   render() {
     const {
@@ -168,7 +165,8 @@ export default class ChangePasswordModal extends Component {
       <View style={styles.container}>
         <GoodHeader closeModal={this.closeModal} submitUpdate={this.submitUpdate} />
         <View style={{ padding: 15 }}>
-          <TextField
+          <Input
+            placeholder="Password"
             autoCapitalize="none"
             autoCorrect={false}
             secureTextEntry
@@ -178,7 +176,9 @@ export default class ChangePasswordModal extends Component {
             value={npassword}
             onChangeText={t => this.setState({ npassword: t })}
           />
-          <TextField
+          <Input
+            containerStyle={{ marginTop: 20 }}
+            placeholder="Rewrite Password"
             autoCapitalize="none"
             autoCorrect={false}
             secureTextEntry
@@ -208,6 +208,7 @@ export default class ChangePasswordModal extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
   },
 });
+
+export default ChangePasswordModal;

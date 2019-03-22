@@ -21,10 +21,10 @@ class Home extends Component {
     creator: false,
   };
 
-  componentDidMount() {
-    FireTools.init();
+  componentDidMount = async () => {
+    await FireTools.init();
     this.onRefresh();
-  }
+  };
 
   onRefresh = () => {
     this.setState({ refreshing: true });

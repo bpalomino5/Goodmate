@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
-import {
-  Header, Icon, Text, Input,
-} from 'react-native-elements';
+import { Header, Icon } from 'react-native-elements';
 import { Navigation } from 'react-native-navigation';
 import FireTools from '../../../../../../../utils/FireTools';
+import GroupOptionModal from '../../../../../../../components/shared/GroupOptionModal';
 
 const GoodHeader = ({ closeModal, submitUpdate }) => (
   <Header
@@ -20,24 +19,20 @@ const GoodHeader = ({ closeModal, submitUpdate }) => (
   />
 );
 
-export default class DeleteGroupModal extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      name: '',
-      nameError: false,
-      errorMessage: null,
-    };
-    this.submitUpdate = this.submitUpdate.bind(this);
-  }
+class DeleteGroupModal extends Component {
+  state = {
+    name: '',
+    nameError: false,
+    errorMessage: null,
+  };
 
-  async componentDidMount() {
+  componentDidMount = async () => {
     FireTools.init();
-  }
+  };
 
   closeModal = () => Navigation.dismissModal(this.props.componentId);
 
-  async submitUpdate() {
+  submitUpdate = async () => {
     const { name } = this.state;
     if (name.trim() !== '') {
       const success = await FireTools.DeleteGroup(name);
@@ -49,30 +44,24 @@ export default class DeleteGroupModal extends Component {
         this.groupInput.shake();
       }
     }
-  }
+  };
 
   render() {
+    const { name, nameError, errorMessage } = this.state;
     return (
       <View style={styles.container}>
         <GoodHeader closeModal={this.closeModal} submitUpdate={this.submitUpdate} />
-        <View style={{ flex: 0, padding: 15, marginTop: 30 }}>
-          <Text style={{ fontSize: 18, marginBottom: 30 }}>
-            Please confirm by writing your group name and selecting the checkmark
-          </Text>
-          <View style={{ marginTop: 10 }}>
-            <Text>Group name</Text>
-            <Input
-              ref={input => {
-                this.groupInput = input;
-              }}
-              value={this.state.name}
-              onChangeText={name => this.setState({ name })}
-              displayError={this.state.nameError}
-              placeholder="Anonymous Llamas"
-              errorMessage={this.state.errorMessage}
-            />
-          </View>
-        </View>
+        <GroupOptionModal
+          header="Please confirm by writing your group name and selecting the checkmark"
+          text="Group name"
+          inputRef={input => {
+            this.groupInput = input;
+          }}
+          name={name}
+          nameError={nameError}
+          errorMessage={errorMessage}
+          onChangeText={name => this.setState({ name })}
+        />
       </View>
     );
   }
@@ -84,3 +73,5 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
 });
+
+export default DeleteGroupModal;

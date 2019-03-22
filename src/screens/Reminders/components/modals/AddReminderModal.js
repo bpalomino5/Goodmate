@@ -4,9 +4,8 @@
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import {
-  Header, Icon, Text, Button,
+  Header, Icon, Text, Button, Input,
 } from 'react-native-elements';
-import { TextField } from 'react-native-material-textfield';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import { Dropdown } from 'react-native-material-dropdown';
 import { Navigation } from 'react-native-navigation';
@@ -29,25 +28,10 @@ const GoodHeader = ({ closeModal }) => (
 const SettingItem = ({
   onIconPress, iconName, type, color, title, value,
 }) => (
-  <View
-    style={{
-      flex: 0,
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginLeft: 10,
-    }}
-  >
+  <View style={styles.item}>
     <Icon name={iconName} type={type} reverse color={color} size={22} onPress={onIconPress} />
-    <Text style={{ fontSize: 20, marginLeft: 10 }}>{title}</Text>
-    <View
-      style={{
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'flex-end',
-        marginRight: 20,
-      }}
-    >
+    <Text style={styles.itemTitle}>{title}</Text>
+    <View style={styles.itemText}>
       <Text style={{ fontSize: 16 }}>{value}</Text>
     </View>
   </View>
@@ -155,13 +139,11 @@ export default class AddReminderModal extends Component {
       <View style={styles.container}>
         <GoodHeader closeModal={this.closeModal} />
         <View style={styles.titleInput}>
-          <TextField
-            fontSize={20}
-            labelFontSize={14}
-            label="Reminder"
-            textColor="white"
-            baseColor="white"
-            tintColor="white"
+          <Input
+            placeholder="Reminder"
+            inputContainerStyle={{ borderBottomColor: 'white' }}
+            inputStyle={{ fontSize: 20, color: 'white' }}
+            placeholderTextColor="lightgray"
             value={title}
             onChangeText={title => this.setState({ title })}
           />
@@ -185,29 +167,19 @@ export default class AddReminderModal extends Component {
           onIconPress={() => this.setState({ mode: 'time', isDTPickerVisible: true })}
         />
         <Dropdown
-          containerStyle={{
-            marginLeft: 20,
-            marginRight: 20,
-          }}
+          containerStyle={styles.dropdown}
           label="Type"
           data={types}
           animationDuration={150}
           value={type}
           onChangeText={value => this.setState({ type: value })}
         />
-        <View style={{ flex: 1, justifyContent: 'flex-end', marginBottom: 30 }}>
+        <View style={styles.buttonContainer}>
           {editing && (
             <Button
-              title="Delete Reminder "
-              containerStyle={{ flex: 0, alignSelf: 'center' }}
-              buttonStyle={{
-                backgroundColor: 'rgba(92, 99,216, 1)',
-                width: 300,
-                height: 45,
-                borderColor: 'transparent',
-                borderWidth: 0,
-                borderRadius: 5,
-              }}
+              title="Delete Reminder"
+              containerStyle={styles.delete}
+              buttonStyle={styles.buttonDelete}
               onPress={this.removeReminder}
             />
           )}
@@ -227,7 +199,10 @@ export default class AddReminderModal extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E3E1DE',
+  },
+  dropdown: {
+    marginLeft: 20,
+    marginRight: 20,
   },
   titleInput: {
     marginTop: -10,
@@ -242,4 +217,28 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     marginRight: 20,
   },
+  buttonContainer: { flex: 1, justifyContent: 'flex-end', marginBottom: 30 },
+  delete: { flex: 0, alignSelf: 'center' },
+  buttonDelete: {
+    backgroundColor: 'rgba(92, 99,216, 1)',
+    width: 300,
+    height: 45,
+    borderColor: 'transparent',
+    borderWidth: 0,
+    borderRadius: 5,
+  },
+  item: {
+    flex: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 10,
+  },
+  itemText: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    marginRight: 20,
+  },
+  itemTitle: { fontSize: 20, marginLeft: 10 },
 });

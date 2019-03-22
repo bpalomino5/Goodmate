@@ -19,31 +19,28 @@ const GoodHeader = ({ closeModal }) => (
 );
 
 export default class FeedbackModal extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      description: '',
-    };
-    this.submitSuggestion = this.submitSuggestion.bind(this);
-  }
+  state = {
+    description: '',
+  };
 
   closeModal = () => Navigation.dismissModal(this.props.componentId);
 
-  async submitSuggestion() {
+  submitSuggestion = async () => {
     const { description } = this.state;
     if (description.trim() !== '') {
       await FireTools.submitSuggestion(description);
       this.closeModal();
     }
-  }
+  };
 
   render() {
+    const { description } = this.state;
     return (
       <View style={styles.container}>
         <GoodHeader closeModal={this.closeModal} />
-        <View style={{ flex: 0, alignItems: 'center', padding: 5 }}>
-          <Text style={{ fontSize: 22, marginBottom: 10 }}>Thank you for using our services!</Text>
-          <Text style={{ textAlign: 'center', fontSize: 18 }}>
+        <View style={styles.textBox}>
+          <Text style={styles.titleText}>Thank you for using our services!</Text>
+          <Text style={styles.description}>
             Please help us improve by sending a suggestion or report a bug you found!
           </Text>
         </View>
@@ -55,19 +52,12 @@ export default class FeedbackModal extends Component {
           multiline
           characterRestriction={300}
           maxLength={300}
-          value={this.state.description}
+          value={description}
           onChangeText={description => this.setState({ description })}
         />
         <Button
-          containerStyle={{ flex: 0, alignSelf: 'center' }}
-          buttonStyle={{
-            backgroundColor: 'rgba(92, 99,216, 1)',
-            width: 300,
-            height: 45,
-            borderColor: 'transparent',
-            borderWidth: 0,
-            borderRadius: 5,
-          }}
+          containerStyle={styles.buttonContainer}
+          buttonStyle={styles.submitButton}
           title="Submit "
           onPress={this.submitSuggestion}
         />
@@ -81,9 +71,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
   },
+  textBox: { flex: 0, alignItems: 'center', padding: 5 },
+  titleText: { fontSize: 22, marginBottom: 10 },
+  description: { textAlign: 'center', fontSize: 18 },
+  buttonContainer: { flex: 0, alignSelf: 'center' },
   submitButton: {
-    borderRadius: 20,
-    height: 40,
-    width: 150,
+    backgroundColor: 'rgba(92, 99,216, 1)',
+    width: 300,
+    height: 45,
+    borderColor: 'transparent',
+    borderWidth: 0,
+    borderRadius: 5,
   },
 });

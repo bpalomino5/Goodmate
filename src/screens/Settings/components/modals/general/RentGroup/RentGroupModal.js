@@ -2,10 +2,11 @@
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import {
-  Header, Icon, Text, Card, ListItem,
+  Header, Icon, Text, Card,
 } from 'react-native-elements';
 import { Navigation } from 'react-native-navigation';
 import FireTools from '../../../../../../utils/FireTools';
+import SelectMenu from '../../../../../../components/shared/SelectMenu';
 
 const DefaultOptions = [
   { title: 'Join a group', screen: 'JoinGroupModal' },
@@ -29,59 +30,34 @@ const GoodHeader = ({ closeModal }) => (
   />
 );
 
-const RoommateView = ({
-  groupName, roommates, options, onItemPress,
-}) => (
+const RoommateView = ({ groupName, roommates }) => (
   <View>
     <Card title={`Group: ${groupName}`}>
       {roommates.map((member, i) => (
-        <View
-          style={{
-            flex: 0,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: 10,
-          }}
-          key={i}
-        >
-          <Text style={{ fontSize: 20 }}>{member.first}</Text>
+        <View style={styles.cardStyle} key={i}>
+          <Text style={styles.memberText}>{member.first}</Text>
           {member.primary && <Icon name="verified-user" />}
         </View>
-      ))}
-    </Card>
-    <Card title="Options">
-      {options.map((item, i) => (
-        <ListItem
-          key={i}
-          title={item.title}
-          hideChevron
-          titleContainerStyle={{ marginLeft: 0 }}
-          onPress={() => onItemPress(item.screen)}
-        />
       ))}
     </Card>
   </View>
 );
 
-export default class RentGroupModal extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      groupName: '',
-      roommates: [],
-      options: [],
-    };
-  }
+class RentGroupModal extends Component {
+  state = {
+    groupName: '',
+    roommates: [],
+    options: [],
+  };
 
-  async componentDidMount() {
+  componentDidMount = async () => {
     FireTools.init();
     await this.getPrimary();
     const groupName = await FireTools.getGroupName();
     this.setState({ groupName });
-  }
+  };
 
-  async getPrimary() {
+  getPrimary = async () => {
     const roommates = await FireTools.getRoommates();
     if (roommates.length > 0) {
       let isPrimary = false;
@@ -100,11 +76,11 @@ export default class RentGroupModal extends Component {
       this.setState({ options: DefaultOptions });
     }
     this.setState({ roommates });
-  }
+  };
 
   closeModal = () => Navigation.dismissModal(this.props.componentId);
 
-  openOptionModal(screen) {
+  openOptionModal = screen => {
     Navigation.showModal({
       component: {
         name: screen,
@@ -116,29 +92,15 @@ export default class RentGroupModal extends Component {
         },
       },
     });
-    // this.props.navigator.showModal({
-    //   screen,
-    //   animationType: 'slide-up',
-    //   navigatorStyle: {
-    //     navBarHidden: true,
-    //     statusBarColor: '#546054',
-    //   },
-    //   passProps: {
-    //     onFinish: () => this.getPrimary(),
-    //   },
-    // });
-  }
+  };
 
   render() {
+    const { groupName, roommates, options } = this.state;
     return (
       <View style={styles.container}>
         <GoodHeader closeModal={this.closeModal} />
-        <RoommateView
-          groupName={this.state.groupName}
-          roommates={this.state.roommates}
-          onItemPress={screen => this.openOptionModal(screen)}
-          options={this.state.options}
-        />
+        <RoommateView groupName={groupName} roommates={roommates} />
+        <SelectMenu title="Options" onItemPress={this.openOptionModal} options={options} />
       </View>
     );
   }
@@ -149,4 +111,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
   },
+  cardStyle: {
+    flex: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 10,
+  },
+  memberText: { fontSize: 20 },
 });
+
+export default RentGroupModal;

@@ -125,7 +125,7 @@ class ActivityModal extends Component {
         <GoodHeader closeModal={this.closeModal} onPost={this.postActivities} />
         <View style={styles.InputSection}>
           <View style={styles.headerText}>
-            <Text h4>Select every activity you did!</Text>
+            <Text h4>Select all your activities</Text>
           </View>
           <ScrollView>
             <OptionsSelector options={options} onSelected={this.onActivitySelect} />

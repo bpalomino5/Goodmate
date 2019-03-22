@@ -31,17 +31,13 @@ const MateSelect = ({ names, onSelect }) => (
 );
 
 export default class RemoveMateModal extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      roommates: [],
-      names: [],
-      selected: '',
-    };
-    this.submitUpdate = this.submitUpdate.bind(this);
-  }
+  state = {
+    roommates: [],
+    names: [],
+    selected: '',
+  };
 
-  async componentDidMount() {
+  componentDidMount = async () => {
     FireTools.init();
     const roommates = await FireTools.getRoommates();
     const data = [];
@@ -51,11 +47,11 @@ export default class RemoveMateModal extends Component {
       }
     });
     this.setState({ roommates, names: data });
-  }
+  };
 
   closeModal = () => Navigation.dismissModal(this.props.componentId);
 
-  async submitUpdate() {
+  submitUpdate = async () => {
     const { roommates, selected } = this.state;
     let roommate = null;
     if (selected.trim() !== '') {
@@ -71,13 +67,14 @@ export default class RemoveMateModal extends Component {
         this.closeModal();
       }
     }
-  }
+  };
 
   render() {
+    const { names } = this.state;
     return (
       <View style={styles.container}>
         <GoodHeader closeModal={this.closeModal} submitUpdate={this.submitUpdate} />
-        <MateSelect names={this.state.names} onSelect={selected => this.setState({ selected })} />
+        <MateSelect names={names} onSelect={selected => this.setState({ selected })} />
       </View>
     );
   }

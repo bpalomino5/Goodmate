@@ -45,10 +45,12 @@ const ItemValue = ({ value }) => (
 );
 
 const ItemContainer = ({ onPress, children }) => (
-  <TouchableOpacity onPress={onPress}>
-    <View style={styles.ItemContainer}>{children}</View>
+  <View>
+    <TouchableOpacity onPress={onPress}>
+      <View style={styles.ItemContainer}>{children}</View>
+    </TouchableOpacity>
     <Divider style={styles.divider} />
-  </TouchableOpacity>
+  </View>
 );
 
 const SheetItem = ({ data, onPress }) => (
@@ -60,8 +62,8 @@ const SheetItem = ({ data, onPress }) => (
 );
 
 const styles = StyleSheet.create({
-  ItemContainer: { padding: 5, flexDirection: 'row' },
-  divider: { backgroundColor: 'grey' },
+  ItemContainer: { padding: 10, flexDirection: 'row' },
+  divider: { backgroundColor: 'grey', height: 1 },
   itemValue: {
     flex: 0,
     marginRight: 10,

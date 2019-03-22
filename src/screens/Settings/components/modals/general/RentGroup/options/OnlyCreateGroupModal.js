@@ -21,23 +21,19 @@ const GoodHeader = ({ closeModal, submitUpdate }) => (
 );
 
 export default class OnlyCreateGroupModal extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      name: '',
-      nameError: false,
-      errorMessage: null,
-    };
-    this.submitUpdate = this.submitUpdate.bind(this);
-  }
+  state = {
+    name: '',
+    nameError: false,
+    errorMessage: null,
+  };
 
-  async componentDidMount() {
+  componentDidMount = async () => {
     FireTools.init();
-  }
+  };
 
   closeModal = () => Navigation.dismissModal(this.props.componentId);
 
-  async submitUpdate() {
+  submitUpdate = async () => {
     const { name } = this.state;
     if (name.trim() !== '') {
       const success = await FireTools.createGroup(name);
@@ -49,7 +45,7 @@ export default class OnlyCreateGroupModal extends Component {
         this.groupInput.shake();
       }
     }
-  }
+  };
 
   render() {
     return (

@@ -15,11 +15,11 @@ const RoommateList = ({ roommates, uids, onCheckPress }) => (
     {roommates.map((item, i) => (
       <View key={i} style={styles.mateItem}>
         <CheckBox
-          checkedColor="rgba(92, 99,216, 1)"
+          title={item.first}
+          textStyle={{ fontSize: 16 }}
           onPress={() => onCheckPress(item)}
           checked={uids !== undefined ? item.first in uids : null}
         />
-        <Text style={styles.mateName}>{item.first}</Text>
       </View>
     ))}
   </>
@@ -28,13 +28,7 @@ const RoommateList = ({ roommates, uids, onCheckPress }) => (
 const AssignmentOverlay = ({
   isVisible, toggleOverlay, roommates, onCheckPress, dataItem,
 }) => (
-  <Overlay
-    borderRadius={5}
-    overlayStyle={styles.container}
-    isVisible={isVisible}
-    width="auto"
-    height="auto"
-  >
+  <Overlay borderRadius={5} overlayStyle={styles.container} isVisible={isVisible} height="auto">
     <>
       <Text style={styles.title}>Assign to Roommates</Text>
       <Text style={styles.subtitle}>Select the roommates you want to divide this item by</Text>
