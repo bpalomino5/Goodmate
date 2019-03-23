@@ -26,10 +26,19 @@ const GoodHeader = ({ closeModal }) => (
 );
 
 const SettingItem = ({
-  onIconPress, iconName, type, color, title, value,
+  onIconPress, iconName, type, color, title, value, disabled,
 }) => (
   <View style={styles.item}>
-    <Icon name={iconName} type={type} reverse color={color} size={22} onPress={onIconPress} />
+    <Icon
+      name={iconName}
+      type={type}
+      reverse
+      color={color}
+      size={22}
+      disabled={disabled}
+      disabledStyle={{ backgroundColor: color }}
+      onPress={onIconPress}
+    />
     <Text style={styles.itemTitle}>{title}</Text>
     <View style={styles.itemText}>
       <Text style={{ fontSize: 16 }}>{value}</Text>
@@ -60,7 +69,9 @@ export default class AddReminderModal extends Component {
         rid: item.rid,
         editing: auth.isAuthUser(item.created_by),
       });
-    }
+    } else {
+      this.setState({ editing: true });
+    } 
   };
 
   closeModal = () => Navigation.dismissModal(this.props.componentId);
@@ -82,14 +93,14 @@ export default class AddReminderModal extends Component {
 
     const timestamp = new Date().getTime();
     const name = auth.getDisplayName().split(' ')[0];
-    let desc = '';
+    let detail = '';
     if (editing) {
-      desc = `Edited reminder: ${title}`;
+      detail = `Edited Reminder: ${title}`;
     } else {
-      desc = `Created new reminder: ${title}`;
+      detail = `Created New Reminder: ${title}`;
     }
     await db.addActivity({
-      description: [desc],
+      description: [detail],
       likes: 0,
       name,
       time: timestamp,
@@ -137,6 +148,7 @@ export default class AddReminderModal extends Component {
         <GoodHeader closeModal={this.closeModal} />
         <View style={styles.titleInput}>
           <Input
+            editable={editing}
             placeholder="Reminder"
             inputContainerStyle={{ borderBottomColor: 'white' }}
             inputStyle={{ fontSize: 20, color: 'white' }}
@@ -145,10 +157,11 @@ export default class AddReminderModal extends Component {
             onChangeText={title => this.setState({ title })}
           />
         </View>
-        <View style={styles.buttonDone}>
-          <Icon name="check" reverse color="#80A07E" onPress={this.addReminder} />
+        <View style={[styles.buttonDone, { marginBottom: editing ? 0 : 20 }]}>
+          {editing && <Icon name="check" reverse color="#80A07E" onPress={this.addReminder} />}
         </View>
         <SettingItem
+          disabled={!editing}
           title="Date"
           value={date}
           iconName="calendar"
@@ -157,6 +170,7 @@ export default class AddReminderModal extends Component {
           onIconPress={() => this.setState({ mode: 'date', isDTPickerVisible: true })}
         />
         <SettingItem
+          disabled={!editing}
           title="Time"
           value={time}
           iconName="access-time"
@@ -164,6 +178,7 @@ export default class AddReminderModal extends Component {
           onIconPress={() => this.setState({ mode: 'time', isDTPickerVisible: true })}
         />
         <Dropdown
+          disabled={!editing}
           containerStyle={styles.dropdown}
           label="Type"
           data={types}

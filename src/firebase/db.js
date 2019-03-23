@@ -106,8 +106,47 @@ export const addReminder = async (reminder, rid) => {
   }
 };
 
+const splitDateString = date => {
+  let [month, day, year] = date.split('/');
+  month = parseInt(month, 10) - 1;
+  day = parseInt(day, 10);
+  year = parseInt(year, 10);
+
+  return [month, day, year];
+};
+
+const convertTime12to24 = time12h => {
+  const [time, modifier] = time12h.split(' ');
+
+  let [hours, minutes] = time.split(':');
+
+  if (hours === '12') {
+    hours = '00';
+  }
+
+  if (modifier === 'PM') {
+    hours = parseInt(hours, 10) + 12;
+  }
+
+  return [hours, minutes];
+};
+
+const checkExpired = async reminders => {
+  const currentDate = new Date();
+  const checked = reminders.filter(async reminder => {
+    const [month, day, year] = splitDateString(reminder.date);
+    const [hours, minutes] = convertTime12to24(reminder.time);
+    const reminderDate = new Date(year, month, day, hours, minutes);
+    if (reminderDate >= currentDate) {
+      return reminder;
+    }
+    await removeReminder(reminder.rid);
+  });
+  return checked;
+};
+
 export const getReminders = async () => {
-  const reminders = [];
+  let reminders = [];
   const ref = await getGroupRef();
   if (ref) {
     const query = await ref.collection('reminders').get();
@@ -118,6 +157,7 @@ export const getReminders = async () => {
       });
     });
   }
+  reminders = await checkExpired(reminders);
   return reminders;
 };
 

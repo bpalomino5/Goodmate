@@ -28,9 +28,7 @@ class Reminders extends Component {
 
   getReminders = async () => {
     const reminders = await db.getReminders();
-    if (reminders) {
-      this.setState({ reminders });
-    }
+    this.setState({ reminders });
   };
 
   openReminderModal = () => {

@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, Header, Icon } from 'react-native-elements';
 import { Navigation } from 'react-native-navigation';
-import { db } from '../../../../../firebase';
+import { auth, db } from '../../../../../firebase';
 
 import RentSheet from './RentSheet/RentSheet';
 import InfoOverlay from './InfoOverlay';
@@ -119,22 +119,21 @@ class FinishRentModal extends Component {
       date,
     });
     // // post activity
-    // const { editing } = this.props;
-    // const timestamp = new Date().getTime();
-    // const name = FireTools.user.displayName.split(' ')[0];
-    // let desc = '';
-    // if (editing) {
-    //   desc = `Edited rent sheet: ${date.month} ${date.year}`;
-    // } else {
-    //   desc = `Added rent sheet: ${date.month} ${date.year}`;
-    // }
-    // await FireTools.addActivity({
-    //   description: [desc],
-    //   likes: 0,
-    //   name,
-    //   time: timestamp,
-    //   created_by: FireTools.user.uid,
-    // });
+    const { editing } = this.props;
+    const timestamp = new Date().getTime();
+    const name = auth.getDisplayName().split(' ')[0];
+    let detail = '';
+    if (editing) {
+      detail = `Edited Rent Sheet: ${date.month} ${date.year}`;
+    } else {
+      detail = `Added Rent Sheet: ${date.month} ${date.year}`;
+    }
+    await db.addActivity({
+      description: [detail],
+      likes: 0,
+      name,
+      time: timestamp,
+    });
 
     onFinish();
     Navigation.dismissAllModals();
