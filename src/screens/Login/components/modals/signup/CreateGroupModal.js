@@ -15,10 +15,9 @@ export default class CreateGroupModal extends Component {
     isLoading: false,
   };
 
-  closeModal = () => Navigation.dismissModal(this.props.componentId);
-
   createGroup = async () => {
-    this.setState({ isLoading: true });
+    // reset
+    this.setState({ isLoading: true, errorMessage: null });
     const { name } = this.state;
     if (name.trim() === '') {
       this.setState({ isLoading: false, errorMessage: 'Please enter a group name' });
@@ -26,15 +25,25 @@ export default class CreateGroupModal extends Component {
     } else {
       // create new group
       await db.createUser();
-      await db.createGroup(name);
-      // close modal
-      this.setState({ isLoading: false });
-      this.closeModal();
+      const success = await db.createGroup(name);
+      if (success) {
+        // close modal
+        this.setState({ isLoading: false });
+        Navigation.dismissAllModals();
+      } else {
+        // error handling
+        this.setState({
+          isLoading: false,
+          errorMessage: 'Could not create Group',
+        });
+        this.groupInput.shake();
+      }
     }
   };
 
   joinGroup = async () => {
-    this.setState({ isLoading: true });
+    // reset
+    this.setState({ isLoading: true, errorMessage: null });
     const { name } = this.state;
     if (name.trim() === '') {
       this.setState({ isLoading: false, errorMessage: 'Please enter a group name' });
@@ -42,13 +51,12 @@ export default class CreateGroupModal extends Component {
     } else {
       await db.createUser();
       const success = await db.addUsertoGroup(name);
-      this.setState({ isLoading: false });
       if (success) {
-        this.props.navigator.dismissAllModals({
-          animationType: 'slide-down',
-        });
+        this.setState({ isLoading: false });
+        Navigation.dismissAllModals();
       } else {
         // did not join group
+        this.setState({ isLoading: false, errorMessage: 'Could not join Group' });
         this.groupInput.shake();
       }
     }

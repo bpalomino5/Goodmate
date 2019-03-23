@@ -3,6 +3,7 @@ import { StyleSheet, View, Dimensions } from 'react-native';
 import { Input, Button, Icon } from 'react-native-elements';
 import { Navigation } from 'react-native-navigation';
 import { auth } from '../../../firebase';
+import { goToHome } from '../../../components/navigation';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -28,9 +29,11 @@ class RegistrationForm extends Component {
       });
 
       try {
-        await auth.signInWithEmailAndPassword(email, password);
+        const success = await auth.signInWithEmailAndPassword(email, password);
+        if (success) {
+          goToHome();
+        }
       } catch (error) {
-        console.log(error.code, error.message);
         if (error.code === 'auth/wrong-password') {
           this.setState({
             isLoading: false,

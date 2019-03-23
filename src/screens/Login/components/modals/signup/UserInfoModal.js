@@ -39,6 +39,7 @@ export default class UserInfoModal extends Component {
       >
         <Text style={{ marginBottom: 20, marginLeft: 10 }}>YOUR NAME</Text>
         <Input
+          inputStyle={{ textAlign: 'center' }}
           placeholder="First Last"
           value={this.state.name}
           onChangeText={t => this.setState({ name: t })}

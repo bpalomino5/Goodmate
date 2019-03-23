@@ -10,7 +10,12 @@ const ForgotView = ({ onSubmit, onChangeText }) => (
   <View style={styles.forgetView}>
     <Text> Forgot your password? </Text>
     <Text>Please enter your email to reset your password</Text>
-    <Input containerStyle={styles.inputStyle} placeholder="Email" onChangeText={onChangeText} />
+    <Input
+      inputStyle={{ textAlign: 'center' }}
+      containerStyle={styles.inputStyle}
+      placeholder="Email"
+      onChangeText={onChangeText}
+    />
     <Button
       containerStyle={{ marginTop: 30 }}
       title="Submit "

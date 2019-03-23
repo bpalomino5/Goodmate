@@ -70,27 +70,6 @@ export const removeReminder = async rid => {
   }
 };
 
-// export const getReminder = async (rid) => {
-//   try {
-//     let reminder = null;
-//     const ref = await getGroupRef();
-//     if (ref) {
-//       const docSnapshot = await ref.collection('reminders').doc(rid).get();
-//       if (docSnapshot.exists) {
-//         reminder = docSnapshot;
-//       }
-//       // querySnapshot.forEach(doc => {
-//       //   if (doc.id === rid) {
-//       //     reminder = doc;
-//       //   }
-//       // });
-//     }
-//     return reminder;
-//   } catch (error) {
-//     return null;
-//   }
-// };
-
 export const addReminder = async (reminder, rid) => {
   const ref = await getGroupRef();
   if (ref) {

@@ -35,6 +35,11 @@ export const goToHome = () => Navigation.setRoot({
           ],
         },
       },
+      options: {
+        sideMenu: {
+          animationType: 'slide-and-scale',
+        },
+      },
     },
   },
 });
