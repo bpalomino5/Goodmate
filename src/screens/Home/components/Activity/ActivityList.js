@@ -2,7 +2,7 @@ import React from 'react';
 import {
   ScrollView, View, RefreshControl, StyleSheet,
 } from 'react-native';
-import { Text } from 'react-native-elements';
+import { Text, Divider } from 'react-native-elements';
 
 import ActivityItem from './ActivityItem';
 
@@ -16,8 +16,12 @@ const ActivityFeed = ({ activities, addLike, onItemSelect }) => activities.map(i
 ));
 
 const EmptyActivityFeed = () => (
-  <View style={styles.emptyfeed}>
-    <Text h4>Upcoming activities!</Text>
+  <View>
+    <Divider style={{ backgroundColor: 'grey', height: 1 }} />
+    <View style={styles.emptyfeed}>
+      <Text h4>Upcoming activities!</Text>
+    </View>
+    <Divider style={{ backgroundColor: 'grey', height: 1 }} />
   </View>
 );
 

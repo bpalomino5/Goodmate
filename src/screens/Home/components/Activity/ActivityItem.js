@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
-import { Icon, Text } from 'react-native-elements';
+import { Icon, Text, Divider } from 'react-native-elements';
 
 formatTime = t => {
   const today = new Date().toLocaleDateString('en-US', {
@@ -72,10 +72,13 @@ const ActivityItemContainer = ({ children, onLongPress }) => (
 );
 
 const ActivityItem = ({ item, addLike, onLongPress }) => (
-  <ActivityItemContainer onLongPress={onLongPress}>
-    <ItemDetails name={item.name} time={item.time} description={item.description} />
-    <LikeButton likes={item.likes} addLike={addLike} />
-  </ActivityItemContainer>
+  <View>
+    <ActivityItemContainer onLongPress={onLongPress}>
+      <ItemDetails name={item.name} time={item.time} description={item.description} />
+      <LikeButton likes={item.likes} addLike={addLike} />
+    </ActivityItemContainer>
+    <Divider style={{ backgroundColor: 'grey', height: 1 }} />
+  </View>
 );
 
 const styles = StyleSheet.create({

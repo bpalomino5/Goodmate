@@ -12,10 +12,18 @@ import { db } from '../../firebase';
 class Reminders extends Component {
   state = {
     reminders: [],
+    refreshing: false,
   };
 
   componentDidMount = async () => {
+    await this.onRefresh();
+  };
+
+  onRefresh = async () => {
+    this.setState({ refreshing: true });
+    // get data
     await this.getReminders();
+    this.setState({ refreshing: false });
   };
 
   getReminders = async () => {
@@ -56,14 +64,19 @@ class Reminders extends Component {
 
   render() {
     const { componentId } = this.props;
-    const { reminders } = this.state;
+    const { reminders, refreshing } = this.state;
     return (
       <View style={styles.container}>
         <Header
           toggleDrawer={() => toggleDrawer(componentId)}
           openReminderModal={this.openReminderModal}
         />
-        <ReminderList reminders={reminders} onItemPress={this.handleItemPress} />
+        <ReminderList
+          refreshing={refreshing}
+          onRefresh={this.onRefresh}
+          reminders={reminders}
+          onItemPress={this.handleItemPress}
+        />
       </View>
     );
   }

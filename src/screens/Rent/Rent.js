@@ -112,14 +112,10 @@ class Rent extends Component {
       const utilities = this.prepRentData(sheetRef.get('bills'));
       const totals = sheetRef.get('totals');
       if (main != null && utilities != null && totals != null) {
+        this.setState({ main, utilities, totals });
         if (primary) {
           // display master sheet
-          this.setState({
-            main,
-            utilities,
-            totals,
-            sheetAvailable: true,
-          });
+          this.setState({ sheetAvailable: true });
         } else {
           // display normal user sheet
           this.getPersonalSheet();
@@ -140,44 +136,50 @@ class Rent extends Component {
     const { main, utilities } = this.state;
     const personalTotals = [];
 
-    main.forEach((item, i) => {
+    const _main = main.filter(item => {
       const index = personalTotals.findIndex(t => t.section === item.section);
       const ids = Object.values(item.uids);
       if (ids.length > 0) {
-        if (!auth.hasCurrentAuthUser(ids)) {
-          // do not display
-          delete main[i];
-        } else {
+        if (auth.hasCurrentAuthUser(ids)) {
           // divide by length
-          main[i].value = item.value / ids.length;
-
+          const value = item.value / ids.length;
           if (index === -1) {
-            personalTotals.push({ value: main[i].value, section: item.section });
+            personalTotals.push({ value, section: item.section });
           } else {
-            personalTotals[index].value += main[i].value;
+            personalTotals[index].value += value;
           }
+          return item;
         }
+      } else {
+        // default no assignment
+        return item;
       }
     });
 
-    utilities.forEach((item, i) => {
+    const _utilities = utilities.filter(item => {
       const index = personalTotals.findIndex(t => t.section === item.section);
       const ids = Object.values(item.uids);
-      if (!auth.hasCurrentAuthUser(ids)) {
-        // do not display
-        delete utilities[i];
-      } else {
-        utilities[i].value = item.value / ids.length;
-
-        if (index === -1) {
-          personalTotals.push({ value: utilities[i].value, section: item.section });
-        } else {
-          personalTotals[index].value += utilities[i].value;
+      if (ids.length > 0) {
+        if (auth.hasCurrentAuthUser(ids)) {
+          item.value /= ids.length;
+          if (index === -1) {
+            personalTotals.push({ value: item.value, section: item.section });
+          } else {
+            personalTotals[index].value += item.value;
+          }
+          return item;
         }
+      } else {
+        return item;
       }
     });
 
-    this.setState({ totals: personalTotals, sheetAvailable: true });
+    this.setState({
+      main: _main,
+      utilities: _utilities,
+      totals: personalTotals,
+      sheetAvailable: true,
+    });
   };
 
   openRentModal = () => {

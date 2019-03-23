@@ -16,4 +16,4 @@ export const resetPassword = email => auth.sendPasswordResetEmail(email);
 
 export const isAuthUser = uid => auth.currentUser.uid === uid;
 export const getDisplayName = () => auth.currentUser.displayName;
-export const hasCurrentAuthUser = ids => ids.indexOf(auth.currentUser.uid) === 1;
+export const hasCurrentAuthUser = ids => ids.indexOf(auth.currentUser.uid) !== -1;
