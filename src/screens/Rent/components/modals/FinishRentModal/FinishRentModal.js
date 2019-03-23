@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, Header, Icon } from 'react-native-elements';
 import { Navigation } from 'react-native-navigation';
-import FireTools from '../../../../../utils/FireTools';
+import { db } from '../../../../../firebase';
 
 import RentSheet from './RentSheet/RentSheet';
 import InfoOverlay from './InfoOverlay';
@@ -51,9 +51,8 @@ class FinishRentModal extends Component {
   };
 
   componentDidMount = async () => {
-    FireTools.init();
     const { main, utilities } = this.props;
-    const roommates = await FireTools.getRoommates();
+    const roommates = await db.getRoommates();
     this.setState({ main, utilities, roommates });
   };
 
@@ -113,7 +112,7 @@ class FinishRentModal extends Component {
       return { ...item, value };
     });
 
-    await FireTools.submitRent({
+    await db.submitRent({
       base: _main,
       bills: _utilities,
       totals,

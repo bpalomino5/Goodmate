@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Header, Icon } from 'react-native-elements';
 import { Navigation } from 'react-native-navigation';
-import FireTools from '../../../../../../../utils/FireTools';
+import { db } from '../../../../../../../firebase';
 import GroupOptionModal from '../../../../../../../components/shared/GroupOptionModal';
 
 const GoodHeader = ({ closeModal, submitUpdate }) => (
@@ -26,16 +26,12 @@ export default class LeaveGroupModal extends Component {
     errorMessage: null,
   };
 
-  componentDidMount = async () => {
-    FireTools.init();
-  };
-
   closeModal = () => Navigation.dismissModal(this.props.componentId);
 
   submitUpdate = async () => {
     const { name } = this.state;
     if (name.trim() !== '') {
-      const success = await FireTools.removeUserFromGroup(name);
+      const success = await db.removeUserFromGroup(name);
       if (success) {
         this.props.onFinish();
         this.closeModal();

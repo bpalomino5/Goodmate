@@ -6,6 +6,11 @@ import { db, auth } from './firebase';
   |--------------------------------------------------
   */
 
+export const getGroupName = async () => {
+  const ref = await getGroupRef();
+  return ref ? ref.id : '';
+};
+
 const getGroupRef = async () => {
   try {
     const response = await db
@@ -55,7 +60,7 @@ export const getRoommates = async () => {
   |--------------------------------------------------
   */
 
-export const removeReminder = async (rid) => {
+export const removeReminder = async rid => {
   const ref = await getGroupRef();
   if (ref) {
     await ref
@@ -89,11 +94,14 @@ export const removeReminder = async (rid) => {
 export const addReminder = async (reminder, rid) => {
   const ref = await getGroupRef();
   if (ref) {
-    const docSnapshot = await ref.collection('reminders').doc(rid).get();
+    const docSnapshot = await ref
+      .collection('reminders')
+      .doc(rid)
+      .get();
     if (docSnapshot.exists) {
-      docSnapshot.ref.set(reminder);
+      docSnapshot.ref.update({ ...reminder, created_by: auth.currentUser.uid });
     } else {
-      await ref.collection('reminders').add(reminder);
+      await ref.collection('reminders').add({ ...reminder, created_by: auth.currentUser.uid });
     }
   }
 };
@@ -105,13 +113,13 @@ export const getReminders = async () => {
     const query = await ref.collection('reminders').get();
     query.forEach(doc => {
       reminders.push({
-        ...doc.data(), rid: doc.id
+        ...doc.data(),
+        rid: doc.id,
       });
     });
   }
   return reminders;
 };
-
 
 /**
   |--------------------------------------------------
@@ -119,7 +127,7 @@ export const getReminders = async () => {
   |--------------------------------------------------
   */
 
-export const removeActivity = async (aid) => {
+export const removeActivity = async aid => {
   const ref = await getGroupRef();
   if (ref) {
     await ref
@@ -127,16 +135,16 @@ export const removeActivity = async (aid) => {
       .doc(aid)
       .delete();
   }
-}
+};
 
-export const addActivity = async (activity) => {
+export const addActivity = async activity => {
   const ref = await getGroupRef();
   if (ref) {
-    await ref.collection('activities').add(activity);
+    await ref.collection('activities').add({ ...activity, created_by: auth.currentUser.uid });
   }
-}
+};
 
-export const addLikeToActivity = (aid) => {
+export const addLikeToActivity = async aid => {
   const ref = await getGroupRef();
   if (ref) {
     const docSnapshot = await ref
@@ -150,7 +158,7 @@ export const addLikeToActivity = (aid) => {
       likes: likes + 1,
     });
   }
-}
+};
 
 export const getActivities = async () => {
   const activities = [];
@@ -166,9 +174,7 @@ export const getActivities = async () => {
     });
   }
   return activities;
-}
-
-
+};
 
 /**
   |--------------------------------------------------
@@ -176,11 +182,12 @@ export const getActivities = async () => {
   |--------------------------------------------------
   */
 
-export const submitSuggestion = (description) => db.collection('feedback').add({ description });
+export const submitSuggestion = description => db.collection('feedback').add({ description });
 
-export const DeleteGroup = (name) => {
+export const DeleteGroup = async name => {
   let success = false;
-  const doc = await db.collection('groups')
+  const doc = await db
+    .collection('groups')
     .doc(name)
     .get();
 
@@ -207,11 +214,12 @@ export const DeleteGroup = (name) => {
     success = true;
   }
   return success;
-}
+};
 
-export const removeUserFromGroup = async (name) => {
+export const removeUserFromGroup = async name => {
   let success = false;
-  const doc = await db.collection('groups')
+  const doc = await db
+    .collection('groups')
     .doc(name)
     .get();
 
@@ -220,30 +228,35 @@ export const removeUserFromGroup = async (name) => {
     success = true;
   }
   return success;
-}
+};
 
 export const createUser = async () => {
   const name = auth.currentUser.displayName.split(' ');
 
-  await db.collection('users')
-    .doc(auth.currentUser.uid).set({
-    first: name[0],
-    last: name[1],
-    primary: false,
-    groupRef: null,
-  });
-}
+  await db
+    .collection('users')
+    .doc(auth.currentUser.uid)
+    .set({
+      first: name[0],
+      last: name[1],
+      primary: false,
+      groupRef: null,
+    });
+};
 
-export const addUsertoGroup = async (name) => {
+export const addUsertoGroup = async name => {
   let success = false;
-  const doc = await db.collection('groups')
+  const doc = await db
+    .collection('groups')
     .doc(name)
     .get();
 
   if (doc.exists) {
     // add groupRef to user doc
-    await db.collection('users')
-      .doc(auth.currentUser.uid).update({ groupRef: doc.ref, primary: false });
+    await db
+      .collection('users')
+      .doc(auth.currentUser.uid)
+      .update({ groupRef: doc.ref, primary: false });
 
     // add to roommates collections in group
     await doc.ref.collection('roommates').add({
@@ -252,11 +265,12 @@ export const addUsertoGroup = async (name) => {
     success = true;
   }
   return success;
-}
+};
 
-export const createGroup = async (name) => {
+export const createGroup = async name => {
   let success = false;
-  const doc = await db.collection('groups')
+  const doc = await db
+    .collection('groups')
     .doc(name)
     .get();
 
@@ -266,13 +280,15 @@ export const createGroup = async (name) => {
     success = await addUsertoGroup(name);
 
     // update to primary user
-    await db.collection('users')
-      .doc(auth.currentUser.uid).update({ primary: true });
+    await db
+      .collection('users')
+      .doc(auth.currentUser.uid)
+      .update({ primary: true });
   }
   return success;
-}
+};
 
-export const removeRoommate = async (rid) => {
+export const removeRoommate = async rid => {
   // remove from roommates collection under group
   const ref = await getGroupRef();
   if (ref) {
@@ -285,32 +301,39 @@ export const removeRoommate = async (rid) => {
   }
 
   // remove groupRef from users doc
-  await db.collection('users')
-    .doc(rid).update({ groupRef: null });
-}
+  await db
+    .collection('users')
+    .doc(rid)
+    .update({ groupRef: null });
+};
 
-export const updatePrimary = async (rid) => {
-  await db.collection('users')
-    .doc(auth.currentUser.uid).update({ primary: false });
+export const updatePrimary = async rid => {
+  await db
+    .collection('users')
+    .doc(auth.currentUser.uid)
+    .update({ primary: false });
 
-  await db.collection('users')
-    .doc(rid).update({ primary: true });
-}
+  await db
+    .collection('users')
+    .doc(rid)
+    .update({ primary: true });
+};
 
-export const updateUserName = async (name) => {
+export const updateUserName = async name => {
   const n = name.split(' ');
-  // await auth.currentUser.updateProfile({ displayName: name });
-  await db.collection('users').doc(auth.currentUser.uid).update({ first: n[0], last: n[1] });
-}
+  await db
+    .collection('users')
+    .doc(auth.currentUser.uid)
+    .update({ first: n[0], last: n[1] });
+};
 
-
- /**
+/**
   |--------------------------------------------------
   | Rent Functions
   |--------------------------------------------------
   */
 
- export const getRent = async (month, year) => {
+export const getRent = async (month, year) => {
   try {
     let rentSheet = null;
     const ref = await getGroupRef();
@@ -327,9 +350,9 @@ export const updateUserName = async (name) => {
   } catch (error) {
     return null;
   }
-}
+};
 
-export const submitRent = async (rentSheet) => {
+export const submitRent = async rentSheet => {
   const sheetRef = await getRent(rentSheet.date.month, rentSheet.date.year);
   if (sheetRef) {
     sheetRef.ref.set(rentSheet);
@@ -339,4 +362,4 @@ export const submitRent = async (rentSheet) => {
       await ref.collection('rents').add(rentSheet);
     }
   }
-}
+};

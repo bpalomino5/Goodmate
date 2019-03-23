@@ -5,7 +5,7 @@ import {
   Header, Icon, Text, Card,
 } from 'react-native-elements';
 import { Navigation } from 'react-native-navigation';
-import FireTools from '../../../../../../utils/FireTools';
+import { db, auth } from '../../../../../../firebase';
 import SelectMenu from '../../../../../../components/shared/SelectMenu';
 
 const DefaultOptions = [
@@ -51,18 +51,17 @@ class RentGroupModal extends Component {
   };
 
   componentDidMount = async () => {
-    FireTools.init();
     await this.getPrimary();
-    const groupName = await FireTools.getGroupName();
+    const groupName = await db.getGroupName();
     this.setState({ groupName });
   };
 
   getPrimary = async () => {
-    const roommates = await FireTools.getRoommates();
+    const roommates = await db.getRoommates();
     if (roommates.length > 0) {
       let isPrimary = false;
       roommates.forEach(mate => {
-        if (mate.uid === FireTools.user.uid) {
+        if (auth.isAuthUser(mate.uid)) {
           isPrimary = mate.primary;
         }
       });

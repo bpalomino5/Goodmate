@@ -3,12 +3,12 @@ import React, { Component } from 'react';
 import { StyleSheet, View, YellowBox } from 'react-native';
 // tools
 import { Navigation } from 'react-native-navigation';
-import FireTools from '../../utils/FireTools';
 import { toggleDrawer } from '../../components/navigation';
 // components
 import Header from './components/Header';
 import ItemOverlay from './components/ItemOverlay';
 import ActivityList from './components/Activity/ActivityList';
+import { auth, db } from '../../firebase';
 
 YellowBox.ignoreWarnings(['relay:check']);
 
@@ -22,8 +22,7 @@ class Home extends Component {
   };
 
   componentDidMount = async () => {
-    await FireTools.init();
-    this.onRefresh();
+    await this.onRefresh();
   };
 
   onRefresh = async () => {
@@ -34,7 +33,7 @@ class Home extends Component {
   };
 
   updateActivities = async () => {
-    const activities = await FireTools.getActivities();
+    const activities = await db.getActivities();
     if (activities) {
       this.setState({ activities });
     }
@@ -52,17 +51,17 @@ class Home extends Component {
   };
 
   addLike = async aid => {
-    await FireTools.addLikeToActivity(aid);
+    await db.addLikeToActivity(aid);
     await this.updateActivities();
   };
 
   openOverlay = (aid, uid) => {
-    this.setState({ aid, creator: uid === FireTools.user.uid, isVisible: true });
+    this.setState({ aid, creator: auth.isAuthUser(uid), isVisible: true });
   };
 
   removeItem = async () => {
     const { aid } = this.state;
-    await FireTools.removeActivity(aid);
+    await db.removeActivity(aid);
     await this.updateActivities();
     this.setState({ isVisible: false });
   };

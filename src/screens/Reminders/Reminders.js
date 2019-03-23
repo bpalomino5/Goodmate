@@ -3,11 +3,11 @@
 import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Navigation } from 'react-native-navigation';
-import FireTools from '../../utils/FireTools';
 import { toggleDrawer } from '../../components/navigation';
 
 import Header from './components/Header';
 import ReminderList from './components/reminder/ReminderList';
+import { db } from '../../firebase';
 
 class Reminders extends Component {
   state = {
@@ -15,12 +15,11 @@ class Reminders extends Component {
   };
 
   componentDidMount = async () => {
-    await FireTools.init();
     await this.getReminders();
   };
 
   getReminders = async () => {
-    const reminders = await FireTools.getReminders();
+    const reminders = await db.getReminders();
     if (reminders) {
       this.setState({ reminders });
     }

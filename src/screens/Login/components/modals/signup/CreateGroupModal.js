@@ -3,28 +3,21 @@ import { View } from 'react-native';
 import { Dropdown } from 'react-native-material-dropdown';
 import { Text, Input, Button } from 'react-native-elements';
 import { Navigation } from 'react-native-navigation';
-import FireTools from '../../../../../utils/FireTools';
+import { db } from '../../../../../firebase';
 
 const options = [{ value: 'Create a roommate group' }, { value: 'Join a group' }];
 
 export default class CreateGroupModal extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      name: '',
-      errorMessage: null,
-      selection: 0,
-      isLoading: false,
-    };
-  }
-
-  componentDidMount() {
-    FireTools.init();
-  }
+  state = {
+    name: '',
+    errorMessage: null,
+    selection: 0,
+    isLoading: false,
+  };
 
   closeModal = () => Navigation.dismissModal(this.props.componentId);
 
-  async createGroup() {
+  createGroup = async () => {
     this.setState({ isLoading: true });
     const { name } = this.state;
     if (name.trim() === '') {
@@ -32,23 +25,23 @@ export default class CreateGroupModal extends Component {
       this.groupInput.shake();
     } else {
       // create new group
-      await FireTools.createUser();
-      await FireTools.createGroup(name);
+      await db.createUser();
+      await db.createGroup(name);
       // close modal
       this.setState({ isLoading: false });
       this.closeModal();
     }
-  }
+  };
 
-  async joinGroup() {
+  joinGroup = async () => {
     this.setState({ isLoading: true });
     const { name } = this.state;
     if (name.trim() === '') {
       this.setState({ isLoading: false, errorMessage: 'Please enter a group name' });
       this.groupInput.shake();
     } else {
-      await FireTools.createUser();
-      const success = await FireTools.addUsertoGroup(name);
+      await db.createUser();
+      const success = await db.addUsertoGroup(name);
       this.setState({ isLoading: false });
       if (success) {
         this.props.navigator.dismissAllModals({
@@ -59,11 +52,11 @@ export default class CreateGroupModal extends Component {
         this.groupInput.shake();
       }
     }
-  }
+  };
 
-  handleSelection(i) {
+  handleSelection = i => {
     this.setState({ errorMessage: null, selection: i });
-  }
+  };
 
   render() {
     return (

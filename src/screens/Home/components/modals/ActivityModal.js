@@ -7,7 +7,7 @@ import {
   StyleSheet, View, ScrollView, TouchableOpacity,
 } from 'react-native';
 import { Navigation } from 'react-native-navigation';
-import FireTools from '../../../../utils/FireTools';
+import { auth, db } from '../../../../firebase';
 
 const data = [
   {
@@ -84,8 +84,7 @@ class ActivityModal extends Component {
   };
 
   componentDidMount = () => {
-    FireTools.init();
-    const name = FireTools.user.displayName.split(' ');
+    const name = auth.getDisplayName().split(' ');
     this.setState({ first: name[0], options: data });
   };
 
@@ -100,14 +99,12 @@ class ActivityModal extends Component {
       }
     });
 
-    const activity = {
+    await db.addActivity({
       name: first,
       description: selections,
       likes: 0,
       time: new Date().getTime(),
-      created_by: FireTools.user.uid,
-    };
-    await FireTools.addActivity(activity);
+    });
     this.setState({ options: data });
     this.closeModal();
   };

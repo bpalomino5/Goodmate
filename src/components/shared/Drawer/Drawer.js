@@ -9,7 +9,7 @@ import {
   Avatar, Text, ListItem, Button,
 } from 'react-native-elements';
 import { goToLogin } from '../../navigation';
-import FireTools from '../../../utils/FireTools';
+import { auth } from '../../../firebase';
 
 // Drawer Sections List
 const list = [
@@ -43,8 +43,7 @@ export default class Drawer extends Component {
   state = { name: '' };
 
   componentDidMount() {
-    FireTools.init();
-    this.setState({ name: FireTools.user.displayName });
+    this.setState({ name: auth.getDisplayName() });
   }
 
   logout = () => {

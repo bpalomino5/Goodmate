@@ -4,7 +4,7 @@ import {
   Header, Icon, Text, Input,
 } from 'react-native-elements';
 import { Navigation } from 'react-native-navigation';
-import FireTools from '../../../../../../../utils/FireTools';
+import { db } from '../../../../../../../firebase';
 
 const GoodHeader = ({ closeModal, submitUpdate }) => (
   <Header
@@ -27,16 +27,12 @@ export default class OnlyCreateGroupModal extends Component {
     errorMessage: null,
   };
 
-  componentDidMount = async () => {
-    FireTools.init();
-  };
-
   closeModal = () => Navigation.dismissModal(this.props.componentId);
 
   submitUpdate = async () => {
     const { name } = this.state;
     if (name.trim() !== '') {
-      const success = await FireTools.createGroup(name);
+      const success = await db.createGroup(name);
       if (success) {
         this.props.onFinish();
         this.closeModal();

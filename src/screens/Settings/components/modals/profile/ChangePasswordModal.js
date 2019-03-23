@@ -4,7 +4,7 @@ import {
   Header, Icon, Overlay, Text, Button, Input,
 } from 'react-native-elements';
 import { Navigation } from 'react-native-navigation';
-import FireTools from '../../../../../utils/FireTools';
+import { auth } from '../../../../../firebase';
 
 const GoodHeader = ({ closeModal, submitUpdate }) => (
   <Header
@@ -114,14 +114,10 @@ class ChangePasswordModal extends Component {
     password: '',
   };
 
-  componentDidMount = async () => {
-    FireTools.init();
-  };
-
   onLogin = async () => {
     const { email, password } = this.state;
     if (email.trim() !== '' && password.trim() !== '') {
-      const response = await FireTools.loginWithEmail(email, password);
+      const response = await auth.loginWithEmail(email, password);
       if (response) {
         this.setState({ visible: false });
       } else {
@@ -145,7 +141,7 @@ class ChangePasswordModal extends Component {
     const { npassword, vpassword } = this.state;
     if (npassword.trim() !== '' && vpassword.trim() !== '') {
       if (npassword === vpassword) {
-        await FireTools.updatePassword(npassword);
+        await auth.updatePassword(npassword);
         this.closeModal();
       }
     }

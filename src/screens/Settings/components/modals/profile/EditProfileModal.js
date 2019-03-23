@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Header, Icon, Input } from 'react-native-elements';
 import { Navigation } from 'react-native-navigation';
-import FireTools from '../../../../../utils/FireTools';
+import { db, auth } from '../../../../../firebase';
 
 const GoodHeader = ({ closeModal, submitUpdates }) => (
   <Header
@@ -32,16 +32,13 @@ const ProfileItems = ({ name, onChangeText }) => (
 class EditProfileModal extends Component {
   state = { name: '' };
 
-  componentDidMount = () => {
-    FireTools.init();
-  };
-
   closeModal = () => Navigation.dismissModal(this.props.componentId);
 
   submitUpdates = async () => {
     const { name } = this.state;
     if (name.trim() !== '') {
-      await FireTools.updateUserName(name);
+      await db.updateUserName(name);
+      await auth.updateUserName(name);
       this.closeModal();
     }
   };

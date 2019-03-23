@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Dimensions } from 'react-native';
 import { Input, Button, Icon } from 'react-native-elements';
 import { Navigation } from 'react-native-navigation';
-import firebase from 'react-native-firebase';
-import FireTools from '../../../utils/FireTools';
-import { goToHome } from '../../../components/navigation';
+import { auth } from '../../../firebase';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -17,30 +15,13 @@ class RegistrationForm extends Component {
     emailError: null,
     passwordError: null,
     confirmError: null,
-    authFlag: false,
   };
-
-  componentDidMount() {
-    this.unsubscriber = firebase.auth().onAuthStateChanged(user => {
-      const { authFlag } = this.state;
-      if (user != null && !authFlag) {
-        this.setState({ authFlag: true });
-        goToHome();
-      }
-    });
-  }
-
-  componentWillUnmount() {
-    if (this.unsubscriber) {
-      this.unsubscriber();
-    }
-  }
 
   onLogin = async () => {
     const { email, password } = this.state;
     if (email.trim() !== '' && password.trim() !== '') {
       this.setState({ isLoading: true });
-      const credential = await FireTools.loginWithEmail(email, password);
+      const credential = await auth.loginWithEmail(email, password);
       if (credential) {
         // user state will change from null to value, will fire listener defined above
       } else {
@@ -70,7 +51,7 @@ class RegistrationForm extends Component {
         return;
       }
 
-      const credential = await FireTools.createUserWithEmail(email, password);
+      const credential = await auth.createUserWithEmail(email, password);
       if (credential) {
         // go to Welcome
         this.setState({ isLoading: false });

@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { Header, Icon } from 'react-native-elements';
 import { Dropdown } from 'react-native-material-dropdown';
 import { Navigation } from 'react-native-navigation';
-import FireTools from '../../../../../../../utils/FireTools';
+import { db, auth } from '../../../../../../../firebase';
 
 const GoodHeader = ({ closeModal, submitUpdate }) => (
   <Header
@@ -38,11 +38,10 @@ export default class NewPrimaryModal extends Component {
   };
 
   componentDidMount = async () => {
-    FireTools.init();
-    const roommates = await FireTools.getRoommates();
+    const roommates = await db.getRoommates();
     const data = [];
     roommates.forEach(mate => {
-      if (FireTools.user.uid !== mate.uid) {
+      if (!auth.isAuthUser(mate.uid)) {
         data.push({ value: mate.first });
       }
     });
@@ -62,7 +61,7 @@ export default class NewPrimaryModal extends Component {
       });
 
       if (roommate) {
-        await FireTools.updatePrimary(roommate.uid);
+        await db.updatePrimary(roommate.uid);
         this.props.onFinish();
         this.closeModal();
       }

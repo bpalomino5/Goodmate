@@ -20,11 +20,6 @@ export default class WelcomeModal extends Component {
           },
         },
       });
-      // this.props.navigator.showModal({
-      //   screen: 'UserInfoModal',
-      //   animationType: 'slide-up',
-      //   navigatorStyle: { navBarHidden: true },
-      // });
     }, 3000);
   }
 

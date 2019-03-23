@@ -5,7 +5,7 @@ import {
 } from 'react-native-elements';
 import { TextField } from 'react-native-material-textfield';
 import { Navigation } from 'react-native-navigation';
-import FireTools from '../../../../../utils/FireTools';
+import { db } from '../../../../../firebase';
 
 const GoodHeader = ({ closeModal }) => (
   <Header
@@ -28,7 +28,7 @@ export default class FeedbackModal extends Component {
   submitSuggestion = async () => {
     const { description } = this.state;
     if (description.trim() !== '') {
-      await FireTools.submitSuggestion(description);
+      await db.submitSuggestion(description);
       this.closeModal();
     }
   };

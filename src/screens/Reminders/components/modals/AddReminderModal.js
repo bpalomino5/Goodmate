@@ -9,7 +9,7 @@ import {
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import { Dropdown } from 'react-native-material-dropdown';
 import { Navigation } from 'react-native-navigation';
-import FireTools from '../../../../utils/FireTools';
+import { auth, db } from '../../../../firebase';
 
 const types = [{ value: 'Bill' }, { value: 'Chore' }];
 
@@ -50,7 +50,6 @@ export default class AddReminderModal extends Component {
   };
 
   componentDidMount = async () => {
-    FireTools.init();
     const { item } = this.props;
     if (item !== undefined) {
       this.setState({
@@ -59,7 +58,7 @@ export default class AddReminderModal extends Component {
         date: item.date,
         time: item.time,
         rid: item.rid,
-        editing: item.created_by === FireTools.user.uid,
+        editing: auth.isAuthUser(item.created_by),
       });
     }
   };
@@ -71,31 +70,29 @@ export default class AddReminderModal extends Component {
       date, time, title, type, rid, editing,
     } = this.state;
 
-    await FireTools.addReminder(
+    await db.addReminder(
       {
         date,
         time,
         title,
         type,
-        created_by: FireTools.user.uid,
       },
       rid,
     );
 
     const timestamp = new Date().getTime();
-    const name = FireTools.user.displayName.split(' ')[0];
+    const name = auth.getDisplayName().split(' ')[0];
     let desc = '';
     if (editing) {
       desc = `Edited reminder: ${title}`;
     } else {
       desc = `Created new reminder: ${title}`;
     }
-    await FireTools.addActivity({
+    await db.addActivity({
       description: [desc],
       likes: 0,
       name,
       time: timestamp,
-      created_by: FireTools.user.uid,
     });
 
     const { onFinish } = this.props;
@@ -106,7 +103,7 @@ export default class AddReminderModal extends Component {
   removeReminder = async () => {
     const { rid } = this.state;
     const { onFinish } = this.props;
-    await FireTools.removeReminder(rid);
+    await db.removeReminder(rid);
     onFinish();
     this.closeModal();
   };

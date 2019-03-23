@@ -4,7 +4,7 @@ import { Navigation } from 'react-native-navigation';
 import {
   Header, Input, Button, Icon,
 } from 'react-native-elements';
-import firebase from 'react-native-firebase';
+import { auth } from '../../../../firebase';
 
 const ForgotView = ({ onSubmit, onChangeText }) => (
   <View style={styles.forgetView}>
@@ -32,11 +32,11 @@ export default class HelpModal extends Component {
 
   closeModal = () => Navigation.dismissModal(this.props.componentId);
 
-  resetPassword = () => {
+  resetPassword = async () => {
     const { email } = this.state;
     if (email.length !== 0) {
       this.setState({ submitted: true });
-      firebase.auth().sendPasswordResetEmail(email);
+      await auth.resetPassword(email);
     }
   };
 

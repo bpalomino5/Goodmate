@@ -2,27 +2,19 @@ import React, { Component } from 'react';
 import { Text, View } from 'react-native';
 import { Input, Button } from 'react-native-elements';
 import { Navigation } from 'react-native-navigation';
-import FireTools from '../../../../../utils/FireTools';
+import { auth } from '../../../../../firebase';
 
 export default class UserInfoModal extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      name: '',
-      isLoading: false,
-    };
-    this.openNextModal = this.openNextModal.bind(this);
-  }
+  state = {
+    name: '',
+    isLoading: false,
+  };
 
-  componentDidMount() {
-    FireTools.init();
-  }
-
-  async openNextModal() {
+  openNextModal = async () => {
     this.setState({ isLoading: true });
     const { name } = this.state;
     if (name.trim() !== '') {
-      await FireTools.user.updateProfile({ displayName: name });
+      await auth.updateUserName(name);
       // then move on to next modal
       Navigation.showModal({
         component: {
@@ -32,13 +24,8 @@ export default class UserInfoModal extends Component {
           },
         },
       });
-      // this.props.navigator.showModal({
-      //   screen: 'CreateGroupModal',
-      //   animationType: 'slide-up',
-      //   navigatorStyle: { navBarHidden: true },
-      // });
     }
-  }
+  };
 
   render() {
     return (

@@ -6,9 +6,9 @@ import React, { Component } from 'react';
 import { Navigation } from 'react-native-navigation';
 import { StyleSheet, View } from 'react-native';
 import { Header, Icon, Text } from 'react-native-elements';
-import FireTools from '../../utils/FireTools';
 import { getData, storeData } from '../../utils/DataStore';
 import { toggleDrawer } from '../../components/navigation';
+import { db, auth } from '../../firebase';
 
 import RentFilters from './components/RentFilters';
 import RentSheet from './components/RentSheet';
@@ -77,10 +77,9 @@ class Rent extends Component {
   };
 
   componentDidMount = async () => {
-    FireTools.init();
-    const roommates = await FireTools.getRoommates();
+    const roommates = await db.getRoommates();
     roommates.forEach(mate => {
-      if (mate.uid === FireTools.user.uid) {
+      if (auth.isAuthUser(mate.uid)) {
         this.setState({ primary: mate.primary, typeViewable: mate.primary });
       }
     });
@@ -107,7 +106,7 @@ class Rent extends Component {
   getRentSheet = async (month, year) => {
     await storeData('date', { month, year });
     const { primary } = this.state;
-    const sheetRef = await FireTools.getRent(month, year);
+    const sheetRef = await db.getRent(month, year);
     if (sheetRef) {
       const main = this.prepRentData(sheetRef.get('base'));
       const utilities = this.prepRentData(sheetRef.get('bills'));
@@ -145,7 +144,7 @@ class Rent extends Component {
       const index = personalTotals.findIndex(t => t.section === item.section);
       const ids = Object.values(item.uids);
       if (ids.length > 0) {
-        if (ids.indexOf(FireTools.user.uid) === -1) {
+        if (!auth.hasCurrentAuthUser(ids)) {
           // do not display
           delete main[i];
         } else {
@@ -164,7 +163,7 @@ class Rent extends Component {
     utilities.forEach((item, i) => {
       const index = personalTotals.findIndex(t => t.section === item.section);
       const ids = Object.values(item.uids);
-      if (ids.indexOf(FireTools.user.uid) === -1) {
+      if (!auth.hasCurrentAuthUser(ids)) {
         // do not display
         delete utilities[i];
       } else {

@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { StyleSheet, View, LayoutAnimation } from 'react-native';
 import { Header, Icon, Button } from 'react-native-elements';
 import { Navigation } from 'react-native-navigation';
-import FireTools from '../../../../../utils/FireTools';
 
 import RentSheet from './RentSheet/RentSheet';
 import AddOverlay from './AddOverlay';
@@ -44,7 +43,6 @@ class AddRentModal extends Component {
   };
 
   componentDidMount = () => {
-    FireTools.init();
     const { main, utilities } = this.props;
     this.setState({ main, utilities });
   };

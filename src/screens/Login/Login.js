@@ -11,6 +11,7 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 
+import withAuthentication from '../../components/authentication/withAuthentication';
 import RegistrationForm from './components/RegistrationForm';
 import OptionSelector from './components/OptionSelector';
 import HelpButton from './components/HelpButton';
@@ -106,4 +107,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Login;
+export default withAuthentication(Login);
