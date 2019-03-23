@@ -20,18 +20,30 @@ class RegistrationForm extends Component {
   onLogin = async () => {
     const { email, password } = this.state;
     if (email.trim() !== '' && password.trim() !== '') {
-      this.setState({ isLoading: true });
-      const credential = await auth.loginWithEmail(email, password);
-      if (credential) {
-        // user state will change from null to value, will fire listener defined above
-      } else {
-        this.setState({
-          isLoading: false,
-          emailError: 'Please enter a valid email address',
-          passwordError: 'Please enter at least 8 characters',
-        });
-        this.emailInput.shake();
-        this.passwordInput.shake();
+      // reset
+      this.setState({
+        isLoading: true,
+        emailError: null,
+        passwordError: null,
+      });
+
+      try {
+        await auth.signInWithEmailAndPassword(email, password);
+      } catch (error) {
+        console.log(error.code, error.message);
+        if (error.code === 'auth/wrong-password') {
+          this.setState({
+            isLoading: false,
+            passwordError: 'Wrong Password',
+          });
+          this.passwordInput.shake();
+        } else if (error.code === 'auth/user-not-found') {
+          this.setState({
+            isLoading: false,
+            emailError: 'User not found',
+          });
+          this.emailInput.shake();
+        }
       }
     }
   };
@@ -39,7 +51,14 @@ class RegistrationForm extends Component {
   onSignUp = async () => {
     const { email, password, passwordConfirmation } = this.state;
     if (email.trim() !== '' && password.trim() !== '' && passwordConfirmation.trim() !== '') {
-      this.setState({ isLoading: true });
+      // reset
+      this.setState({
+        isLoading: true,
+        emailError: null,
+        passwordError: null,
+        confirmError: null,
+      });
+
       if (password !== passwordConfirmation) {
         this.setState({
           isLoading: false,
@@ -51,24 +70,28 @@ class RegistrationForm extends Component {
         return;
       }
 
-      const credential = await auth.createUserWithEmail(email, password);
-      if (credential) {
+      try {
+        await auth.createUserWithEmailAndPassword(email, password);
         // go to Welcome
         this.setState({ isLoading: false });
         this.openWelcomeModal();
 
         const { selectCategory } = this.props;
         selectCategory(0);
-      } else {
-        this.setState({
-          isLoading: false,
-          emailError: 'Please enter a valid email address',
-          passwordError: 'Please enter at least 8 characters',
-          confirmError: 'Please enter the same password',
-        });
-        this.emailInput.shake();
-        this.passwordInput.shake();
-        this.confirmationInput.shake();
+      } catch (error) {
+        if (error.code === 'auth/email-already-in-use') {
+          this.setState({
+            isLoading: false,
+            emailError: 'Email is already in use',
+          });
+          this.emailInput.shake();
+        } else if (error.code === 'auth/weak-password') {
+          this.setState({
+            isLoading: false,
+            passwordError: 'The given password is invalid.',
+          });
+          this.passwordInput.shake();
+        }
       }
     }
   };
@@ -91,9 +114,9 @@ class RegistrationForm extends Component {
       password,
       passwordConfirmation,
       isLoading,
-      passwordErrorMessage,
-      confirmErrorMessage,
-      emailErrorMessage,
+      passwordError,
+      confirmError,
+      emailError,
     } = this.state;
     return (
       <View style={styles.formContainer}>
@@ -113,7 +136,7 @@ class RegistrationForm extends Component {
           }}
           onSubmitEditing={() => this.passwordInput.focus()}
           onChangeText={e => this.setState({ email: e })}
-          errorMessage={emailErrorMessage}
+          errorMessage={emailError}
           leftIcon={<Icon name="email-outline" type="material-community" />}
         />
         <Input
@@ -132,7 +155,7 @@ class RegistrationForm extends Component {
           }}
           onSubmitEditing={isSignUpPage ? () => this.confirmationInput.focus() : this.onLogin}
           onChangeText={p => this.setState({ password: p })}
-          errorMessage={passwordErrorMessage}
+          errorMessage={passwordError}
           leftIcon={<Icon name="lock-outline" type="material-community" />}
         />
         {isSignUpPage && (
@@ -153,7 +176,7 @@ class RegistrationForm extends Component {
             }}
             onSubmitEditing={this.onSignUp}
             onChangeText={pc => this.setState({ passwordConfirmation: pc })}
-            errorMessage={confirmErrorMessage}
+            errorMessage={confirmError}
             leftIcon={<Icon name="lock-outline" type="material-community" />}
           />
         )}
