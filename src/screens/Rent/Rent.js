@@ -7,7 +7,7 @@ import { Navigation } from 'react-native-navigation';
 import { StyleSheet, View } from 'react-native';
 import { Header, Icon, Text } from 'react-native-elements';
 import FireTools from '../../utils/FireTools';
-import DataStore from '../../utils/DataStore';
+import { getData, storeData } from '../../utils/DataStore';
 import { toggleDrawer } from '../../components/navigation';
 
 import RentFilters from './components/RentFilters';
@@ -85,7 +85,7 @@ class Rent extends Component {
       }
     });
 
-    const date = await DataStore.getData('date');
+    const date = await getData('date');
     if (date) {
       await this.getRentSheet(date.month, date.year);
       this.setState({ month: date.month, year: date.year });
@@ -105,7 +105,7 @@ class Rent extends Component {
   };
 
   getRentSheet = async (month, year) => {
-    await DataStore.storeData('date', { month, year });
+    await storeData('date', { month, year });
     const { primary } = this.state;
     const sheetRef = await FireTools.getRent(month, year);
     if (sheetRef) {

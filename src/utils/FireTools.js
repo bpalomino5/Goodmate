@@ -105,9 +105,11 @@ class FireTools {
       }
 
       // remove groupRef from each user
-      await Promise.all(rids.map(async rid => {
-        await this.removeRoommate(rid);
-      }));
+      await Promise.all(
+        rids.map(async rid => {
+          await this.removeRoommate(rid);
+        }),
+      );
 
       // delete group
       await doc.ref.delete();
@@ -134,7 +136,10 @@ class FireTools {
   async createUser() {
     const name = this.user.displayName.split(' ');
 
-    const userRef = firebase.firestore().collection('users').doc(this.user.uid);
+    const userRef = firebase
+      .firestore()
+      .collection('users')
+      .doc(this.user.uid);
     userRef.set({
       first: name[0],
       last: name[1],
@@ -245,28 +250,27 @@ class FireTools {
   |--------------------------------------------------
   */
 
-  async loginWithCred(credential) {
+  // async loginWithCred(credential) {
+  //   try {
+  //     const cred = await firebase.auth().signInAndRetrieveDataWithCredential(credential);
+  //     return cred;
+  //   } catch (error) {
+  //     return null;
+  //   }
+  // }
+
+  async createUserWithEmail(email, password) {
     try {
-      const cred = await firebase.auth().signInAndRetrieveDataWithCredential(credential);
+      const cred = await firebase.auth().createUserWithEmailAndPassword(email, password);
       return cred;
     } catch (error) {
       return null;
     }
   }
 
-  async createUserWithEmail(email, password) {
-    try {
-      const cred = await firebase
-        .auth()
-        .createUserAndRetrieveDataWithEmailAndPassword(email, password);
-      return cred;
-    } catch (error) {
-      return null;
-    }
-  }
   async loginWithEmail(email, password) {
     try {
-      const cred = await firebase.auth().signInAndRetrieveDataWithEmailAndPassword(email, password);
+      const cred = await firebase.auth().signInWithEmailAndPassword(email, password);
       return cred;
     } catch (error) {
       // console.log(error.code, error.message);
@@ -275,13 +279,13 @@ class FireTools {
   }
 
   // not being used right now
-  getCredential(password) {
-    const credential = firebase.auth.EmailAuthProvider.credential({
-      email: this.user.email,
-      password,
-    });
-    return credential;
-  }
+  // getCredential(password) {
+  //   const credential = firebase.auth.EmailAuthProvider.credential({
+  //     email: this.user.email,
+  //     password,
+  //   });
+  //   return credential;
+  // }
 
   /**
   |--------------------------------------------------
@@ -310,21 +314,23 @@ class FireTools {
       if (ref) {
         const rquery = await ref.collection('roommates').get();
         if (rquery) {
-          await Promise.all(rquery.docs.map(async doc => {
-            const uid = doc.get('roommate');
-            const user = await firebase
-              .firestore()
-              .collection('users')
-              .doc(uid)
-              .get();
+          await Promise.all(
+            rquery.docs.map(async doc => {
+              const uid = doc.get('roommate');
+              const user = await firebase
+                .firestore()
+                .collection('users')
+                .doc(uid)
+                .get();
 
-            users.push({
-              first: user.get('first'),
-              last: user.get('last'),
-              primary: user.get('primary'),
-              uid: user.id,
-            });
-          }));
+              users.push({
+                first: user.get('first'),
+                last: user.get('last'),
+                primary: user.get('primary'),
+                uid: user.id,
+              });
+            }),
+          );
         }
       }
       return users;
@@ -334,14 +340,14 @@ class FireTools {
   }
 
   // not being used
-  async getUserRef() {
-    const userDoc = await firebase
-      .firestore()
-      .collection('users')
-      .doc(this.user.uid)
-      .get();
-    return userDoc;
-  }
+  // async getUserRef() {
+  //   const userDoc = await firebase
+  //     .firestore()
+  //     .collection('users')
+  //     .doc(this.user.uid)
+  //     .get();
+  //   return userDoc;
+  // }
 
   /**
   |--------------------------------------------------
