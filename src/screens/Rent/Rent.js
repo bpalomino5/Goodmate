@@ -17,7 +17,7 @@ const GoodHeader = ({
   toggleDrawer, openRentModal, disabled, primary,
 }) => (
   <Header
-    statusBarProps={{ backgroundColor: '#546054' }}
+    statusBarProps={{ backgroundColor: '#546054',barStyle: 'light-content' }}
     backgroundColor="#5B725A"
     leftComponent={(
       <Icon

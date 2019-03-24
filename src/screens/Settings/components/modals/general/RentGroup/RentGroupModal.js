@@ -21,7 +21,7 @@ const PrimaryOptions = [
 
 const GoodHeader = ({ closeModal }) => (
   <Header
-    statusBarProps={{ backgroundColor: '#546054' }}
+    statusBarProps={{ backgroundColor: '#546054', barStyle: 'light-content' }}
     backgroundColor="#5B725A"
     leftComponent={
       <Icon name="arrow-back" color="white" underlayColor="transparent" onPress={closeModal} />

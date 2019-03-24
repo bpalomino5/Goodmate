@@ -3,7 +3,7 @@ import { Header, Icon } from 'react-native-elements';
 
 const HomeHeader = ({ toggleDrawer, openActivityModal }) => (
   <Header
-    statusBarProps={{ backgroundColor: '#546054' }}
+    statusBarProps={{ backgroundColor: '#546054', barStyle: 'light-content' }}
     backgroundColor="#5B725A"
     leftComponent={(
       <Icon

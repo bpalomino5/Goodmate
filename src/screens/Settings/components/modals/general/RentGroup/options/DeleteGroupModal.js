@@ -7,7 +7,7 @@ import GroupOptionModal from '../../../../../../../components/shared/GroupOption
 
 const GoodHeader = ({ closeModal, submitUpdate }) => (
   <Header
-    statusBarProps={{ backgroundColor: '#546054' }}
+    statusBarProps={{ backgroundColor: '#546054', barStyle: 'light-content' }}
     backgroundColor="#5B725A"
     leftComponent={
       <Icon name="close" color="white" underlayColor="transparent" onPress={closeModal} />

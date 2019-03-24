@@ -15,7 +15,7 @@ const types = [{ value: 'Bill' }, { value: 'Chore' }];
 
 const GoodHeader = ({ closeModal }) => (
   <Header
-    statusBarProps={{ backgroundColor: '#5B725A' }}
+    statusBarProps={{ backgroundColor: '#5B725A', barStyle: 'light-content' }}
     backgroundColor="#5B725A"
     leftComponent={
       <Icon name="arrow-back" color="white" underlayColor="transparent" onPress={closeModal} />
@@ -71,7 +71,7 @@ export default class AddReminderModal extends Component {
       });
     } else {
       this.setState({ editing: true });
-    } 
+    }
   };
 
   closeModal = () => Navigation.dismissModal(this.props.componentId);

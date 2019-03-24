@@ -17,9 +17,7 @@ const generalItems = [
 
 const GoodHeader = ({ toggleDrawer }) => (
   <Header
-    // barStyle="light-content"
     statusBarProps={{ barStyle: 'light-content' }}
-    // containerStyle={{ backgroundColor: 'red' }}
     backgroundColor="#5B725A"
     leftComponent={(
       <Icon

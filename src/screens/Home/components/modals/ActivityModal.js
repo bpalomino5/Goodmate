@@ -1,7 +1,7 @@
 /* eslint react/no-array-index-key: 0 */
 import React, { Component } from 'react';
 import {
-  Header, Icon, Text, CheckBox,
+  Header, Icon, Text, CheckBox, Input,
 } from 'react-native-elements';
 import {
   StyleSheet, View, ScrollView, TouchableOpacity,
@@ -35,7 +35,7 @@ const data = [
 
 const GoodHeader = ({ closeModal, onPost }) => (
   <Header
-    statusBarProps={{ backgroundColor: '#546054' }}
+    statusBarProps={{ backgroundColor: '#546054', barStyle: 'light-content' }}
     backgroundColor="#5B725A"
     leftComponent={
       <Icon name="arrow-back" color="white" underlayColor="transparent" onPress={closeModal} />
@@ -70,10 +70,23 @@ const OptionsSelector = ({ options, onSelected }) => (
   </View>
 );
 
+const CustomActivityInput = ({ onChangeText, value }) => (
+  <View style={styles.customActivity}>
+    <Input
+      label="Write your own"
+      placeholder="Custom Activity"
+      maxLength={30}
+      value={value}
+      onChangeText={onChangeText}
+    />
+  </View>
+);
+
 class ActivityModal extends Component {
   state = {
     options: [],
     first: '',
+    customValue: '',
   };
 
   componentDidMount = () => {
@@ -85,13 +98,17 @@ class ActivityModal extends Component {
   closeModal = () => Navigation.dismissModal(this.props.componentId);
 
   postActivities = async () => {
-    const { options, first } = this.state;
+    const { options, first, customValue } = this.state;
     const selections = [];
     options.forEach(item => {
       if (item.checked) {
         selections.push(item.value);
       }
     });
+
+    if (customValue.trim().length > 0) {
+      selections.push(customValue.trim());
+    }
 
     await db.addActivity({
       name: first,
@@ -111,7 +128,7 @@ class ActivityModal extends Component {
   };
 
   render() {
-    const { options } = this.state;
+    const { options, customValue } = this.state;
     return (
       <View style={styles.container}>
         <GoodHeader closeModal={this.closeModal} onPost={this.postActivities} />
@@ -121,6 +138,10 @@ class ActivityModal extends Component {
           </View>
           <ScrollView>
             <OptionsSelector options={options} onSelected={this.onActivitySelect} />
+            <CustomActivityInput
+              value={customValue}
+              onChangeText={text => this.setState({ customValue: text })}
+            />
           </ScrollView>
         </View>
       </View>
@@ -142,6 +163,9 @@ const styles = StyleSheet.create({
   InputSection: {
     flex: 1,
     padding: 5,
+  },
+  customActivity: {
+    marginTop: 10,
   },
 });
 
