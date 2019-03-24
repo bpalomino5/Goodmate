@@ -42,7 +42,7 @@ export default class NewPrimaryModal extends Component {
     const data = [];
     roommates.forEach(mate => {
       if (!auth.isAuthUser(mate.uid)) {
-        data.push({ value: mate.first });
+        data.push({ value: mate.name });
       }
     });
     this.setState({ roommates, names: data });
@@ -55,7 +55,7 @@ export default class NewPrimaryModal extends Component {
     let roommate = null;
     if (selected.trim() !== '') {
       roommates.forEach(mate => {
-        if (selected === mate.first) {
+        if (selected === mate.name) {
           roommate = mate;
         }
       });

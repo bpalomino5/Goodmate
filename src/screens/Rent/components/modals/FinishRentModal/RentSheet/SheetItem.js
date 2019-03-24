@@ -31,7 +31,6 @@ const ItemDetails = ({ uids, type }) => (
       {Object.keys(uids).map((item, i) => (
         <Text key={i} style={styles.detailText}>
           {item}
-          {' '}
         </Text>
       ))}
     </View>
@@ -74,7 +73,7 @@ const styles = StyleSheet.create({
   valueText: { fontSize: 18 },
   itemDetails: { marginLeft: 12, flex: 1 },
   itemType: { fontSize: 20, marginBottom: 4 },
-  detailView: { flexDirection: 'row' },
+  detailView: { flexDirection: 'column' },
   detailText: { fontSize: 14, color: 'grey' },
   itemSection: { marginLeft: 10, width: 100 },
   sectionText: { fontSize: 20 },

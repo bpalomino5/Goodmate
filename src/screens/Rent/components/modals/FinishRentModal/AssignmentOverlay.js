@@ -15,10 +15,10 @@ const RoommateList = ({ roommates, uids, onCheckPress }) => (
     {roommates.map((item, i) => (
       <View key={i} style={styles.mateItem}>
         <CheckBox
-          title={item.first}
+          title={item.name}
           textStyle={{ fontSize: 16 }}
           onPress={() => onCheckPress(item)}
-          checked={uids !== undefined ? item.first in uids : null}
+          checked={uids !== undefined ? item.name in uids : null}
         />
       </View>
     ))}

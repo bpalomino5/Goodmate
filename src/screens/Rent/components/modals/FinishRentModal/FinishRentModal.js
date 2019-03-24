@@ -59,10 +59,10 @@ class FinishRentModal extends Component {
   onCheckPress = item => {
     const { dataItem } = this.state;
     // check if uids is already assigned
-    if (item.first in dataItem.uids) {
-      delete dataItem.uids[item.first];
+    if (item.name in dataItem.uids) {
+      delete dataItem.uids[item.name];
     } else {
-      dataItem.uids[item.first] = item.uid;
+      dataItem.uids[item.name] = item.uid;
     }
 
     this.setState({ dataItem });

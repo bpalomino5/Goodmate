@@ -250,14 +250,11 @@ export const removeUserFromGroup = async name => {
 };
 
 export const createUser = async () => {
-  const name = auth.currentUser.displayName.split(' ');
-
   await db
     .collection('users')
     .doc(auth.currentUser.uid)
     .set({
-      first: name[0],
-      last: name[1],
+      name: auth.currentUser.displayName,
       primary: false,
       groupRef: null,
     });
@@ -339,11 +336,10 @@ export const updatePrimary = async rid => {
 };
 
 export const updateUserName = async name => {
-  const n = name.split(' ');
   await db
     .collection('users')
     .doc(auth.currentUser.uid)
-    .update({ first: n[0], last: n[1] });
+    .update({ name });
 };
 
 /**

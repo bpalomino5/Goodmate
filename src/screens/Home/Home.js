@@ -46,6 +46,9 @@ class Home extends Component {
         options: {
           animationType: 'slide-up',
         },
+        passProps: {
+          onFinish: () => this.onRefresh(),
+        },
       },
     });
   };

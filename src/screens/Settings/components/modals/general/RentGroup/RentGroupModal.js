@@ -35,7 +35,7 @@ const RoommateView = ({ groupName, roommates }) => (
     <Card title={`Group: ${groupName}`}>
       {roommates.map((member, i) => (
         <View style={styles.cardStyle} key={i}>
-          <Text style={styles.memberText}>{member.first}</Text>
+          <Text style={styles.memberText}>{member.name}</Text>
           {member.primary && <Icon name="verified-user" />}
         </View>
       ))}

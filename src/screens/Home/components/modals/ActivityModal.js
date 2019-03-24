@@ -12,31 +12,24 @@ import { auth, db } from '../../../../firebase';
 const data = [
   {
     value: 'Cleaned the bathroom',
-    checked: false,
   },
   {
     value: 'Cleaned the kitchen',
-    checked: false,
   },
   {
-    value: 'Vacuumed the floors',
-    checked: false,
+    value: 'Cleaned the floors',
   },
   {
     value: 'Took out the trash',
-    checked: false,
-  },
-  {
-    value: 'Bought more dish soap',
-    checked: false,
   },
   {
     value: 'Washed the dishes',
-    checked: false,
   },
   {
-    value: 'Bought more sponges',
-    checked: false,
+    value: 'Bought more kitchen items',
+  },
+  {
+    value: 'Fed the Dog/Cat/Pet',
   },
 ];
 
@@ -85,7 +78,8 @@ class ActivityModal extends Component {
 
   componentDidMount = () => {
     const name = auth.getDisplayName().split(' ');
-    this.setState({ first: name[0], options: data });
+    const options = data.map(item => ({ ...item, checked: false }));
+    this.setState({ first: name[0], options });
   };
 
   closeModal = () => Navigation.dismissModal(this.props.componentId);
@@ -105,7 +99,8 @@ class ActivityModal extends Component {
       likes: 0,
       time: new Date().getTime(),
     });
-    this.setState({ options: data });
+
+    this.props.onFinish();
     this.closeModal();
   };
 
