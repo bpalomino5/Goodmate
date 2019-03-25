@@ -50,7 +50,7 @@
 		CDC6C409633047D690FFB5B4 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 09F4859C0FCF44A98278085E /* Feather.ttf */; };
 		D2210B62688D4A1EA898C4FB /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 64D4E20486F04BC28BC785A4 /* Zocial.ttf */; };
 		F925CCF52234B16200EEC056 /* libReactNativeNavigation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F925CCF22234B0FE00EEC056 /* libReactNativeNavigation.a */; };
-		F925CCF72235001800EEC056 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
+		F98ACCCD224712E700FDEC86 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		F99E3047208F14CF0083A5CB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F99E3046208F14CF0083A5CB /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
@@ -414,11 +414,11 @@
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
 				5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */,
 				5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */,
-				F925CCF72235001800EEC056 /* libReact.a in Frameworks */,
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
 				00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */,
 				00C302E81ABCBA2D00DB3ED1 /* libRCTImage.a in Frameworks */,
 				133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */,
+				F98ACCCD224712E700FDEC86 /* libReact.a in Frameworks */,
 				00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */,
 				F925CCF52234B16200EEC056 /* libReactNativeNavigation.a in Frameworks */,
 				139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */,

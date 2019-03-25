@@ -1,6 +1,11 @@
 package com.bpalomino.gmate;
 
+import com.facebook.react.ReactApplication;
+import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
+import com.facebook.react.shell.MainReactPackage;
+import com.facebook.soloader.SoLoader;
+
 import com.oblador.vectoricons.VectorIconsPackage;
 import io.invertase.firebase.RNFirebasePackage;
 // optional packages - add/remove as appropriate
@@ -64,9 +69,4 @@ import com.reactnativenavigation.react.ReactGateway;
      public List<ReactPackage> createAdditionalReactPackages() {
          return getPackages();
      }
-
-    // @Override
-    // public String getJSMainModuleName() {
-    //     return "index";
-    // }
  }
