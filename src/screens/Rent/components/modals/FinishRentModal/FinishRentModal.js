@@ -1,33 +1,14 @@
 /* eslint react/no-array-index-key:0 */
-import React, { Component } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Button, Header, Icon } from 'react-native-elements';
-import { Navigation } from 'react-native-navigation';
-import { auth, db } from '../../../../../firebase';
+import React, { Component } from "react";
+import { StyleSheet, View } from "react-native";
+import { Button, Icon } from "react-native-elements";
+import { Navigation } from "react-native-navigation";
+import { auth, db } from "../../../../../firebase";
 
-import RentSheet from './RentSheet/RentSheet';
-import InfoOverlay from './InfoOverlay';
-import AssignmentOverlay from './AssignmentOverlay';
-
-const GoodHeader = ({ closeModal, infoPress }) => (
-  <Header
-    statusBarProps={{ backgroundColor: '#546054', barStyle: 'light-content' }}
-    backgroundColor="#5B725A"
-    leftComponent={
-      <Icon name="arrow-back" color="white" underlayColor="transparent" onPress={closeModal} />
-    }
-    centerComponent={{ text: 'Assign & Finish', style: { fontSize: 18, color: '#fff' } }}
-    rightComponent={(
-      <Icon
-        name="info"
-        type="feather"
-        color="white"
-        underlayColor="transparent"
-        onPress={() => infoPress(true)}
-      />
-)}
-  />
-);
+import RentSheet from "./RentSheet/RentSheet";
+import InfoOverlay from "./InfoOverlay";
+import AssignmentOverlay from "./AssignmentOverlay";
+import ModalHeader from "../../../../../components/shared/ModalHeader";
 
 const SubmitButton = ({ onPress }) => (
   <View style={styles.SubmitSection}>
@@ -47,7 +28,7 @@ class FinishRentModal extends Component {
     isVisible: false,
     roommates: [],
     dataItem: {},
-    infoVisible: false,
+    infoVisible: false
   };
 
   componentDidMount = async () => {
@@ -116,13 +97,13 @@ class FinishRentModal extends Component {
       base: _main,
       bills: _utilities,
       totals,
-      date,
+      date
     });
     // // post activity
     const { editing } = this.props;
     const timestamp = new Date().getTime();
-    const name = auth.getDisplayName().split(' ')[0];
-    let detail = '';
+    const name = auth.getDisplayName().split(" ")[0];
+    let detail = "";
     if (editing) {
       detail = `Edited Rent Sheet: ${date.month} ${date.year}`;
     } else {
@@ -132,7 +113,7 @@ class FinishRentModal extends Component {
       description: [detail],
       likes: 0,
       name,
-      time: timestamp,
+      time: timestamp
     });
 
     onFinish();
@@ -141,7 +122,7 @@ class FinishRentModal extends Component {
 
   openOverlay = (i, name) => {
     const { main, utilities } = this.state;
-    if (name === 'main') {
+    if (name === "main") {
       this.setState({ dataItem: main[i] });
     } else {
       this.setState({ dataItem: utilities[i] });
@@ -155,12 +136,40 @@ class FinishRentModal extends Component {
 
   render() {
     const {
-      isVisible, main, utilities, roommates, dataItem, infoVisible,
+      isVisible,
+      main,
+      utilities,
+      roommates,
+      dataItem,
+      infoVisible
     } = this.state;
     return (
       <View style={styles.container}>
-        <GoodHeader closeModal={this.closeModal} infoPress={this.displayInfoOverlay} />
-        <RentSheet main={main} utilities={utilities} onItemPress={this.openOverlay} />
+        <ModalHeader
+          text="Assign & Finish"
+          leftComponent={
+            <Icon
+              name="arrow-back"
+              color="white"
+              underlayColor="transparent"
+              onPress={this.closeModal}
+            />
+          }
+          rightComponent={
+            <Icon
+              name="info"
+              type="feather"
+              color="white"
+              underlayColor="transparent"
+              onPress={() => this.displayInfoOverlay(true)}
+            />
+          }
+        />
+        <RentSheet
+          main={main}
+          utilities={utilities}
+          onItemPress={this.openOverlay}
+        />
         <SubmitButton onPress={this.submitRent} />
         <AssignmentOverlay
           isVisible={isVisible}
@@ -169,7 +178,10 @@ class FinishRentModal extends Component {
           dataItem={dataItem}
           onCheckPress={this.onCheckPress}
         />
-        <InfoOverlay isVisible={infoVisible} toggleOverlay={this.displayInfoOverlay} />
+        <InfoOverlay
+          isVisible={infoVisible}
+          toggleOverlay={this.displayInfoOverlay}
+        />
       </View>
     );
   }
@@ -178,25 +190,25 @@ class FinishRentModal extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: "white"
   },
   SubmitSection: {
     flex: 0,
-    padding: 10,
+    padding: 10
   },
   buttonContainer: {
     marginTop: 20,
     flex: 0,
-    alignSelf: 'center',
+    alignSelf: "center"
   },
   submitButton: {
-    backgroundColor: 'rgba(92, 99,216, 1)',
+    backgroundColor: "rgba(92, 99,216, 1)",
     width: 300,
     height: 45,
-    borderColor: 'transparent',
+    borderColor: "transparent",
     borderWidth: 0,
-    borderRadius: 5,
-  },
+    borderRadius: 5
+  }
 });
 
 export default FinishRentModal;

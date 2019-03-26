@@ -1,18 +1,19 @@
 /* eslint react/no-array-index-key: 0
  */
-import React, { Component } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Navigation } from 'react-native-navigation';
-import { toggleDrawer } from '../../components/navigation';
+import React, { Component } from "react";
+import { StyleSheet, View } from "react-native";
+import { Navigation } from "react-native-navigation";
+import { toggleDrawer } from "../../components/navigation";
+import { Icon } from "react-native-elements";
 
-import Header from './components/Header';
-import ReminderList from './components/reminder/ReminderList';
-import { db } from '../../firebase';
+import Header from "../../components/shared/Header";
+import ReminderList from "./components/reminder/ReminderList";
+import { db } from "../../firebase";
 
 class Reminders extends Component {
   state = {
     reminders: [],
-    refreshing: false,
+    refreshing: false
   };
 
   componentDidMount = async () => {
@@ -34,29 +35,29 @@ class Reminders extends Component {
   openReminderModal = () => {
     Navigation.showModal({
       component: {
-        name: 'AddReminderModal',
+        name: "AddReminderModal",
         passProps: {
-          onFinish: this.getReminders,
+          onFinish: this.getReminders
         },
         options: {
-          animationType: 'slide-up',
-        },
-      },
+          animationType: "slide-up"
+        }
+      }
     });
   };
 
   handleItemPress = item => {
     Navigation.showModal({
       component: {
-        name: 'AddReminderModal',
+        name: "AddReminderModal",
         passProps: {
           item,
-          onFinish: this.getReminders,
+          onFinish: this.getReminders
         },
         options: {
-          animationType: 'slide-up',
-        },
-      },
+          animationType: "slide-up"
+        }
+      }
     });
   };
 
@@ -67,7 +68,16 @@ class Reminders extends Component {
       <View style={styles.container}>
         <Header
           toggleDrawer={() => toggleDrawer(componentId)}
-          openReminderModal={this.openReminderModal}
+          text="Reminders"
+          rightComponent={
+            <Icon
+              name="calendar-plus"
+              type="material-community"
+              color="white"
+              underlayColor="transparent"
+              onPress={this.openReminderModal}
+            />
+          }
         />
         <ReminderList
           refreshing={refreshing}
@@ -83,8 +93,8 @@ class Reminders extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
-  },
+    backgroundColor: "white"
+  }
 });
 
 export default Reminders;

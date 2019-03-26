@@ -1,24 +1,24 @@
-import React from 'react';
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
-import { Icon, Text, Divider } from 'react-native-elements';
+import React from "react";
+import { View, TouchableOpacity, StyleSheet } from "react-native";
+import { Icon, Text, Divider } from "react-native-elements";
 
 formatTime = t => {
-  const today = new Date().toLocaleDateString('en-US', {
-    day: 'numeric',
-    month: 'short',
+  const today = new Date().toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "short"
   });
-  const date = new Date(t).toLocaleDateString('en-US', {
-    day: 'numeric',
-    month: 'short',
+  const date = new Date(t).toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "short"
   });
-  const time = new Date(t).toLocaleString('en-US', {
-    hour: '2-digit',
-    minute: '2-digit',
+  const time = new Date(t).toLocaleString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit"
   });
 
   let formatted = `${date} at `;
   if (today === date) {
-    formatted = 'Today at ';
+    formatted = "Today at ";
   }
   return `${formatted}${time}`;
 };
@@ -27,7 +27,7 @@ const ItemTitle = ({ title }) => <Text style={styles.nameStyle}>{title}</Text>;
 
 const ItemTimeStamp = ({ time }) => (
   <View style={{ marginBottom: 5 }}>
-    <Text style={{ fontSize: 13, color: 'grey' }}>{formatTime(time)}</Text>
+    <Text style={{ fontSize: 13, color: "grey" }}>{formatTime(time)}</Text>
   </View>
 );
 
@@ -59,7 +59,7 @@ const LikesView = ({ likes }) => (
 );
 
 const LikeButton = ({ likes, addLike }) => (
-  <View style={{ alignSelf: 'center' }}>
+  <View style={{ alignSelf: "center" }}>
     <Icon name="thumbs-up" type="feather" onPress={addLike} />
     <LikesView likes={likes} />
   </View>
@@ -74,25 +74,29 @@ const ActivityItemContainer = ({ children, onLongPress }) => (
 const ActivityItem = ({ item, addLike, onLongPress }) => (
   <View>
     <ActivityItemContainer onLongPress={onLongPress}>
-      <ItemDetails name={item.name} time={item.time} description={item.description} />
+      <ItemDetails
+        name={item.name}
+        time={item.time}
+        description={item.description}
+      />
       <LikeButton likes={item.likes} addLike={addLike} />
     </ActivityItemContainer>
-    <Divider style={{ backgroundColor: 'grey', height: 1 }} />
+    <Divider style={{ backgroundColor: "grey", height: 1 }} />
   </View>
 );
 
 const styles = StyleSheet.create({
   row: {
     flex: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    backgroundColor: 'white',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    backgroundColor: "white",
     padding: 15,
-    marginBottom: 1,
+    marginBottom: 1
   },
   nameStyle: {
-    fontSize: 22,
-  },
+    fontSize: 22
+  }
 });
 
 export default ActivityItem;

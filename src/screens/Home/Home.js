@@ -1,16 +1,17 @@
 /* eslint class-methods-use-this:0 */
-import React, { Component } from 'react';
-import { StyleSheet, View, YellowBox } from 'react-native';
+import React, { Component } from "react";
+import { StyleSheet, View, YellowBox } from "react-native";
 // tools
-import { Navigation } from 'react-native-navigation';
-import { toggleDrawer } from '../../components/navigation';
+import { Navigation } from "react-native-navigation";
+import { toggleDrawer } from "../../components/navigation";
 // components
-import Header from './components/Header';
-import ItemOverlay from './components/ItemOverlay';
-import ActivityList from './components/Activity/ActivityList';
-import { auth, db } from '../../firebase';
+import Header from "../../components/shared/Header";
+import ItemOverlay from "./components/ItemOverlay";
+import ActivityList from "./components/Activity/ActivityList";
+import { auth, db } from "../../firebase";
+import { Icon } from "react-native-elements";
 
-YellowBox.ignoreWarnings(['relay:check']);
+YellowBox.ignoreWarnings(["relay:check"]);
 
 class Home extends Component {
   state = {
@@ -18,7 +19,7 @@ class Home extends Component {
     isVisible: false,
     aid: null,
     refreshing: false,
-    creator: false,
+    creator: false
   };
 
   componentDidMount = async () => {
@@ -42,14 +43,14 @@ class Home extends Component {
   openActivityModal = () => {
     Navigation.showModal({
       component: {
-        name: 'ActivityModal',
+        name: "ActivityModal",
         options: {
-          animationType: 'slide-up',
+          animationType: "slide-up"
         },
         passProps: {
-          onFinish: () => this.onRefresh(),
-        },
-      },
+          onFinish: () => this.onRefresh()
+        }
+      }
     });
   };
 
@@ -71,15 +72,21 @@ class Home extends Component {
 
   render() {
     const { componentId } = this.props;
-    const {
-      refreshing, activities, creator, isVisible, headerVisible,
-    } = this.state;
+    const { refreshing, activities, creator, isVisible } = this.state;
     return (
       <View style={styles.container}>
         <Header
           toggleDrawer={() => toggleDrawer(componentId)}
-          openActivityModal={this.openActivityModal}
-          isVisible={headerVisible}
+          text="Home"
+          rightComponent={
+            <Icon
+              name="pencil"
+              type="entypo"
+              color="white"
+              underlayColor="transparent"
+              onPress={this.openActivityModal}
+            />
+          }
         />
         <ActivityList
           refreshing={refreshing}
@@ -102,9 +109,9 @@ class Home extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1
     // backgroundColor: '#E3E1DE',
-  },
+  }
 });
 
 export default Home;

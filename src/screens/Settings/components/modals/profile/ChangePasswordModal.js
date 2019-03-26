@@ -1,24 +1,9 @@
-import React, { Component } from 'react';
-import { StyleSheet, View } from 'react-native';
-import {
-  Header, Icon, Overlay, Text, Button, Input,
-} from 'react-native-elements';
-import { Navigation } from 'react-native-navigation';
-import { auth } from '../../../../../firebase';
-
-const GoodHeader = ({ closeModal, submitUpdate }) => (
-  <Header
-    statusBarProps={{ backgroundColor: '#546054', barStyle: 'light-content' }}
-    backgroundColor="#5B725A"
-    leftComponent={
-      <Icon name="close" color="white" underlayColor="transparent" onPress={closeModal} />
-    }
-    centerComponent={{ text: 'Change Password', style: { fontSize: 18, color: '#fff' } }}
-    rightComponent={
-      <Icon name="check" color="white" underlayColor="transparent" onPress={submitUpdate} />
-    }
-  />
-);
+import React, { Component } from "react";
+import { StyleSheet, View } from "react-native";
+import { Icon, Overlay, Text, Button, Input } from "react-native-elements";
+import { Navigation } from "react-native-navigation";
+import { auth } from "../../../../../firebase";
+import ModalHeader from "../../../../../components/shared/ModalHeader";
 
 const ReAuthOverlay = ({
   isVisible,
@@ -29,7 +14,7 @@ const ReAuthOverlay = ({
   isEmailValid,
   isPasswordValid,
   onEmailChange,
-  onPasswordChange,
+  onPasswordChange
 }) => (
   <Overlay
     borderRadius={5}
@@ -40,8 +25,10 @@ const ReAuthOverlay = ({
   >
     <>
       <View>
-        <Text style={{ fontSize: 24, marginBottom: 5 }}>Reauthenticate to update</Text>
-        <Text style={{ fontSize: 16, color: 'gray', marginBottom: 10 }}>
+        <Text style={{ fontSize: 24, marginBottom: 5 }}>
+          Reauthenticate to update
+        </Text>
+        <Text style={{ fontSize: 16, color: "gray", marginBottom: 10 }}>
           Please re-login in order to securly update your password.
         </Text>
       </View>
@@ -56,7 +43,7 @@ const ReAuthOverlay = ({
           returnKeyType="next"
           inputStyle={{ marginLeft: 10 }}
           placeholder="Email"
-          containerStyle={{ borderBottomColor: 'rgba(0, 0, 0, 0.38)' }}
+          containerStyle={{ borderBottomColor: "rgba(0, 0, 0, 0.38)" }}
           onSubmitEditing={() => this.passwordInput.focus()}
           onChangeText={onEmailChange}
           errorMessage={isEmailValid}
@@ -70,7 +57,10 @@ const ReAuthOverlay = ({
           secureTextEntry
           returnKeyType="done"
           blurOnSubmit
-          containerStyle={{ marginTop: 16, borderBottomColor: 'rgba(0, 0, 0, 0.38)' }}
+          containerStyle={{
+            marginTop: 16,
+            borderBottomColor: "rgba(0, 0, 0, 0.38)"
+          }}
           inputStyle={{ marginLeft: 10 }}
           placeholder="Password"
           ref={input => {
@@ -82,20 +72,22 @@ const ReAuthOverlay = ({
           leftIcon={<Icon name="lock-outline" type="material-community" />}
         />
       </View>
-      <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'flex-end' }}>
+      <View
+        style={{ flex: 0, flexDirection: "row", justifyContent: "flex-end" }}
+      >
         <Button
           title="Login"
           onPress={onLogin}
           containerStyle={{ marginRight: 10 }}
           buttonStyle={{
-            backgroundColor: 'rgba(92, 99,216, 1)',
+            backgroundColor: "rgba(92, 99,216, 1)"
           }}
         />
         <Button
           title="Close"
           onPress={onClose}
           buttonStyle={{
-            backgroundColor: 'rgba(92, 99,216, 1)',
+            backgroundColor: "rgba(92, 99,216, 1)"
           }}
         />
       </View>
@@ -105,25 +97,25 @@ const ReAuthOverlay = ({
 
 class ChangePasswordModal extends Component {
   state = {
-    npassword: '',
-    vpassword: '',
+    npassword: "",
+    vpassword: "",
     visible: true,
     isEmailValid: null,
     isPasswordValid: null,
-    email: '',
-    password: '',
+    email: "",
+    password: ""
   };
 
   onLogin = async () => {
     const { email, password } = this.state;
-    if (email.trim() !== '' && password.trim() !== '') {
+    if (email.trim() !== "" && password.trim() !== "") {
       const response = await auth.loginWithEmail(email, password);
       if (response) {
         this.setState({ visible: false });
       } else {
         this.setState({
-          isEmailValid: 'Please enter a valid email address',
-          isPasswordValid: 'Please enter at least 8 characters',
+          isEmailValid: "Please enter a valid email address",
+          isPasswordValid: "Please enter at least 8 characters"
         });
       }
     }
@@ -139,7 +131,7 @@ class ChangePasswordModal extends Component {
 
   submitUpdate = async () => {
     const { npassword, vpassword } = this.state;
-    if (npassword.trim() !== '' && vpassword.trim() !== '') {
+    if (npassword.trim() !== "" && vpassword.trim() !== "") {
       if (npassword === vpassword) {
         await auth.updatePassword(npassword);
         this.closeModal();
@@ -155,11 +147,29 @@ class ChangePasswordModal extends Component {
       isEmailValid,
       isPasswordValid,
       email,
-      password,
+      password
     } = this.state;
     return (
       <View style={styles.container}>
-        <GoodHeader closeModal={this.closeModal} submitUpdate={this.submitUpdate} />
+        <ModalHeader
+          text="Change Password"
+          leftComponent={
+            <Icon
+              name="close"
+              color="white"
+              underlayColor="transparent"
+              onPress={this.closeModal}
+            />
+          }
+          rightComponent={
+            <Icon
+              name="check"
+              color="white"
+              underlayColor="transparent"
+              onPress={this.submitUpdate}
+            />
+          }
+        />
         <View style={{ padding: 15 }}>
           <Input
             placeholder="Password"
@@ -203,8 +213,8 @@ class ChangePasswordModal extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-  },
+    flex: 1
+  }
 });
 
 export default ChangePasswordModal;

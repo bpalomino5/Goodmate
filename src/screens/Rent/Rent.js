@@ -2,53 +2,24 @@
     react/no-array-index-key: 0,
     no-param-reassign: 0
 */
-import React, { Component } from 'react';
-import { Navigation } from 'react-native-navigation';
-import { StyleSheet, View } from 'react-native';
-import { Header, Icon, Text } from 'react-native-elements';
-import { getData, storeData } from '../../utils/DataStore';
-import { toggleDrawer } from '../../components/navigation';
-import { db, auth } from '../../firebase';
+import React, { Component } from "react";
+import { Navigation } from "react-native-navigation";
+import { StyleSheet, View } from "react-native";
+import { Icon, Text } from "react-native-elements";
+import { getData, storeData } from "../../utils/DataStore";
+import { toggleDrawer } from "../../components/navigation";
+import { db, auth } from "../../firebase";
 
-import RentFilters from './components/RentFilters';
-import RentSheet from './components/RentSheet';
-
-const GoodHeader = ({
-  toggleDrawer, openRentModal, disabled, primary,
-}) => (
-  <Header
-    statusBarProps={{ backgroundColor: '#546054',barStyle: 'light-content' }}
-    backgroundColor="#5B725A"
-    leftComponent={(
-      <Icon
-        name="menu"
-        type="Feather"
-        color="white"
-        underlayColor="transparent"
-        onPress={toggleDrawer}
-      />
-)}
-    centerComponent={{ text: 'Rent', style: { fontSize: 18, color: '#fff' } }}
-    rightComponent={
-      primary ? (
-        <Icon
-          name="doc"
-          type="simple-line-icon"
-          color={disabled ? 'grey' : 'white'}
-          underlayColor="transparent"
-          onPress={disabled ? null : openRentModal}
-        />
-      ) : null
-    }
-  />
-);
+import Header from "../../components/shared/Header";
+import RentFilters from "./components/RentFilters";
+import RentSheet from "./components/RentSheet";
 
 const DefaultView = ({ description }) => (
   <View
     style={{
       flex: 1,
-      alignItems: 'center',
-      marginTop: 200,
+      alignItems: "center",
+      marginTop: 200
     }}
   >
     <Text h4>{description}</Text>
@@ -65,15 +36,15 @@ const RentSheetView = ({ main, utilities, totals }) => (
 
 class Rent extends Component {
   state = {
-    month: '',
-    year: '',
+    month: "",
+    year: "",
     main: [],
     utilities: [],
     totals: [],
     sheetAvailable: false,
-    displayText: 'Please select a date!',
+    displayText: "Please select a date!",
     primary: false,
-    typeViewable: false,
+    typeViewable: false
   };
 
   componentDidMount = async () => {
@@ -84,7 +55,7 @@ class Rent extends Component {
       }
     });
 
-    const date = await getData('date');
+    const date = await getData("date");
     if (date) {
       await this.getRentSheet(date.month, date.year);
       this.setState({ month: date.month, year: date.year });
@@ -104,13 +75,13 @@ class Rent extends Component {
   };
 
   getRentSheet = async (month, year) => {
-    await storeData('date', { month, year });
+    await storeData("date", { month, year });
     const { primary } = this.state;
     const sheetRef = await db.getRent(month, year);
     if (sheetRef) {
-      const main = this.prepRentData(sheetRef.get('base'));
-      const utilities = this.prepRentData(sheetRef.get('bills'));
-      const totals = sheetRef.get('totals');
+      const main = this.prepRentData(sheetRef.get("base"));
+      const utilities = this.prepRentData(sheetRef.get("bills"));
+      const totals = sheetRef.get("totals");
       if (main != null && utilities != null && totals != null) {
         this.setState({ main, utilities, totals });
         if (primary) {
@@ -127,7 +98,7 @@ class Rent extends Component {
         utilities: [],
         totals: [],
         sheetAvailable: false,
-        displayText: 'No rent sheet created yet!',
+        displayText: "No rent sheet created yet!"
       });
     }
   };
@@ -178,7 +149,7 @@ class Rent extends Component {
       main: _main,
       utilities: _utilities,
       totals: personalTotals,
-      sheetAvailable: true,
+      sheetAvailable: true
     });
   };
 
@@ -187,64 +158,62 @@ class Rent extends Component {
     const date = { month, year };
     const main = [
       {
-        section: '',
-        type: '',
-        value: '',
-        uids: {},
-      },
+        section: "",
+        type: "",
+        value: "",
+        uids: {}
+      }
     ];
     const utilities = [
       {
-        section: '',
-        type: '',
-        value: '',
-        uids: {},
-      },
+        section: "",
+        type: "",
+        value: "",
+        uids: {}
+      }
     ];
 
     Navigation.showModal({
       component: {
-        name: 'AddRentModal',
+        name: "AddRentModal",
         passProps: {
           editing: false,
           date,
           main,
           utilities,
-          onFinish: () => this.getRentSheet(month, year),
+          onFinish: () => this.getRentSheet(month, year)
         },
         options: {
-          animationType: 'slide-up',
-        },
-      },
+          animationType: "slide-up"
+        }
+      }
     });
   };
 
   editRentSheet = () => {
-    const {
-      main, utilities, month, year,
-    } = this.state;
+    const { main, utilities, month, year } = this.state;
     const date = { month, year };
 
     Navigation.showModal({
       component: {
-        name: 'AddRentModal',
+        name: "AddRentModal",
         passProps: {
           editing: true,
           main,
           utilities,
           date,
-          onFinish: () => this.getRentSheet(month, year),
+          onFinish: () => this.getRentSheet(month, year)
         },
         options: {
-          animationType: 'slide-up',
-        },
-      },
+          animationType: "slide-up"
+        }
+      }
     });
   };
 
   updateMonth = async month => {
     const { year } = this.state;
-    if (year.trim() !== '') {
+    if (year.trim() !== "") {
       await this.getRentSheet(month, year);
     }
     this.setState({ month });
@@ -252,7 +221,7 @@ class Rent extends Component {
 
   updateYear = async year => {
     const { month } = this.state;
-    if (month.trim() !== '') {
+    if (month.trim() !== "") {
       await this.getRentSheet(month, year);
     }
     this.setState({ year });
@@ -260,8 +229,8 @@ class Rent extends Component {
 
   updateType = async type => {
     const { month, year } = this.state;
-    if (type.trim() !== '' && month.trim() !== '' && year.trim() !== '') {
-      if (type === 'Master') {
+    if (type.trim() !== "" && month.trim() !== "" && year.trim() !== "") {
+      if (type === "Master") {
         this.setState({ primary: true });
         await this.getRentSheet(month, year);
       } else {
@@ -282,16 +251,32 @@ class Rent extends Component {
       main,
       utilities,
       totals,
-      displayText,
+      displayText
     } = this.state;
-    const dateSelected = month !== '' && year !== '';
+    const dateSelected = month !== "" && year !== "";
+    const disabled = dateSelected === false;
     return (
       <View style={styles.container}>
-        <GoodHeader
+        <Header
           toggleDrawer={() => toggleDrawer(componentId)}
-          openRentModal={sheetAvailable ? this.editRentSheet : this.openRentModal}
-          disabled={dateSelected === false}
-          primary={primary}
+          text="Rent"
+          rightComponent={
+            primary ? (
+              <Icon
+                name="doc"
+                type="simple-line-icon"
+                color={disabled ? "grey" : "white"}
+                underlayColor="transparent"
+                onPress={
+                  disabled
+                    ? null
+                    : sheetAvailable
+                    ? this.editRentSheet
+                    : this.openRentModal
+                }
+              />
+            ) : null
+          }
         />
         <RentFilters
           isGroupPrimary={typeViewable}
@@ -314,13 +299,13 @@ class Rent extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: "white"
     // backgroundColor: '#E3E1DE',
   },
 
   primaryContainer: {
-    flex: 1,
-  },
+    flex: 1
+  }
 });
 
 export default Rent;
