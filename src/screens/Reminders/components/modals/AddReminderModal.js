@@ -249,7 +249,6 @@ const styles = StyleSheet.create({
   buttonContainer: { flex: 1, justifyContent: "flex-end", marginBottom: 30 },
   delete: { flex: 0, alignSelf: "center" },
   buttonDelete: {
-    backgroundColor: "rgba(92, 99,216, 1)",
     width: 300,
     height: 45,
     borderColor: "transparent",

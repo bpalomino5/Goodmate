@@ -152,7 +152,7 @@ class AddRentModal extends Component {
               name="add"
               color="white"
               underlayColor="transparent"
-              onPress={this.openOverlay}
+              onPress={this.openAddOverlay}
             />
           }
         />
@@ -191,7 +191,6 @@ const styles = StyleSheet.create({
     backgroundColor: "white"
   },
   nextButton: {
-    backgroundColor: "rgba(92, 99,216, 1)",
     width: 300,
     height: 45,
     borderColor: "transparent",

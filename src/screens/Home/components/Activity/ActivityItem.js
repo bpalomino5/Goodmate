@@ -1,5 +1,5 @@
 import React from "react";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
+import { View, TouchableHighlight, StyleSheet } from "react-native";
 import { Icon, Text, Divider } from "react-native-elements";
 
 formatTime = t => {
@@ -66,9 +66,13 @@ const LikeButton = ({ likes, addLike }) => (
 );
 
 const ActivityItemContainer = ({ children, onLongPress }) => (
-  <TouchableOpacity activeOpacity={0.3} onLongPress={onLongPress}>
+  <TouchableHighlight
+    activeOpacity={0.3}
+    onLongPress={onLongPress}
+    underlayColor="#8E967C"
+  >
     <View style={styles.row}>{children}</View>
-  </TouchableOpacity>
+  </TouchableHighlight>
 );
 
 const ActivityItem = ({ item, addLike, onLongPress }) => (

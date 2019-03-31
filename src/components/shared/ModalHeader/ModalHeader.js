@@ -6,7 +6,7 @@ const ModalHeader = ({ leftComponent, text, rightComponent }) => (
   <ElementHeader
     containerStyle={Platform.OS === "android" && styles.header}
     statusBarProps={{ backgroundColor: "#546054", barStyle: "light-content" }}
-    backgroundColor="#5B725A"
+    backgroundColor="#385136"
     leftComponent={leftComponent}
     centerComponent={{
       text,

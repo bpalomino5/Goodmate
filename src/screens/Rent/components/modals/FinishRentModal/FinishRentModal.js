@@ -202,7 +202,6 @@ const styles = StyleSheet.create({
     alignSelf: "center"
   },
   submitButton: {
-    backgroundColor: "rgba(92, 99,216, 1)",
     width: 300,
     height: 45,
     borderColor: "transparent",

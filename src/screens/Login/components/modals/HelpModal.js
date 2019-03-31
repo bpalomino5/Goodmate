@@ -1,17 +1,15 @@
-import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { Navigation } from 'react-native-navigation';
-import {
-  Header, Input, Button, Icon,
-} from 'react-native-elements';
-import { auth } from '../../../../firebase';
+import React, { Component } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { Navigation } from "react-native-navigation";
+import { Header, Input, Button, Icon } from "react-native-elements";
+import { auth } from "../../../../firebase";
 
 const ForgotView = ({ onSubmit, onChangeText }) => (
   <View style={styles.forgetView}>
     <Text> Forgot your password? </Text>
     <Text>Please enter your email to reset your password</Text>
     <Input
-      inputStyle={{ textAlign: 'center' }}
+      inputStyle={{ textAlign: "center" }}
       containerStyle={styles.inputStyle}
       placeholder="Email"
       onChangeText={onChangeText}
@@ -33,7 +31,7 @@ const SubmitView = () => (
 );
 
 export default class HelpModal extends Component {
-  state = { submitted: false, email: '' };
+  state = { submitted: false, email: "" };
 
   closeModal = () => Navigation.dismissModal(this.props.componentId);
 
@@ -51,9 +49,13 @@ export default class HelpModal extends Component {
       <View style={styles.container}>
         <Header
           backgroundColor="white"
-          statusBarProps={{ backgroundColor: 'white' }}
+          statusBarProps={{ backgroundColor: "white" }}
           leftComponent={
-            <Icon name="close" underlayColor="transparent" onPress={this.closeModal} />
+            <Icon
+              name="close"
+              underlayColor="transparent"
+              onPress={this.closeModal}
+            />
           }
           outerContainerStyles={{ borderBottomWidth: 0 }}
         />
@@ -73,29 +75,28 @@ export default class HelpModal extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: "white"
   },
   forgetView: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center"
   },
   submitView: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center"
   },
   inputStyle: {
     marginTop: 10,
     paddingLeft: 20,
-    paddingRight: 20,
+    paddingRight: 20
   },
   submitButton: {
-    backgroundColor: 'rgba(92, 99,216, 1)',
     width: 300,
     height: 45,
-    borderColor: 'transparent',
+    borderColor: "transparent",
     borderWidth: 0,
-    borderRadius: 5,
-  },
+    borderRadius: 5
+  }
 });

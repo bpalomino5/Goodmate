@@ -39,7 +39,12 @@ const GoodButton = ({ onPress }) => (
 );
 
 const ActivityCheckBox = ({ title, checked, onPress }) => (
-  <CheckBox title={title} checked={checked} onPress={onPress} />
+  <CheckBox
+    checkedColor="#8E967C"
+    title={title}
+    checked={checked}
+    onPress={onPress}
+  />
 );
 
 const OptionsSelector = ({ options, onSelected }) => (

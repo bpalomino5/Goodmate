@@ -11,10 +11,12 @@ const ReAuthOverlay = ({
   email,
   password,
   onLogin,
-  isEmailValid,
-  isPasswordValid,
+  emailError,
+  passwordError,
   onEmailChange,
-  onPasswordChange
+  onPasswordChange,
+  emailInput,
+  passwordInput
 }) => (
   <Overlay
     borderRadius={5}
@@ -46,7 +48,7 @@ const ReAuthOverlay = ({
           containerStyle={{ borderBottomColor: "rgba(0, 0, 0, 0.38)" }}
           onSubmitEditing={() => this.passwordInput.focus()}
           onChangeText={onEmailChange}
-          errorMessage={isEmailValid}
+          errorMessage={emailError}
           leftIcon={<Icon name="email-outline" type="material-community" />}
         />
         <Input
@@ -68,7 +70,7 @@ const ReAuthOverlay = ({
           }}
           onSubmitEditing={onLogin}
           onChangeText={onPasswordChange}
-          errorMessage={isPasswordValid}
+          errorMessage={passwordError}
           leftIcon={<Icon name="lock-outline" type="material-community" />}
         />
       </View>
@@ -79,17 +81,8 @@ const ReAuthOverlay = ({
           title="Login"
           onPress={onLogin}
           containerStyle={{ marginRight: 10 }}
-          buttonStyle={{
-            backgroundColor: "rgba(92, 99,216, 1)"
-          }}
         />
-        <Button
-          title="Close"
-          onPress={onClose}
-          buttonStyle={{
-            backgroundColor: "rgba(92, 99,216, 1)"
-          }}
-        />
+        <Button title="Close" onPress={onClose} />
       </View>
     </>
   </Overlay>
@@ -100,8 +93,9 @@ class ChangePasswordModal extends Component {
     npassword: "",
     vpassword: "",
     visible: true,
-    isEmailValid: null,
-    isPasswordValid: null,
+    emailError: null,
+    passwordError: null,
+    isLoading: false,
     email: "",
     password: ""
   };
@@ -109,14 +103,27 @@ class ChangePasswordModal extends Component {
   onLogin = async () => {
     const { email, password } = this.state;
     if (email.trim() !== "" && password.trim() !== "") {
-      const response = await auth.loginWithEmail(email, password);
-      if (response) {
-        this.setState({ visible: false });
-      } else {
-        this.setState({
-          isEmailValid: "Please enter a valid email address",
-          isPasswordValid: "Please enter at least 8 characters"
-        });
+      // reset
+      this.setState({
+        emailError: null,
+        passwordError: null
+      });
+
+      try {
+        const success = await auth.signInWithEmailAndPassword(email, password);
+        if (success) {
+          this.setState({ visible: false });
+        }
+      } catch (error) {
+        if (error.code === "auth/wrong-password") {
+          this.setState({
+            passwordError: "Wrong Password"
+          });
+        } else if (error.code === "auth/user-not-found") {
+          this.setState({
+            emailError: "User not found"
+          });
+        }
       }
     }
   };
@@ -144,10 +151,12 @@ class ChangePasswordModal extends Component {
       npassword,
       vpassword,
       visible,
-      isEmailValid,
-      isPasswordValid,
+      emailError,
+      passwordError,
       email,
-      password
+      password,
+      emailInput,
+      passwordInput
     } = this.state;
     return (
       <View style={styles.container}>
@@ -199,8 +208,8 @@ class ChangePasswordModal extends Component {
           isVisible={visible}
           onLogin={this.onLogin}
           onClose={this.onClose}
-          isEmailValid={isEmailValid}
-          isPasswordValid={isPasswordValid}
+          emailError={emailError}
+          passwordError={passwordError}
           email={email}
           password={password}
           onEmailChange={e => this.setState({ email: e })}

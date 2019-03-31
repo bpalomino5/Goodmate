@@ -1,34 +1,40 @@
-import React from 'react';
-import {
-  ScrollView, View, RefreshControl, StyleSheet,
-} from 'react-native';
-import { Text, Divider } from 'react-native-elements';
+import React from "react";
+import { ScrollView, View, RefreshControl, StyleSheet } from "react-native";
+import { Text, Divider } from "react-native-elements";
 
-import ActivityItem from './ActivityItem';
+import ActivityItem from "./ActivityItem";
 
-const ActivityFeed = ({ activities, addLike, onItemSelect }) => activities.map(item => (
-  <ActivityItem
-    key={item.key}
-    item={item}
-    addLike={() => addLike(item.key)}
-    onLongPress={() => onItemSelect(item.key, item.created_by)}
-  />
-));
+const ActivityFeed = ({ activities, addLike, onItemSelect }) =>
+  activities.map(item => (
+    <ActivityItem
+      key={item.key}
+      item={item}
+      addLike={() => addLike(item.key)}
+      onLongPress={() => onItemSelect(item.key, item.created_by)}
+    />
+  ));
 
 const EmptyActivityFeed = () => (
   <View>
-    <Divider style={{ backgroundColor: 'grey', height: 1 }} />
     <View style={styles.emptyfeed}>
       <Text h4>Upcoming activities!</Text>
     </View>
-    <Divider style={{ backgroundColor: 'grey', height: 1 }} />
+    <Divider style={{ backgroundColor: "grey", height: 1 }} />
   </View>
 );
 
 const ActivityList = ({
-  refreshing, activities, onRefresh, addLike, openOverlay,
+  refreshing,
+  activities,
+  onRefresh,
+  addLike,
+  openOverlay
 }) => (
-  <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+  <ScrollView
+    refreshControl={
+      <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+    }
+  >
     {activities.length > 0 ? (
       <ActivityFeed
         activities={activities}
@@ -44,11 +50,11 @@ const ActivityList = ({
 const styles = StyleSheet.create({
   emptyfeed: {
     flex: 0,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    backgroundColor: 'white',
-    padding: 15,
-  },
+    flexDirection: "row",
+    justifyContent: "center",
+    backgroundColor: "white",
+    padding: 15
+  }
 });
 
 export default ActivityList;
