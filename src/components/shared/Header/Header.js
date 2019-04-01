@@ -5,8 +5,7 @@ import { Header as ElementHeader, Icon } from "react-native-elements";
 const Header = ({ toggleDrawer, text, rightComponent }) => (
   <ElementHeader
     containerStyle={Platform.OS === "android" && styles.header}
-    statusBarProps={{ backgroundColor: "#546054", barStyle: "light-content" }}
-    // backgroundColor="#5B725A"
+    statusBarProps={{ backgroundColor: "black", barStyle: "light-content" }}
     backgroundColor="#385136"
     leftComponent={
       <Icon

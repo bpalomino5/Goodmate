@@ -26,8 +26,9 @@ UIManager.setLayoutAnimationEnabledExperimental &&
 
 const Header = () => (
   <View style={styles.titleContainer}>
-    <View style={{ flexDirection: "row" }}>
-      <Text style={styles.titleText}>GOODMATE</Text>
+    <View style={{ flexDirection: "column" }}>
+      <Text style={styles.titleText}>Welcome to</Text>
+      <Text style={styles.titleText}>Goodmate!</Text>
     </View>
   </View>
 );
@@ -93,7 +94,8 @@ const styles = StyleSheet.create({
   titleContainer: {
     height: 150,
     backgroundColor: "transparent",
-    justifyContent: "center"
+    // backgroundColor: "red",
+    justifyContent: "flex-start"
   },
   bgImage: {
     flex: 1,
@@ -105,8 +107,10 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   titleText: {
+    textAlign: "center",
     color: "white",
-    fontSize: 30
+    fontSize: 35,
+    fontStyle: "italic"
   }
 });
 

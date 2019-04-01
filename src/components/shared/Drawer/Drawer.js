@@ -104,7 +104,7 @@ export default class Drawer extends Component {
           {list.map((item, i) => (
             <ListItem
               key={i}
-              containerStyle={{ backgroundColor: "#3A3837" }}
+              containerStyle={{ backgroundColor: "#1F2D1E" }}
               title={item.title}
               titleStyle={{ color: "white" }}
               leftIcon={{ name: item.icon, type: item.type, color: "white" }}
@@ -113,12 +113,14 @@ export default class Drawer extends Component {
             />
           ))}
         </View>
-        <Button
-          containerStyle={{ flex: 0, alignItems: "center" }}
-          buttonStyle={styles.logoutButton}
-          onPress={this.logout}
-          title="Logout "
-        />
+        <View style={styles.logoutContainer}>
+          <Button
+            buttonStyle={styles.logoutButton}
+            onPress={this.logout}
+            title="Logout"
+            titleStyle={{ color: "black" }}
+          />
+        </View>
       </View>
     );
   }
@@ -128,17 +130,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: 280,
-    backgroundColor: "#3A3837",
+    backgroundColor: "#1F2D1E",
     paddingTop: Platform.OS === "ios" ? 30 : 15
   },
   profileContainer: {
     flex: 0,
     flexDirection: "row",
     alignItems: "center",
-    padding: 5
+    padding: 10
   },
   logoutButton: {
     height: 40,
-    width: 150
+    width: 150,
+    backgroundColor: "lightgray"
+  },
+  logoutContainer: {
+    flex: 1,
+    justifyContent: "flex-end",
+    paddingLeft: 20,
+    paddingBottom: 25
   }
 });

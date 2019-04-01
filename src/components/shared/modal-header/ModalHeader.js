@@ -5,7 +5,7 @@ import { Header as ElementHeader } from "react-native-elements";
 const ModalHeader = ({ leftComponent, text, rightComponent }) => (
   <ElementHeader
     containerStyle={Platform.OS === "android" && styles.header}
-    statusBarProps={{ backgroundColor: "#546054", barStyle: "light-content" }}
+    statusBarProps={{ backgroundColor: "black", barStyle: "light-content" }}
     backgroundColor="#385136"
     leftComponent={leftComponent}
     centerComponent={{
