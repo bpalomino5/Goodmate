@@ -1,30 +1,30 @@
-import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Dropdown } from 'react-native-material-dropdown';
+import React from "react";
+import { StyleSheet, View } from "react-native";
+import { Dropdown } from "react-native-material-dropdown";
 
-const types = [{ value: 'Master' }, { value: 'Personal' }];
+const types = [{ value: "Master" }, { value: "Personal" }];
 
 const months = [
-  { value: 'January' },
-  { value: 'Feburary' },
-  { value: 'March' },
-  { value: 'April' },
-  { value: 'May' },
-  { value: 'June' },
-  { value: 'July' },
-  { value: 'August' },
-  { value: 'September' },
-  { value: 'October' },
-  { value: 'November' },
-  { value: 'December' },
+  { value: "January" },
+  { value: "Feburary" },
+  { value: "March" },
+  { value: "April" },
+  { value: "May" },
+  { value: "June" },
+  { value: "July" },
+  { value: "August" },
+  { value: "September" },
+  { value: "October" },
+  { value: "November" },
+  { value: "December" }
 ];
 
 const years = [
-  { value: '2018' },
-  { value: '2019' },
-  { value: '2020' },
-  { value: '2021' },
-  { value: '2022' },
+  { value: "2018" },
+  { value: "2019" },
+  { value: "2020" },
+  { value: "2021" },
+  { value: "2022" }
 ];
 
 const RentFilters = ({
@@ -33,7 +33,7 @@ const RentFilters = ({
   updateType,
   isGroupPrimary,
   monthVal,
-  yearVal,
+  yearVal
 }) => (
   <View style={styles.dateSelection}>
     {isGroupPrimary && (
@@ -47,7 +47,7 @@ const RentFilters = ({
       />
     )}
     <Dropdown
-      containerStyle={{ width: '30%', marginRight: 3 }}
+      containerStyle={{ width: "30%", marginRight: 3 }}
       label="Month"
       data={months}
       value={monthVal}
@@ -55,7 +55,7 @@ const RentFilters = ({
       animationDuration={180}
     />
     <Dropdown
-      containerStyle={{ width: '20%', marginRight: 7 }}
+      containerStyle={{ width: "20%", marginRight: 7 }}
       label="Year"
       data={years}
       value={yearVal}
@@ -68,10 +68,10 @@ const RentFilters = ({
 const styles = StyleSheet.create({
   dateSelection: {
     flex: 0,
-    flexDirection: 'row',
+    flexDirection: "row",
     paddingLeft: 10,
-    paddingRight: 10,
-  },
+    paddingRight: 10
+  }
 });
 
 export default RentFilters;

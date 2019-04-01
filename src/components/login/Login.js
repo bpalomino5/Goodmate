@@ -94,7 +94,6 @@ const styles = StyleSheet.create({
   titleContainer: {
     height: 150,
     backgroundColor: "transparent",
-    // backgroundColor: "red",
     justifyContent: "flex-start"
   },
   bgImage: {

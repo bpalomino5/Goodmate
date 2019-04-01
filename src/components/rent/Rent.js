@@ -300,7 +300,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white"
-    // backgroundColor: '#E3E1DE',
   },
 
   primaryContainer: {

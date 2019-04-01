@@ -37,12 +37,12 @@ const list = [
   }
 ];
 
-export default class Drawer extends Component {
+class Drawer extends Component {
   state = { name: "" };
 
-  componentDidMount() {
+  componentDidMount = () => {
     this.setState({ name: auth.getDisplayName() });
-  }
+  };
 
   logout = () => {
     firebase
@@ -151,3 +151,5 @@ const styles = StyleSheet.create({
     paddingBottom: 25
   }
 });
+
+export default Drawer;
