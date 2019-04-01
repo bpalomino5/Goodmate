@@ -19,7 +19,8 @@ class Home extends Component {
     isVisible: false,
     aid: null,
     refreshing: false,
-    creator: false
+    creator: false,
+    lastVisible: null
   };
 
   componentDidMount = async () => {
@@ -34,9 +35,12 @@ class Home extends Component {
   };
 
   updateActivities = async () => {
-    const activities = await db.getActivities();
-    if (activities) {
-      this.setState({ activities });
+    const { lastVisible } = this.state;
+    const activities = await db.getActivities(lastVisible);
+
+    if (activities.length > 0) {
+      const nextLastVisible = activities[activities.length - 1].time;
+      this.setState({ activities, lastVisible: nextLastVisible });
     }
   };
 
