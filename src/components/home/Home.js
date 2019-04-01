@@ -20,27 +20,41 @@ class Home extends Component {
     aid: null,
     refreshing: false,
     creator: false,
-    lastVisible: null
+    lastVisible: null,
+    pastFirstLoad: false,
+    index: null
   };
 
   componentDidMount = async () => {
-    await this.onRefresh();
+    await this.onLoadMore();
   };
 
   onRefresh = async () => {
-    this.setState({ refreshing: true });
-    // get data
-    await this.updateActivities();
+    this.setState({ refreshing: true, pastFirstLoad: false }, () =>
+      this.onLoadMore()
+    );
     this.setState({ refreshing: false });
   };
 
-  updateActivities = async () => {
-    const { lastVisible } = this.state;
-    const activities = await db.getActivities(lastVisible);
+  onLoadMore = async () => {
+    const { lastVisible, pastFirstLoad, activities } = this.state;
+    let nextActivities = [];
 
-    if (activities.length > 0) {
-      const nextLastVisible = activities[activities.length - 1].time;
-      this.setState({ activities, lastVisible: nextLastVisible });
+    if (!pastFirstLoad) {
+      nextActivities = await db.getActivities();
+      this.setState({ pastFirstLoad: true });
+    } else {
+      nextActivities = await db.getActivities(lastVisible);
+      const acts = [...activities, ...nextActivities];
+      nextActivities = acts;
+    }
+
+    if (nextActivities.length > 0) {
+      const nextLastVisible = nextActivities[nextActivities.length - 1].time;
+      this.setState({
+        activities: nextActivities,
+        lastVisible: nextLastVisible
+      });
     }
   };
 
@@ -58,24 +72,40 @@ class Home extends Component {
     });
   };
 
-  addLike = async aid => {
+  addLike = async (index, aid) => {
     await db.addLikeToActivity(aid);
-    await this.updateActivities();
+    // add visually
+    this.setState(prevState => ({
+      activities: prevState.activities.map((activity, i) => {
+        if (i === index) {
+          activity.likes += 1;
+        }
+        return activity;
+      })
+    }));
   };
 
   toggleOverlay = toggle => {
     this.setState({ isVisible: toggle });
   };
 
-  openOverlay = (aid, uid) => {
-    this.setState({ aid, creator: auth.isAuthUser(uid), isVisible: true });
+  openOverlay = (index, aid, uid) => {
+    this.setState({
+      index,
+      aid,
+      creator: auth.isAuthUser(uid),
+      isVisible: true
+    });
   };
 
   removeItem = async () => {
-    const { aid } = this.state;
+    const { aid, index } = this.state;
     await db.removeActivity(aid);
-    await this.updateActivities();
-    this.setState({ isVisible: false });
+    // remove visually
+    this.setState(prevState => ({
+      activities: prevState.activities.filter((act, i) => i !== index),
+      isVisible: false
+    }));
   };
 
   render() {
@@ -97,6 +127,7 @@ class Home extends Component {
           }
         />
         <ActivityList
+          onLoadMore={this.onLoadMore}
           refreshing={refreshing}
           onRefresh={this.onRefresh}
           openOverlay={this.openOverlay}

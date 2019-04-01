@@ -192,7 +192,7 @@ export const getActivities = async (lastVisible = null) => {
     docSnapshots = await ref
       .collection("activities")
       .orderBy("time", "desc")
-      .limit(25)
+      .limit(15)
       .get();
 
     docSnapshots.forEach(doc => {
@@ -203,7 +203,7 @@ export const getActivities = async (lastVisible = null) => {
       .collection("activities")
       .orderBy("time", "desc")
       .startAfter(lastVisible)
-      .limit(25)
+      .limit(15)
       .get();
 
     docSnapshots.forEach(doc => {

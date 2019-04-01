@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { View, TouchableHighlight, StyleSheet } from "react-native";
 import { Icon, Text, Divider } from "react-native-elements";
 
@@ -109,4 +109,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default ActivityItem;
+export default memo(ActivityItem);

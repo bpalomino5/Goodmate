@@ -1,18 +1,35 @@
 import React from "react";
-import { ScrollView, View, RefreshControl, StyleSheet } from "react-native";
+import { View, StyleSheet, FlatList } from "react-native";
 import { Text, Divider } from "react-native-elements";
 
 import ActivityItem from "./ActivityItem";
 
-const ActivityFeed = ({ activities, addLike, onItemSelect }) =>
-  activities.map(item => (
-    <ActivityItem
-      key={item.key}
-      item={item}
-      addLike={() => addLike(item.key)}
-      onLongPress={() => onItemSelect(item.key, item.created_by)}
-    />
-  ));
+const ItemFlatList = ({
+  activities,
+  addLike,
+  onItemSelect,
+  onRefresh,
+  refreshing,
+  onLoadMore
+}) => (
+  <FlatList
+    windowSize={10}
+    ListEmptyComponent={<EmptyActivityFeed />}
+    initialNumToRender={5}
+    onEndReached={onLoadMore}
+    onEndReachedThreshold={0.2}
+    onRefresh={onRefresh}
+    refreshing={refreshing}
+    data={activities}
+    renderItem={({ item, index }) => (
+      <ActivityItem
+        item={item}
+        addLike={() => addLike(index, item.key)}
+        onLongPress={() => onItemSelect(index, item.key, item.created_by)}
+      />
+    )}
+  />
+);
 
 const EmptyActivityFeed = () => (
   <View>
@@ -28,23 +45,17 @@ const ActivityList = ({
   activities,
   onRefresh,
   addLike,
-  openOverlay
+  openOverlay,
+  onLoadMore
 }) => (
-  <ScrollView
-    refreshControl={
-      <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-    }
-  >
-    {activities.length > 0 ? (
-      <ActivityFeed
-        activities={activities}
-        addLike={key => addLike(key)}
-        onItemSelect={(aid, uid) => openOverlay(aid, uid)}
-      />
-    ) : (
-      <EmptyActivityFeed />
-    )}
-  </ScrollView>
+  <ItemFlatList
+    onLoadMore={onLoadMore}
+    onRefresh={onRefresh}
+    refreshing={refreshing}
+    activities={activities}
+    addLike={addLike}
+    onItemSelect={openOverlay}
+  />
 );
 
 const styles = StyleSheet.create({
