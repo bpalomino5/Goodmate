@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Platform } from "react-native";
 import { Navigation } from "react-native-navigation";
 import { Header, Input, Button, Icon } from "react-native-elements";
 import { auth } from "../../../../firebase";
@@ -48,6 +48,7 @@ export default class HelpModal extends Component {
     return (
       <View style={styles.container}>
         <Header
+          containerStyle={Platform.OS === "android" && styles.header}
           backgroundColor="white"
           statusBarProps={{ backgroundColor: "white" }}
           leftComponent={
@@ -57,7 +58,6 @@ export default class HelpModal extends Component {
               onPress={this.closeModal}
             />
           }
-          outerContainerStyles={{ borderBottomWidth: 0 }}
         />
         {submitted === false ? (
           <ForgotView
@@ -76,6 +76,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white"
+  },
+  header: {
+    height: "auto",
+    paddingBottom: 10,
+    paddingTop: 10
   },
   forgetView: {
     flex: 1,

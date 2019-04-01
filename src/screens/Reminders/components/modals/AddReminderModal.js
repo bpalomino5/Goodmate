@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     paddingRight: 15,
     paddingBottom: 35,
-    backgroundColor: "#5B725A"
+    backgroundColor: "#385136"
   },
   buttonDone: {
     flex: 0,

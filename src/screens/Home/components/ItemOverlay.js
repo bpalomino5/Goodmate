@@ -4,7 +4,6 @@ import { Text, Overlay, Button } from "react-native-elements";
 
 const ItemOverlay = ({ isVisible, closeOverlay, deleteItem, isCreator }) => (
   <Overlay
-    // overlayStyle={{ margin: 20 }}
     isVisible={isVisible}
     width="auto"
     height="auto"
@@ -15,12 +14,12 @@ const ItemOverlay = ({ isVisible, closeOverlay, deleteItem, isCreator }) => (
       <View style={{ flexDirection: "row" }}>
         {isCreator && (
           <Button
-            title="Delete "
+            title="Delete"
             onPress={deleteItem}
             containerStyle={{ marginRight: 10 }}
           />
         )}
-        <Button title="Close " onPress={closeOverlay} />
+        <Button title="Close" onPress={closeOverlay} />
       </View>
     </View>
   </Overlay>

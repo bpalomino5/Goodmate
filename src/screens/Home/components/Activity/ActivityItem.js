@@ -34,7 +34,9 @@ const ItemTimeStamp = ({ time }) => (
 const ItemBody = ({ description }) => (
   <>
     {description.map(desc => (
-      <Text key={desc}>{desc}</Text>
+      <Text style={styles.bodyText} key={desc}>
+        {desc}
+      </Text>
     ))}
   </>
 );
@@ -99,7 +101,11 @@ const styles = StyleSheet.create({
     marginBottom: 1
   },
   nameStyle: {
-    fontSize: 22
+    fontSize: 22,
+    color: "black"
+  },
+  bodyText: {
+    color: "black"
   }
 });
 

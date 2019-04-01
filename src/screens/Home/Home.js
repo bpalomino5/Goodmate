@@ -59,6 +59,10 @@ class Home extends Component {
     await this.updateActivities();
   };
 
+  toggleOverlay = toggle => {
+    this.setState({ isVisible: toggle });
+  };
+
   openOverlay = (aid, uid) => {
     this.setState({ aid, creator: auth.isAuthUser(uid), isVisible: true });
   };
@@ -100,7 +104,7 @@ class Home extends Component {
           isCreator={creator}
           isVisible={isVisible}
           deleteItem={this.removeItem}
-          closeOverlay={() => this.setState({ isVisible: false })}
+          closeOverlay={() => this.toggleOverlay(false)}
         />
       </View>
     );
@@ -110,7 +114,6 @@ class Home extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1
-    // backgroundColor: '#E3E1DE',
   }
 });
 

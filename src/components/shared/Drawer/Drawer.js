@@ -106,8 +106,6 @@ export default class Drawer extends Component {
               key={i}
               containerStyle={{ backgroundColor: "#3A3837" }}
               title={item.title}
-              topDivider
-              bottomDivider
               titleStyle={{ color: "white" }}
               leftIcon={{ name: item.icon, type: item.type, color: "white" }}
               hideChevron
@@ -140,7 +138,6 @@ const styles = StyleSheet.create({
     padding: 5
   },
   logoutButton: {
-    // borderRadius: 20,
     height: 40,
     width: 150
   }

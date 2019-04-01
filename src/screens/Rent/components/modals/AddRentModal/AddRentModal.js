@@ -37,7 +37,6 @@ class AddRentModal extends Component {
   closeModal = () => Navigation.dismissModal(this.props.componentId);
 
   toggleOverlay = open => {
-    LayoutAnimation.easeInEaseOut();
     this.setState({ isAddOverlay: open });
   };
 
