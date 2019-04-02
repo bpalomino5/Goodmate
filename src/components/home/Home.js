@@ -22,14 +22,15 @@ class Home extends Component {
     creator: false,
     lastVisible: null,
     pastFirstLoad: false,
-    index: null
+    index: null,
+    loadingMore: false
   };
 
-  componentDidMount = async () => {
-    await this.onLoadMore();
+  componentDidMount = () => {
+    this.onLoadMore();
   };
 
-  onRefresh = async () => {
+  onRefresh = () => {
     this.setState({ refreshing: true, pastFirstLoad: false }, () =>
       this.onLoadMore()
     );
@@ -37,6 +38,7 @@ class Home extends Component {
   };
 
   onLoadMore = async () => {
+    this.setState({ loadingMore: true });
     const { lastVisible, pastFirstLoad, activities } = this.state;
     let nextActivities = [];
 
@@ -56,6 +58,7 @@ class Home extends Component {
         lastVisible: nextLastVisible
       });
     }
+    this.setState({ loadingMore: false });
   };
 
   openActivityModal = () => {
@@ -110,7 +113,13 @@ class Home extends Component {
 
   render() {
     const { componentId } = this.props;
-    const { refreshing, activities, creator, isVisible } = this.state;
+    const {
+      refreshing,
+      activities,
+      creator,
+      isVisible,
+      loadingMore
+    } = this.state;
     return (
       <View style={styles.container}>
         <Header
@@ -127,7 +136,8 @@ class Home extends Component {
           }
         />
         <ActivityList
-          onLoadMore={this.onLoadMore}
+          loadingMore={loadingMore}
+          onLoadMore={() => this.onLoadMore()}
           refreshing={refreshing}
           onRefresh={this.onRefresh}
           openOverlay={this.openOverlay}

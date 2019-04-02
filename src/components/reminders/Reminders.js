@@ -13,31 +13,55 @@ import { db } from "../../firebase";
 class Reminders extends Component {
   state = {
     reminders: [],
-    refreshing: false
+    refreshing: false,
+    loadingMore: false,
+    lastVisible: null,
+    pastFirstLoad: false
   };
 
-  componentDidMount = async () => {
-    await this.onRefresh();
+  componentDidMount = () => {
+    this.onLoadMore();
   };
 
-  onRefresh = async () => {
-    this.setState({ refreshing: true });
-    // get data
-    await this.getReminders();
+  onRefresh = () => {
+    this.setState({ refreshing: true, pastFirstLoad: false }, () =>
+      this.onLoadMore()
+    );
     this.setState({ refreshing: false });
   };
 
-  getReminders = async () => {
-    const reminders = await db.getReminders();
-    this.setState({ reminders });
+  onLoadMore = async () => {
+    console.log("calling ONLOADMORE");
+    this.setState({ loadingMore: true });
+    const { lastVisible, pastFirstLoad, reminders } = this.state;
+    let nextReminders = [];
+
+    if (!pastFirstLoad) {
+      nextReminders = await db.getReminders();
+      this.setState({ pastFirstLoad: true });
+    } else {
+      nextReminders = await db.getReminders(lastVisible);
+      const rmndrs = [...reminders, ...nextReminders];
+      nextReminders = rmndrs;
+    }
+
+    if (nextReminders.length > 0) {
+      const nextLastVisible = nextReminders[nextReminders.length - 1].date;
+      this.setState({
+        reminders: nextReminders,
+        lastVisible: nextLastVisible
+      });
+    }
+    this.setState({ loadingMore: false });
   };
 
   openReminderModal = () => {
+    this.setState({ pastFirstLoad: false });
     Navigation.showModal({
       component: {
         name: "AddReminderModal",
         passProps: {
-          onFinish: this.getReminders
+          onFinish: this.onLoadMore
         },
         options: {
           animationType: "slide-up"
@@ -47,12 +71,13 @@ class Reminders extends Component {
   };
 
   handleItemPress = item => {
+    this.setState({ pastFirstLoad: false });
     Navigation.showModal({
       component: {
         name: "AddReminderModal",
         passProps: {
           item,
-          onFinish: this.getReminders
+          onFinish: this.onLoadMore
         },
         options: {
           animationType: "slide-up"
@@ -63,7 +88,7 @@ class Reminders extends Component {
 
   render() {
     const { componentId } = this.props;
-    const { reminders, refreshing } = this.state;
+    const { reminders, refreshing, loadingMore } = this.state;
     return (
       <View style={styles.container}>
         <Header
@@ -84,6 +109,8 @@ class Reminders extends Component {
           onRefresh={this.onRefresh}
           reminders={reminders}
           onItemPress={this.handleItemPress}
+          onLoadMore={this.onLoadMore}
+          loadingMore={loadingMore}
         />
       </View>
     );

@@ -59,7 +59,7 @@ export default class AddReminderModal extends Component {
         type: item.type,
         date: item.date,
         time: item.time,
-        rid: item.rid,
+        rid: item.key,
         editing: auth.isAuthUser(item.created_by)
       });
     } else {
@@ -97,16 +97,14 @@ export default class AddReminderModal extends Component {
       time: timestamp
     });
 
-    const { onFinish } = this.props;
-    onFinish();
+    this.props.onFinish();
     this.closeModal();
   };
 
   removeReminder = async () => {
     const { rid } = this.state;
-    const { onFinish } = this.props;
     await db.removeReminder(rid);
-    onFinish();
+    this.props.onFinish();
     this.closeModal();
   };
 

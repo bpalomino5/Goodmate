@@ -126,16 +126,31 @@ const checkExpired = async reminders => {
   return checked;
 };
 
-export const getReminders = async () => {
+export const getReminders = async (lastVisible = null) => {
   let reminders = [];
   const ref = await getGroupRef();
-  if (ref) {
-    const query = await ref.collection("reminders").get();
-    query.forEach(doc => {
-      reminders.push({
-        ...doc.data(),
-        rid: doc.id
-      });
+  let docSnapshots = null;
+
+  if (!lastVisible) {
+    docSnapshots = await ref
+      .collection("reminders")
+      .orderBy("date", "desc")
+      .limit(15)
+      .get();
+
+    docSnapshots.forEach(doc => {
+      reminders.push({ ...doc.data(), key: doc.id });
+    });
+  } else {
+    docSnapshots = await ref
+      .collection("reminders")
+      .orderBy("date", "desc")
+      .startAfter(lastVisible)
+      .limit(15)
+      .get();
+
+    docSnapshots.forEach(doc => {
+      reminders.push({ ...doc.data(), key: doc.id });
     });
   }
   reminders = await checkExpired(reminders);
