@@ -5,13 +5,10 @@ import {
   createBottomTabNavigator
 } from "react-navigation";
 
-import Home from "../src/components/home";
-import Settings from "../src/components/settings";
-
 import TabBarIcon from "../components/TabBarIcon";
-// import HomeScreen from '../screens/HomeScreen';
-import LinksScreen from "../screens/LinksScreen";
-// import SettingsScreen from "../screens/SettingsScreen";
+import Home from "../src/components/home";
+import Rent from "../src/components/rent";
+import Settings from "../src/components/settings";
 
 const defaultNavigationOptions = {
   headerStyle: {
@@ -27,28 +24,19 @@ HomeStack.navigationOptions = {
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
-      name={
-        Platform.OS === "ios"
-          ? `ios-information-circle${focused ? "" : "-outline"}`
-          : "md-information-circle"
-      }
+      name={Platform.OS === "ios" ? "ios-home" : "md-home"}
     />
   )
 };
 
-const LinksStack = createStackNavigator(
-  {
-    Links: LinksScreen
-  },
-  { defaultNavigationOptions }
-);
+const RentStack = createStackNavigator({ Rent }, { defaultNavigationOptions });
 
-LinksStack.navigationOptions = {
-  tabBarLabel: "Links",
+RentStack.navigationOptions = {
+  tabBarLabel: "Rent",
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
-      name={Platform.OS === "ios" ? "ios-link" : "md-link"}
+      name={Platform.OS === "ios" ? "ios-document" : "md-document"}
     />
   )
 };
@@ -70,6 +58,6 @@ SettingsStack.navigationOptions = {
 
 export default createBottomTabNavigator({
   HomeStack,
-  LinksStack,
+  RentStack,
   SettingsStack
 });

@@ -4,7 +4,6 @@ import { StyleSheet, View } from "react-native";
 // import { toggleDrawer } from "../navigation";
 
 import SelectMenu from "../shared/select-menu";
-// import Header from "../shared/header";
 
 const profileItems = [
   { title: "Edit profile", screen: "EditProfileModal" },
@@ -34,10 +33,6 @@ class Settings extends Component {
   render() {
     return (
       <View style={styles.container}>
-        {/* <Header
-          toggleDrawer={() => toggleDrawer(this.props.componentId)}
-          text="Settings"
-        /> */}
         <SelectMenu
           title="Profile"
           options={profileItems}
