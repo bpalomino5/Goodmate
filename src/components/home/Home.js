@@ -3,7 +3,7 @@ import { StyleSheet, View } from "react-native";
 // components
 import ItemOverlay from "./components/ItemOverlay";
 import ActivityList from "./components/ActivityList";
-// import { auth, db } from "../../firebase";
+import { auth, db } from "../../firebase";
 import { Icon } from "react-native-elements";
 
 class Home extends Component {
@@ -29,21 +29,21 @@ class Home extends Component {
   };
 
   componentDidMount = async () => {
-    // await this.onRefresh();
+    await this.onRefresh();
   };
 
   onRefresh = async () => {
-    // this.setState({ refreshing: true });
-    // // get data
-    // await this.updateActivities();
-    // this.setState({ refreshing: false });
+    this.setState({ refreshing: true });
+    // get data
+    await this.updateActivities();
+    this.setState({ refreshing: false });
   };
 
   updateActivities = async () => {
-    // const activities = await db.getActivities();
-    // if (activities) {
-    //   this.setState({ activities });
-    // }
+    const activities = await db.getActivities();
+    if (activities) {
+      this.setState({ activities });
+    }
   };
 
   openActivityModal = () => {
@@ -61,8 +61,8 @@ class Home extends Component {
   };
 
   addLike = async aid => {
-    // await db.addLikeToActivity(aid);
-    // await this.updateActivities();
+    await db.addLikeToActivity(aid);
+    await this.updateActivities();
   };
 
   toggleOverlay = toggle => {
@@ -70,14 +70,14 @@ class Home extends Component {
   };
 
   openOverlay = (aid, uid) => {
-    // this.setState({ aid, creator: auth.isAuthUser(uid), isVisible: true });
+    this.setState({ aid, creator: auth.isAuthUser(uid), isVisible: true });
   };
 
   removeItem = async () => {
-    // const { aid } = this.state;
-    // await db.removeActivity(aid);
-    // await this.updateActivities();
-    // this.setState({ isVisible: false });
+    const { aid } = this.state;
+    await db.removeActivity(aid);
+    await this.updateActivities();
+    this.setState({ isVisible: false });
   };
 
   render() {

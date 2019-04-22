@@ -3,8 +3,7 @@ import { StyleSheet, View } from "react-native";
 import Layout from "../../../../constants/Layout";
 import { Input, Button, Icon } from "react-native-elements";
 // import { Navigation } from "react-native-navigation";
-// import { auth } from "../../../firebase";
-// import { goToHome } from "../../navigation";
+import { auth } from "../../../firebase";
 
 class RegistrationForm extends Component {
   state = {
@@ -18,85 +17,91 @@ class RegistrationForm extends Component {
   };
 
   onLogin = async () => {
-    this.props.navigation.navigate("Main");
-    // const { email, password } = this.state;
-    // if (email.trim() !== "" && password.trim() !== "") {
-    //   // reset
-    //   this.setState({
-    //     isLoading: true,
-    //     emailError: null,
-    //     passwordError: null
-    //   });
-    //   try {
-    //     const success = await auth.signInWithEmailAndPassword(email, password);
-    //     if (success) {
-    //       goToHome();
-    //     }
-    //   } catch (error) {
-    //     if (error.code === "auth/wrong-password") {
-    //       this.setState({
-    //         isLoading: false,
-    //         passwordError: "Wrong Password"
-    //       });
-    //       this.passwordInput.shake();
-    //     } else if (error.code === "auth/user-not-found") {
-    //       this.setState({
-    //         isLoading: false,
-    //         emailError: "User not found"
-    //       });
-    //       this.emailInput.shake();
-    //     }
-    //   }
-    // }
+    const { email, password } = this.state;
+    if (email.trim() !== "" && password.trim() !== "") {
+      // reset
+      this.setState({
+        isLoading: true,
+        emailError: null,
+        passwordError: null
+      });
+      try {
+        const success = await auth.signInWithEmailAndPassword(email, password);
+        if (success) {
+          this.props.navigation.navigate("Main");
+        }
+      } catch (error) {
+        if (error.code === "auth/invalid-email") {
+          this.setState({
+            isLoading: false,
+            emailError: "Invalid Email"
+          });
+          this.emailInput.shake();
+        }
+        if (error.code === "auth/wrong-password") {
+          this.setState({
+            isLoading: false,
+            passwordError: "Wrong Password"
+          });
+          this.passwordInput.shake();
+        } else if (error.code === "auth/user-not-found") {
+          this.setState({
+            isLoading: false,
+            emailError: "User not found"
+          });
+          this.emailInput.shake();
+        }
+      }
+    }
   };
 
   onSignUp = async () => {
-    // const { email, password, passwordConfirmation } = this.state;
-    // if (
-    //   email.trim() !== "" &&
-    //   password.trim() !== "" &&
-    //   passwordConfirmation.trim() !== ""
-    // ) {
-    //   // reset
-    //   this.setState({
-    //     isLoading: true,
-    //     emailError: null,
-    //     passwordError: null,
-    //     confirmError: null
-    //   });
-    //   if (password !== passwordConfirmation) {
-    //     this.setState({
-    //       isLoading: false,
-    //       passwordError: "Please enter at least 8 characters",
-    //       confirmError: "Please enter the same password"
-    //     });
-    //     this.passwordInput.shake();
-    //     this.confirmationInput.shake();
-    //     return;
-    //   }
-    //   try {
-    //     await auth.createUserWithEmailAndPassword(email, password);
-    //     // go to Welcome
-    //     this.setState({ isLoading: false });
-    //     this.openWelcomeModal();
-    //     const { selectCategory } = this.props;
-    //     selectCategory(0);
-    //   } catch (error) {
-    //     if (error.code === "auth/email-already-in-use") {
-    //       this.setState({
-    //         isLoading: false,
-    //         emailError: "Email is already in use"
-    //       });
-    //       this.emailInput.shake();
-    //     } else if (error.code === "auth/weak-password") {
-    //       this.setState({
-    //         isLoading: false,
-    //         passwordError: "The given password is invalid."
-    //       });
-    //       this.passwordInput.shake();
-    //     }
-    //   }
-    // }
+    const { email, password, passwordConfirmation } = this.state;
+    if (
+      email.trim() !== "" &&
+      password.trim() !== "" &&
+      passwordConfirmation.trim() !== ""
+    ) {
+      // reset
+      this.setState({
+        isLoading: true,
+        emailError: null,
+        passwordError: null,
+        confirmError: null
+      });
+      if (password !== passwordConfirmation) {
+        this.setState({
+          isLoading: false,
+          passwordError: "Please enter at least 8 characters",
+          confirmError: "Please enter the same password"
+        });
+        this.passwordInput.shake();
+        this.confirmationInput.shake();
+        return;
+      }
+      try {
+        await auth.createUserWithEmailAndPassword(email, password);
+        // go to Welcome
+        this.setState({ isLoading: false });
+        this.openWelcomeModal();
+        const { selectCategory } = this.props;
+        selectCategory(0);
+      } catch (error) {
+        if (error.code === "auth/email-already-in-use") {
+          this.setState({
+            isLoading: false,
+            emailError: "Email is already in use"
+          });
+          this.emailInput.shake();
+        } else if (error.code === "auth/weak-password") {
+          this.setState({
+            isLoading: false,
+            passwordError: "The given password is invalid."
+          });
+          this.passwordInput.shake();
+        }
+      }
+    }
   };
 
   openWelcomeModal = () => {

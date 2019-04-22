@@ -4,6 +4,8 @@ import { StyleSheet, View } from "react-native";
 // import { toggleDrawer } from "../navigation";
 
 import SelectMenu from "../shared/select-menu";
+import { Button } from "react-native-elements";
+import { auth } from "../../firebase";
 
 const profileItems = [
   { title: "Edit profile", screen: "EditProfileModal" },
@@ -30,6 +32,11 @@ class Settings extends Component {
     // });
   };
 
+  onSignOut = async () => {
+    await auth.signOut();
+    this.props.navigation.navigate("Auth");
+  };
+
   render() {
     return (
       <View style={styles.container}>
@@ -43,6 +50,9 @@ class Settings extends Component {
           options={generalItems}
           onItemPress={this.openModal}
         />
+        <View style={styles.signout}>
+          <Button title="Sign Out" onPress={this.onSignOut} />
+        </View>
       </View>
     );
   }
@@ -52,6 +62,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#EEEEEE"
+  },
+  signout: {
+    flex: 1,
+    justifyContent: "flex-end",
+    marginBottom: 20,
+    marginLeft: 10,
+    marginRight: 10
   }
 });
 

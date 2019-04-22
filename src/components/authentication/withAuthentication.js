@@ -4,6 +4,9 @@ import { firebase } from "../../firebase";
 
 const withAuthentication = WrappedComponent =>
   class WithAuthentication extends Component {
+    static navigationOptions = {
+      header: null
+    };
     state = { authFlag: false };
 
     componentDidMount() {
@@ -12,6 +15,7 @@ const withAuthentication = WrappedComponent =>
         if (user != null && !authFlag) {
           this.setState({ authFlag: true });
           //   goToHome();
+          this.props.navigation.navigate("Main");
         }
       });
       this.unsubscriber();

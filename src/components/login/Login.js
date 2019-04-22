@@ -9,7 +9,6 @@ import {
 } from "react-native";
 
 import Layout from "../../../constants/Layout";
-// import withAuthentication from "../authentication/withAuthentication";
 import RegistrationForm from "./components/RegistrationForm";
 import OptionSelector from "./components/OptionSelector";
 import HelpButton from "./components/HelpButton";
@@ -31,7 +30,7 @@ const LoginPageContainer = ({ children }) => (
   </View>
 );
 
-export default class Login extends Component {
+class Login extends Component {
   static navigationOptions = {
     header: null
   };
@@ -106,3 +105,5 @@ const styles = StyleSheet.create({
     fontSize: 30
   }
 });
+
+export default Login;
