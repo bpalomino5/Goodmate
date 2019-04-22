@@ -2,10 +2,10 @@ import React from "react";
 import { Platform } from "react-native";
 import { createStackNavigator } from "react-navigation";
 
-import LoginScreen from "../screens/LoginScreen";
+import Login from "../src/components/login";
 
 const LoginStack = createStackNavigator({
-  Login: LoginScreen
+  Login: Login
 });
 
 export default LoginStack;
