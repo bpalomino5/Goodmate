@@ -1,23 +1,27 @@
 import React, { Component } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, LayoutAnimation } from "react-native";
 // components
 import ItemOverlay from "./components/ItemOverlay";
 import ActivityList from "./components/ActivityList";
 import { auth, db } from "../../firebase";
 import { Icon } from "react-native-elements";
+import Layout from "../../../constants/Layout";
 
 class Home extends Component {
-  static navigationOptions = {
-    title: "Home   ",
-    headerRight: (
-      <Icon
-        name="pencil"
-        type="entypo"
-        color="white"
-        underlayColor="transparent"
-        onPress={this.openActivityModal}
-      />
-    )
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: "Home   ",
+      headerBackTitle: null,
+      headerRight: (
+        <Icon
+          name="pencil"
+          type="entypo"
+          color="white"
+          underlayColor="transparent"
+          onPress={() => navigation.navigate("ActivityModal")}
+        />
+      )
+    };
   };
 
   state = {
@@ -46,20 +50,6 @@ class Home extends Component {
     }
   };
 
-  openActivityModal = () => {
-    // Navigation.showModal({
-    //   component: {
-    //     name: "ActivityModal",
-    //     options: {
-    //       animationType: "slide-up"
-    //     },
-    //     passProps: {
-    //       onFinish: () => this.onRefresh()
-    //     }
-    //   }
-    // });
-  };
-
   addLike = async aid => {
     await db.addLikeToActivity(aid);
     await this.updateActivities();
@@ -70,6 +60,7 @@ class Home extends Component {
   };
 
   openOverlay = (aid, uid) => {
+    LayoutAnimation.easeInEaseOut();
     this.setState({ aid, creator: auth.isAuthUser(uid), isVisible: true });
   };
 
@@ -106,6 +97,14 @@ class Home extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1
+  },
+  backdrop: {
+    backgroundColor: "rgba(0, 0, 0, 0.4)",
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: Layout.window.width,
+    height: Layout.window.height
   }
 });
 

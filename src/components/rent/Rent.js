@@ -4,7 +4,7 @@ import { StyleSheet, View } from "react-native";
 import { Icon, Text } from "react-native-elements";
 import { getData, storeData } from "../../datastore";
 // import { toggleDrawer } from "../navigation";
-// import { db, auth } from "../../firebase";
+import { db, auth } from "../../firebase";
 
 // import Header from "../shared/header";
 import RentFilters from "./components/RentFilters";
@@ -31,16 +31,19 @@ const RentSheetView = ({ main, utilities, totals }) => (
 );
 
 class Rent extends Component {
-  static navigationOptions = {
-    title: "Rent",
-    headerRight: (
-      <Icon
-        name="doc"
-        type="simple-line-icon"
-        color="white"
-        underlayColor="transparent"
-      />
-    )
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: "Rent",
+      headerRight: (
+        <Icon
+          name="doc"
+          type="simple-line-icon"
+          color="white"
+          underlayColor="transparent"
+          onPress={() => navigation.navigate("AddRentModal")}
+        />
+      )
+    };
   };
 
   state = {
@@ -56,17 +59,17 @@ class Rent extends Component {
   };
 
   componentDidMount = async () => {
-    // const roommates = await db.getRoommates();
-    // roommates.forEach(mate => {
-    //   if (auth.isAuthUser(mate.uid)) {
-    //     this.setState({ primary: mate.primary, typeViewable: mate.primary });
-    //   }
-    // });
-    // const date = await getData("date");
-    // if (date) {
-    //   await this.getRentSheet(date.month, date.year);
-    //   this.setState({ month: date.month, year: date.year });
-    // }
+    const roommates = await db.getRoommates();
+    roommates.forEach(mate => {
+      if (auth.isAuthUser(mate.uid)) {
+        this.setState({ primary: mate.primary, typeViewable: mate.primary });
+      }
+    });
+    const date = await getData("date");
+    if (date) {
+      await this.getRentSheet(date.month, date.year);
+      this.setState({ month: date.month, year: date.year });
+    }
   };
 
   prepRentData = data => {
@@ -221,7 +224,7 @@ class Rent extends Component {
   updateMonth = async month => {
     const { year } = this.state;
     if (year.trim() !== "") {
-      //   await this.getRentSheet(month, year);
+      await this.getRentSheet(month, year);
     }
     this.setState({ month });
   };
@@ -229,7 +232,7 @@ class Rent extends Component {
   updateYear = async year => {
     const { month } = this.state;
     if (month.trim() !== "") {
-      //   await this.getRentSheet(month, year);
+      await this.getRentSheet(month, year);
     }
     this.setState({ year });
   };
@@ -239,10 +242,10 @@ class Rent extends Component {
     if (type.trim() !== "" && month.trim() !== "" && year.trim() !== "") {
       if (type === "Master") {
         this.setState({ primary: true });
-        // await this.getRentSheet(month, year);
+        await this.getRentSheet(month, year);
       } else {
         this.setState({ primary: false });
-        // await this.getRentSheet(month, year);
+        await this.getRentSheet(month, year);
       }
     }
   };
@@ -306,7 +309,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white"
-    // backgroundColor: '#E3E1DE',
   },
 
   primaryContainer: {

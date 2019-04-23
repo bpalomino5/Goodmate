@@ -1,82 +1,62 @@
 import React from "react";
-import {
-  Modal,
-  View,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  Platform
-} from "react-native";
-import { Text, Overlay, Button } from "react-native-elements";
+import { Modal, View, StyleSheet, Platform } from "react-native";
+import { Text, ListItem } from "react-native-elements";
 import Layout from "../../../../constants/Layout";
 
 const ItemOverlay = ({ isVisible, closeOverlay, deleteItem, isCreator }) => (
-  <Modal
-    animationType="slide"
-    onRequestClose={closeOverlay}
-    visible={isVisible}
-    transparent
-  >
-    <TouchableWithoutFeedback onPress={closeOverlay}>
-      <View
-        style={StyleSheet.flatten([
-          styles.backdrop,
-          { backgroundColor: "rgba(0, 0, 0, 0.4)" }
-        ])}
-      />
-    </TouchableWithoutFeedback>
-
-    <View style={styles.container} pointerEvents="box-none">
-      <View
-        style={StyleSheet.flatten([
-          styles.overlay,
-          {
-            borderRadius: 3,
-            backgroundColor: "white",
-            // width: Layout.window.width - 80,
-            height: 180
-          }
-        ])}
-      >
-        <View>
-          <Text style={{ fontSize: 22, marginBottom: 20 }}>Options</Text>
-          <View style={{ flexDirection: "row" }}>
+  <>
+    {isVisible && <View onPress={closeOverlay} style={styles.backdrop} />}
+    <Modal
+      hardwareAccelerated
+      animationType="slide"
+      onRequestClose={closeOverlay}
+      visible={isVisible}
+      transparent
+    >
+      <View style={styles.container} pointerEvents="box-none">
+        <View style={styles.overlay}>
+          <Text style={styles.menuHeader}>Options</Text>
+          <View>
             {isCreator && (
-              <Button
-                title="Delete"
+              <ListItem
+                title="Remove"
+                chevron
                 onPress={deleteItem}
-                containerStyle={{ marginRight: 10 }}
+                bottomDivider
               />
             )}
-            <Button title="Close" onPress={closeOverlay} />
+            <ListItem
+              title="Close"
+              onPress={closeOverlay}
+              chevron
+              bottomDivider
+            />
           </View>
         </View>
       </View>
-    </View>
-  </Modal>
+    </Modal>
+  </>
 );
 
 const styles = StyleSheet.create({
   backdrop: {
+    backgroundColor: "rgba(0, 0, 0, 0.4)",
     position: "absolute",
     top: 0,
     left: 0,
-    width: "100%",
-    height: "100%",
-    justifyContent: "center",
-    alignItems: "center"
+    width: Layout.window.width,
+    height: Layout.window.height,
+    zIndex: 100
   },
   container: {
     flex: 1,
-    // alignItems: " ",
     justifyContent: "flex-end"
   },
-  fullscreen: {
-    width: "100%",
-    height: "100%"
-  },
   overlay: {
+    paddingBottom: 20,
+    backgroundColor: "white",
     borderRadius: 5,
-    padding: 10,
+    paddingTop: 10,
     ...Platform.select({
       android: {
         elevation: 2
@@ -87,6 +67,12 @@ const styles = StyleSheet.create({
         shadowRadius: 4
       }
     })
+  },
+  menuHeader: {
+    fontSize: 22,
+    paddingLeft: 10,
+    paddingBottom: 5,
+    textDecorationLine: "underline"
   }
 });
 

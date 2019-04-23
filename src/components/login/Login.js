@@ -5,7 +5,8 @@ import {
   KeyboardAvoidingView,
   StyleSheet,
   ImageBackground,
-  LayoutAnimation
+  LayoutAnimation,
+  UIManager
 } from "react-native";
 
 import Layout from "../../../constants/Layout";
@@ -13,6 +14,10 @@ import RegistrationForm from "./components/RegistrationForm";
 import OptionSelector from "./components/OptionSelector";
 import HelpButton from "./components/HelpButton";
 import BG_IMAGE from "../../assets/bg2.jpg";
+
+// Enable LayoutAnimation on Android
+UIManager.setLayoutAnimationEnabledExperimental &&
+  UIManager.setLayoutAnimationEnabledExperimental(true);
 
 const Header = () => (
   <View style={styles.titleContainer}>

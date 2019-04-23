@@ -6,8 +6,13 @@ import {
 } from "react-navigation";
 
 import TabBarIcon from "../components/TabBarIcon";
+
 import Home from "../src/components/home";
+import ActivityModal from "../src/components/home/components/activity-modal";
+
 import Rent from "../src/components/rent";
+import AddRentModal from "../src/components/rent/components/add-rent-modal";
+
 import Settings from "../src/components/settings";
 
 const defaultNavigationOptions = {
@@ -17,7 +22,13 @@ const defaultNavigationOptions = {
   headerTintColor: "#fff"
 };
 
-const HomeStack = createStackNavigator({ Home }, { defaultNavigationOptions });
+const HomeStack = createStackNavigator(
+  {
+    Home,
+    ActivityModal
+  },
+  { defaultNavigationOptions, mode: "modal" }
+);
 
 HomeStack.navigationOptions = {
   tabBarLabel: "Home",
@@ -29,7 +40,10 @@ HomeStack.navigationOptions = {
   )
 };
 
-const RentStack = createStackNavigator({ Rent }, { defaultNavigationOptions });
+const RentStack = createStackNavigator(
+  { Rent, AddRentModal },
+  { defaultNavigationOptions, mode: "modal" }
+);
 
 RentStack.navigationOptions = {
   tabBarLabel: "Rent",
