@@ -14,11 +14,16 @@ class Home extends Component {
       headerBackTitle: null,
       headerRight: (
         <Icon
+          containerStyle={{ marginRight: 15 }}
           name="pencil"
           type="entypo"
           color="white"
           underlayColor="transparent"
-          onPress={() => navigation.navigate("ActivityModal")}
+          onPress={() =>
+            navigation.navigate("ActivityModal", {
+              onModalDismiss: navigation.getParam("modalDismiss")
+            })
+          }
         />
       )
     };
@@ -33,6 +38,7 @@ class Home extends Component {
   };
 
   componentDidMount = async () => {
+    this.props.navigation.setParams({ modalDismiss: this.onRefresh });
     await this.onRefresh();
   };
 

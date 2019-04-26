@@ -63,10 +63,17 @@ const AddOverlay = ({
         <View style={styles.buttonBar}>
           <Button
             title={isEditing ? "Remove" : "Add"}
-            containerStyle={{ marginRight: 5 }}
+            buttonStyle={{ backgroundColor: "red" }}
             onPress={isEditing ? onRemove : onAdd}
           />
-          <Button title={isEditing ? "Done" : "Close"} onPress={onClose} />
+          <Button
+            title={isEditing ? "Done" : "Close"}
+            onPress={onClose}
+            buttonStyle={{ paddingLeft: 20, paddingRight: 20 }}
+            containerStyle={{
+              marginLeft: 10
+            }}
+          />
         </View>
       </View>
     </>

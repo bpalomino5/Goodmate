@@ -9,6 +9,7 @@ import { db, auth } from "../../firebase";
 // import Header from "../shared/header";
 import RentFilters from "./components/RentFilters";
 import RentSheet from "./components/RentSheet";
+import { ScrollView } from "react-native-gesture-handler";
 
 const DefaultView = ({ description }) => (
   <View
@@ -23,24 +24,27 @@ const DefaultView = ({ description }) => (
 );
 
 const RentSheetView = ({ main, utilities, totals }) => (
-  <View style={{ flex: 1 }}>
-    <View style={styles.primaryContainer}>
-      <RentSheet main={main} utilities={utilities} totals={totals} />
-    </View>
+  <View style={styles.primaryContainer}>
+    <RentSheet main={main} utilities={utilities} totals={totals} />
   </View>
 );
 
 class Rent extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: "Rent",
+      title: "Rent   ",
       headerRight: (
         <Icon
+          containerStyle={{ marginRight: 15 }}
           name="doc"
           type="simple-line-icon"
           color="white"
           underlayColor="transparent"
-          onPress={() => navigation.navigate("AddRentModal")}
+          onPress={() =>
+            navigation.navigate("AddRentModal", {
+              getState: navigation.getParam("getState")
+            })
+          }
         />
       )
     };
@@ -70,6 +74,13 @@ class Rent extends Component {
       await this.getRentSheet(date.month, date.year);
       this.setState({ month: date.month, year: date.year });
     }
+
+    this.props.navigation.setParams({ getState: this.getCurrentState });
+  };
+
+  getCurrentState = () => {
+    const { main, utilities } = this.state;
+    return { main, utilities };
   };
 
   prepRentData = data => {

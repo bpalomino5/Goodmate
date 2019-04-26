@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
   signout: {
     flex: 1,
     justifyContent: "flex-end",
-    marginBottom: 20,
+    marginBottom: 10,
     marginLeft: 10,
     marginRight: 10
   }

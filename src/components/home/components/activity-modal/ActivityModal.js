@@ -1,7 +1,14 @@
 import React, { Component } from "react";
-import { Icon, Text, CheckBox, Input } from "react-native-elements";
-import { StyleSheet, View, ScrollView, TouchableOpacity } from "react-native";
+import { Text, CheckBox, Input } from "react-native-elements";
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  KeyboardAvoidingView,
+  TouchableOpacity
+} from "react-native";
 import { auth, db } from "../../../../firebase";
+import { Header } from "react-navigation";
 
 const data = [
   {
@@ -28,7 +35,7 @@ const data = [
 ];
 
 const PostButton = ({ onPress }) => (
-  <TouchableOpacity onPress={onPress}>
+  <TouchableOpacity onPress={onPress} style={{ marginRight: 10 }}>
     <View>
       <Text style={{ fontSize: 18, color: "white" }}>Post</Text>
     </View>
@@ -72,7 +79,7 @@ const CustomActivityInput = ({ onChangeText, value }) => (
 class ActivityModal extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: "Share Activities",
+      title: "Share Activities      ",
       headerRight: <PostButton onPress={navigation.getParam("post")} />
     };
   };
@@ -111,6 +118,7 @@ class ActivityModal extends Component {
       time: new Date().getTime()
     });
 
+    this.props.navigation.state.params.onModalDismiss();
     this.props.navigation.goBack();
   };
 
@@ -123,7 +131,11 @@ class ActivityModal extends Component {
   render() {
     const { options, customValue } = this.state;
     return (
-      <View style={styles.container}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior="padding"
+        keyboardVerticalOffset={Header.HEIGHT + 64}
+      >
         <View style={styles.InputSection}>
           <View style={styles.headerText}>
             <Text h4>Select all your activities</Text>
@@ -139,7 +151,7 @@ class ActivityModal extends Component {
             />
           </ScrollView>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 }
@@ -160,7 +172,8 @@ const styles = StyleSheet.create({
     padding: 5
   },
   customActivity: {
-    marginTop: 10
+    marginTop: 10,
+    flex: 1
   }
 });
 

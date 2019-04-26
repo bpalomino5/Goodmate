@@ -10,15 +10,19 @@ import AddOverlay from "./AddOverlay";
 const NextButton = ({ onPress }) => (
   <View style={styles.SubmitSection}>
     <Button
-      containerStyle={{ alignSelf: "center" }}
+      // containerStyle={{ alignSelf: "center" }}
       title="Next "
-      buttonStyle={styles.nextButton}
+      // buttonStyle={styles.nextButton}
       onPress={onPress}
     />
   </View>
 );
 
 class AddRentModal extends Component {
+  static navigationOptions = {
+    title: "Create Rent Sheet     "
+  };
+
   state = {
     isAddOverlay: false,
     main: [],
@@ -29,8 +33,24 @@ class AddRentModal extends Component {
   };
 
   componentDidMount = () => {
+    let { main, utilities } = this.props.navigation.state.params.getState();
+    if (main.length === 0 && utilities.length === 0) {
+      main.push({
+        section: "",
+        type: "",
+        value: "",
+        uids: {}
+      });
+
+      utilities.push({
+        section: "",
+        type: "",
+        value: "",
+        uids: {}
+      });
+    }
     // const { main, utilities } = this.props;
-    // this.setState({ main, utilities });
+    this.setState({ main, utilities });
   };
 
   //   closeModal = () => Navigation.dismissModal(this.props.componentId);
@@ -43,21 +63,21 @@ class AddRentModal extends Component {
     const { main, utilities } = this.state;
     const { date, editing, onFinish } = this.props;
 
-    Navigation.showModal({
-      component: {
-        name: "FinishRentModal",
-        passProps: {
-          main,
-          utilities,
-          date,
-          editing,
-          onFinish
-        },
-        options: {
-          animationType: "slide-up"
-        }
-      }
-    });
+    // Navigation.showModal({
+    //   component: {
+    //     name: "FinishRentModal",
+    //     passProps: {
+    //       main,
+    //       utilities,
+    //       date,
+    //       editing,
+    //       onFinish
+    //     },
+    //     options: {
+    //       animationType: "slide-up"
+    //     }
+    //   }
+    // });
   };
 
   addItem = () => {
@@ -183,17 +203,21 @@ const styles = StyleSheet.create({
     flex: 1
   },
   SubmitSection: {
-    flex: 0,
-    padding: 10,
-    marginTop: 0,
-    backgroundColor: "white"
+    flex: 1,
+    justifyContent: "flex-end",
+    marginBottom: 10,
+    marginLeft: 10,
+    marginRight: 10
+    // padding: 10,
+    // marginTop: 0,
+    // backgroundColor: "white"
   },
   nextButton: {
-    width: 300,
-    height: 45,
-    borderColor: "transparent",
-    borderWidth: 0,
-    borderRadius: 5
+    // width: 300,
+    // height: 45,
+    // borderColor: "transparent",
+    // borderWidth: 0,
+    // borderRadius: 5
   }
 });
 
