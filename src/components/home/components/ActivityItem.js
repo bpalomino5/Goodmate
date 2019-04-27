@@ -1,10 +1,13 @@
 import React from "react";
-import { View, TouchableHighlight, StyleSheet } from "react-native";
+import { View, TouchableHighlight, StyleSheet, Platform } from "react-native";
 import { Icon, Text, Divider } from "react-native-elements";
 
 import "intl";
 import "intl/locale-data/jsonp/en";
-Intl.__disableRegExpRestore();
+
+if (Platform.OS === "android") {
+  Intl.__disableRegExpRestore();
+}
 
 const formatTime = t => {
   const today = new Date().toLocaleDateString("en-US", {
