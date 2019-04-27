@@ -12,6 +12,7 @@ import ActivityModal from "../src/components/home/components/activity-modal";
 
 import Rent from "../src/components/rent";
 import AddRentModal from "../src/components/rent/components/add-rent-modal";
+import FinishRentModal from "../src/components/rent/components/finish-rent-modal";
 
 import Settings from "../src/components/settings";
 
@@ -41,7 +42,7 @@ HomeStack.navigationOptions = {
 };
 
 const RentStack = createStackNavigator(
-  { Rent, AddRentModal },
+  { Rent, AddRentModal, FinishRentModal },
   { defaultNavigationOptions, mode: "modal" }
 );
 

@@ -14,7 +14,7 @@ class Home extends Component {
       headerBackTitle: null,
       headerRight: (
         <Icon
-          containerStyle={{ marginRight: 15 }}
+          containerStyle={{ marginRight: 10 }}
           name="pencil"
           type="entypo"
           color="white"

@@ -1,26 +1,31 @@
 import React, { Component } from "react";
 import { StyleSheet, View, LayoutAnimation } from "react-native";
 import { Icon, Button } from "react-native-elements";
-// import { Navigation } from "react-native-navigation";
 
 import RentSheet from "./RentSheet";
 import AddOverlay from "./AddOverlay";
-// import ModalHeader from "../../../shared/modal-header";
 
 const NextButton = ({ onPress }) => (
   <View style={styles.SubmitSection}>
-    <Button
-      // containerStyle={{ alignSelf: "center" }}
-      title="Next "
-      // buttonStyle={styles.nextButton}
-      onPress={onPress}
-    />
+    <Button title="Next " onPress={onPress} />
   </View>
 );
 
 class AddRentModal extends Component {
-  static navigationOptions = {
-    title: "Create Rent Sheet     "
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: "Create Rent Sheet     ",
+      headerBackTitle: null,
+      headerRight: (
+        <Icon
+          containerStyle={{ marginRight: 10 }}
+          name="add"
+          color="white"
+          underlayColor="transparent"
+          onPress={navigation.getParam("openAddOverlay")}
+        />
+      )
+    };
   };
 
   state = {
@@ -33,7 +38,9 @@ class AddRentModal extends Component {
   };
 
   componentDidMount = () => {
-    let { main, utilities } = this.props.navigation.state.params.getState();
+    const { navigation } = this.props;
+    let { main, utilities } = navigation.state.params.getBills();
+    let editing = true;
     if (main.length === 0 && utilities.length === 0) {
       main.push({
         section: "",
@@ -48,36 +55,38 @@ class AddRentModal extends Component {
         value: "",
         uids: {}
       });
+
+      editing = false;
     }
-    // const { main, utilities } = this.props;
+
     this.setState({ main, utilities });
+    navigation.setParams({
+      openAddOverlay: this.openAddOverlay,
+      getBills: this.getBills,
+      editing
+    });
   };
 
-  //   closeModal = () => Navigation.dismissModal(this.props.componentId);
+  /**
+   * Helper Function for Passing State to Modal
+   */
+  getBills = () => {
+    const { main, utilities } = this.state;
+    return { main, utilities };
+  };
 
   toggleOverlay = open => {
     this.setState({ isAddOverlay: open });
   };
 
   openFinishModal = () => {
-    const { main, utilities } = this.state;
-    const { date, editing, onFinish } = this.props;
-
-    // Navigation.showModal({
-    //   component: {
-    //     name: "FinishRentModal",
-    //     passProps: {
-    //       main,
-    //       utilities,
-    //       date,
-    //       editing,
-    //       onFinish
-    //     },
-    //     options: {
-    //       animationType: "slide-up"
-    //     }
-    //   }
-    // });
+    const { navigation } = this.props;
+    navigation.navigate("FinishRentModal", {
+      getBills: navigation.getParam("getBills"),
+      getDate: () => navigation.state.params.getDate(),
+      editing: navigation.getParam("editing"),
+      finishRent: () => navigation.state.params.finishRent()
+    });
   };
 
   addItem = () => {
@@ -155,25 +164,6 @@ class AddRentModal extends Component {
     } = this.state;
     return (
       <View style={styles.container}>
-        {/* <ModalHeader
-          text="Create Rent Sheet"
-          leftComponent={
-            <Icon
-              name="arrow-back"
-              color="white"
-              underlayColor="transparent"
-              onPress={this.closeModal}
-            />
-          }
-          rightComponent={
-            <Icon
-              name="add"
-              color="white"
-              underlayColor="transparent"
-              onPress={this.openAddOverlay}
-            />
-          }
-        /> */}
         <RentSheet
           main={main}
           utilities={utilities}
@@ -199,25 +189,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1
   },
-  InputSection: {
-    flex: 1
-  },
   SubmitSection: {
-    flex: 1,
-    justifyContent: "flex-end",
-    marginBottom: 10,
-    marginLeft: 10,
-    marginRight: 10
-    // padding: 10,
-    // marginTop: 0,
-    // backgroundColor: "white"
-  },
-  nextButton: {
-    // width: 300,
-    // height: 45,
-    // borderColor: "transparent",
-    // borderWidth: 0,
-    // borderRadius: 5
+    padding: 10
   }
 });
 

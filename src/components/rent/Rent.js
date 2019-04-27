@@ -1,15 +1,11 @@
 import React, { Component } from "react";
-// import { Navigation } from "react-native-navigation";
 import { StyleSheet, View } from "react-native";
 import { Icon, Text } from "react-native-elements";
 import { getData, storeData } from "../../datastore";
-// import { toggleDrawer } from "../navigation";
 import { db, auth } from "../../firebase";
 
-// import Header from "../shared/header";
 import RentFilters from "./components/RentFilters";
 import RentSheet from "./components/RentSheet";
-import { ScrollView } from "react-native-gesture-handler";
 
 const DefaultView = ({ description }) => (
   <View
@@ -31,21 +27,29 @@ const RentSheetView = ({ main, utilities, totals }) => (
 
 class Rent extends Component {
   static navigationOptions = ({ navigation }) => {
+    const { params = {} } = navigation.state;
     return {
       title: "Rent   ",
+      headerBackTitle: null,
       headerRight: (
-        <Icon
-          containerStyle={{ marginRight: 15 }}
-          name="doc"
-          type="simple-line-icon"
-          color="white"
-          underlayColor="transparent"
-          onPress={() =>
-            navigation.navigate("AddRentModal", {
-              getState: navigation.getParam("getState")
-            })
-          }
-        />
+        <>
+          {!params.disabled && (
+            <Icon
+              containerStyle={{ marginRight: 10 }}
+              name="doc"
+              type="simple-line-icon"
+              color="white"
+              underlayColor="transparent"
+              onPress={() =>
+                navigation.navigate("AddRentModal", {
+                  getBills: navigation.getParam("getBills"),
+                  getDate: navigation.getParam("getDate"),
+                  finishRent: navigation.getParam("finishRent")
+                })
+              }
+            />
+          )}
+        </>
       )
     };
   };
@@ -75,10 +79,28 @@ class Rent extends Component {
       this.setState({ month: date.month, year: date.year });
     }
 
-    this.props.navigation.setParams({ getState: this.getCurrentState });
+    const { navigation } = this.props;
+    navigation.setParams({
+      getBills: this.getBills,
+      getDate: this.getDate,
+      finishRent: this.finishRent
+    });
   };
 
-  getCurrentState = () => {
+  finishRent = async () => {
+    const { month, year } = this.state;
+    await this.getRentSheet(month, year);
+  };
+
+  getDate = () => {
+    const { month, year } = this.state;
+    return { month, year };
+  };
+
+  /**
+   * Helper Function for Passing State to Modal
+   */
+  getBills = () => {
     const { main, utilities } = this.state;
     return { main, utilities };
   };
@@ -98,6 +120,11 @@ class Rent extends Component {
   getRentSheet = async (month, year) => {
     await storeData("date", { month, year });
     const { primary } = this.state;
+
+    // update headerRight
+    const { navigation } = this.props;
+    navigation.setParams({ disabled: !primary });
+
     const sheetRef = await db.getRent(month, year);
     if (sheetRef) {
       const main = this.prepRentData(sheetRef.get("base"));
@@ -106,10 +133,10 @@ class Rent extends Component {
       if (main != null && utilities != null && totals != null) {
         this.setState({ main, utilities, totals });
         if (primary) {
-          // display master sheet
+          // master sheet
           this.setState({ sheetAvailable: true });
         } else {
-          // display normal user sheet
+          // normal user sheet
           this.getPersonalSheet();
         }
       }
@@ -174,64 +201,6 @@ class Rent extends Component {
     });
   };
 
-  openRentModal = () => {
-    const { month, year } = this.state;
-    const date = { month, year };
-    const main = [
-      {
-        section: "",
-        type: "",
-        value: "",
-        uids: {}
-      }
-    ];
-    const utilities = [
-      {
-        section: "",
-        type: "",
-        value: "",
-        uids: {}
-      }
-    ];
-
-    // Navigation.showModal({
-    //   component: {
-    //     name: "AddRentModal",
-    //     passProps: {
-    //       editing: false,
-    //       date,
-    //       main,
-    //       utilities,
-    //       onFinish: () => this.getRentSheet(month, year)
-    //     },
-    //     options: {
-    //       animationType: "slide-up"
-    //     }
-    //   }
-    // });
-  };
-
-  editRentSheet = () => {
-    const { main, utilities, month, year } = this.state;
-    const date = { month, year };
-
-    // Navigation.showModal({
-    //   component: {
-    //     name: "AddRentModal",
-    //     passProps: {
-    //       editing: true,
-    //       main,
-    //       utilities,
-    //       date,
-    //       onFinish: () => this.getRentSheet(month, year)
-    //     },
-    //     options: {
-    //       animationType: "slide-up"
-    //     }
-    //   }
-    // });
-  };
-
   updateMonth = async month => {
     const { year } = this.state;
     if (year.trim() !== "") {
@@ -264,7 +233,6 @@ class Rent extends Component {
   render() {
     const {
       sheetAvailable,
-      primary,
       typeViewable,
       month,
       year,
@@ -273,31 +241,8 @@ class Rent extends Component {
       totals,
       displayText
     } = this.state;
-    const dateSelected = month !== "" && year !== "";
-    const disabled = dateSelected === false;
     return (
       <View style={styles.container}>
-        {/* <Header
-          toggleDrawer={() => toggleDrawer(componentId)}
-          text="Rent"
-          rightComponent={
-            primary ? (
-              <Icon
-                name="doc"
-                type="simple-line-icon"
-                color={disabled ? "grey" : "white"}
-                underlayColor="transparent"
-                onPress={
-                  disabled
-                    ? null
-                    : sheetAvailable
-                    ? this.editRentSheet
-                    : this.openRentModal
-                }
-              />
-            ) : null
-          }
-        /> */}
         <RentFilters
           isGroupPrimary={typeViewable}
           updateMonth={this.updateMonth}

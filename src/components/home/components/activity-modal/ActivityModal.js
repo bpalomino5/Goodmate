@@ -118,8 +118,9 @@ class ActivityModal extends Component {
       time: new Date().getTime()
     });
 
-    this.props.navigation.state.params.onModalDismiss();
-    this.props.navigation.goBack();
+    const { navigation } = this.props;
+    navigation.state.params.onModalDismiss();
+    navigation.goBack();
   };
 
   onActivitySelect = index => {
