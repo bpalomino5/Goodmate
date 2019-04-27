@@ -7,7 +7,7 @@ import GroupOptionModal from "../../../shared/group-option-modal";
 export default class LeaveGroupModal extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: "Leave Group     ",
+      title: "Leave Group      ",
       headerRight: (
         <Icon
           containerStyle={{ marginRight: 10 }}

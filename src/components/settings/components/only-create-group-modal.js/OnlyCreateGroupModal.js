@@ -6,7 +6,7 @@ import { db } from "../../../../firebase";
 export default class OnlyCreateGroupModal extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: "Create a Group     ",
+      title: "Create a Group        ",
       headerRight: (
         <Icon
           containerStyle={{ marginRight: 10 }}

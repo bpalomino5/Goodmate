@@ -18,7 +18,7 @@ const MateSelect = ({ names, onSelect }) => (
 export default class RemoveMateModal extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: "Remove Roommate     ",
+      title: "Remove Roommate       ",
       headerRight: (
         <Icon
           containerStyle={{ marginRight: 10 }}

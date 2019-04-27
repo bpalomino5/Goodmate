@@ -8,8 +8,9 @@ export default class AuthLoading extends Component {
   };
 
   init = () => {
+    const { navigation } = this.props;
     this.unsubscriber = firebase.auth.onAuthStateChanged(user => {
-      this.props.navigation.navigate(user != null ? "Main" : "Auth");
+      navigation.navigate(user != null ? "Main" : "Auth");
     });
   };
 

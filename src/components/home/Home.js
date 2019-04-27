@@ -38,7 +38,8 @@ class Home extends Component {
   };
 
   componentDidMount = async () => {
-    this.props.navigation.setParams({ modalDismiss: this.onRefresh });
+    const { navigation } = this.props;
+    navigation.setParams({ modalDismiss: this.onRefresh });
     await this.onRefresh();
   };
 

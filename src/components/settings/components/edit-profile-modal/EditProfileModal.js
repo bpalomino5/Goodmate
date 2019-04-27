@@ -19,7 +19,7 @@ const ProfileItems = ({ name, onChangeText }) => (
 class EditProfileModal extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: "Edit Profile    ",
+      title: "Edit Profile     ",
       headerRight: (
         <Icon
           containerStyle={{ marginRight: 10 }}

@@ -30,7 +30,7 @@ const RoommateView = ({ groupName, roommates }) => (
 
 class RentGroupModal extends Component {
   static navigationOptions = {
-    title: "Rent Group",
+    title: "Rent Group       ",
     headerBackTitle: null
   };
 
@@ -96,6 +96,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white"
+  },
+  initView: {
+    justifyContent: "center",
+    alignItems: "center"
   },
   cardStyle: {
     flex: 0,

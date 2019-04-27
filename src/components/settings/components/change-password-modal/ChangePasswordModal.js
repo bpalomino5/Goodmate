@@ -89,7 +89,7 @@ const ReAuthOverlay = ({
 class ChangePasswordModal extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: "Change Password    ",
+      title: "Change Password       ",
       headerRight: (
         <Icon
           containerStyle={{ marginRight: 10 }}

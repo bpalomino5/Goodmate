@@ -7,7 +7,7 @@ import GroupOptionModal from "../../../shared/group-option-modal";
 class JoinGroupModal extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: "Join a Group     ",
+      title: "Join a Group       ",
       headerRight: (
         <Icon
           containerStyle={{ marginRight: 10 }}

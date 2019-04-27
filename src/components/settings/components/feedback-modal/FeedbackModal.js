@@ -6,7 +6,7 @@ import { db } from "../../../../firebase";
 
 export default class FeedbackModal extends Component {
   static navigationOptions = {
-    title: "Send Feedback    "
+    title: "Send Feedback       "
   };
 
   state = {

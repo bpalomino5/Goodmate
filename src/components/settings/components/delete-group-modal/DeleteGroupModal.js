@@ -7,7 +7,7 @@ import GroupOptionModal from "../../../shared/group-option-modal";
 class DeleteGroupModal extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: "Delete Group    ",
+      title: "Delete Group        ",
       headerRight: (
         <Icon
           containerStyle={{ marginRight: 10 }}

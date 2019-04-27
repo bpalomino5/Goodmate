@@ -18,7 +18,7 @@ const MateSelect = ({ names, onSelect }) => (
 export default class NewPrimaryModal extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: "Assign New Primary      ",
+      title: "Assign New Primary        ",
       headerRight: (
         <Icon
           containerStyle={{ marginRight: 10 }}

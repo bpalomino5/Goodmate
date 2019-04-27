@@ -2,7 +2,11 @@ import React from "react";
 import { View, TouchableHighlight, StyleSheet } from "react-native";
 import { Icon, Text, Divider } from "react-native-elements";
 
-formatTime = t => {
+import "intl";
+import "intl/locale-data/jsonp/en";
+Intl.__disableRegExpRestore();
+
+const formatTime = t => {
   const today = new Date().toLocaleDateString("en-US", {
     day: "numeric",
     month: "short"
@@ -11,25 +15,29 @@ formatTime = t => {
     day: "numeric",
     month: "short"
   });
-  const time = new Date(t).toLocaleString("en-US", {
+
+  const time = new Intl.DateTimeFormat("en-US", {
     hour: "2-digit",
     minute: "2-digit"
-  });
+  }).format(t);
 
-  let formatted = `${date} at `;
+  let formatted = `${date} at`;
   if (today === date) {
-    formatted = "Today at ";
+    formatted = `Today at`;
   }
-  return `${formatted}${time}`;
+  return `${formatted} ${time}`;
 };
 
 const ItemTitle = ({ title }) => <Text style={styles.nameStyle}>{title}</Text>;
 
-const ItemTimeStamp = ({ time }) => (
-  <View style={{ marginBottom: 5 }}>
-    <Text style={{ fontSize: 13, color: "grey" }}>{formatTime(time)}</Text>
-  </View>
-);
+const ItemTimeStamp = ({ time }) => {
+  const formattedTime = formatTime(time);
+  return (
+    <View style={{ marginBottom: 5 }}>
+      <Text style={{ fontSize: 13, color: "grey" }}>{formattedTime}</Text>
+    </View>
+  );
+};
 
 const ItemBody = ({ description }) => (
   <>
@@ -41,13 +49,15 @@ const ItemBody = ({ description }) => (
   </>
 );
 
-const ItemDetails = ({ name, time, description }) => (
-  <View style={{ flex: 3 }}>
-    <ItemTitle title={name} />
-    <ItemTimeStamp time={time} />
-    <ItemBody description={description} />
-  </View>
-);
+const ItemDetails = ({ name, time, description }) => {
+  return (
+    <View style={{ flex: 3 }}>
+      <ItemTitle title={name} />
+      <ItemTimeStamp time={time} />
+      <ItemBody description={description} />
+    </View>
+  );
+};
 
 const LikesView = ({ likes }) => (
   <View
@@ -68,7 +78,6 @@ const LikesView = ({ likes }) => (
 const LikeButton = ({ likes, addLike }) => (
   <View
     style={{
-      // borderLeftWidth: 0.5,
       flex: 0,
       width: 60,
       alignItems: "center"
