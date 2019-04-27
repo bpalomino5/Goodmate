@@ -4,14 +4,8 @@ import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 
 class HelpButton extends Component {
   openHelpModal = () => {
-    // Navigation.showModal({
-    //   component: {
-    //     name: 'HelpModal',
-    //     options: {
-    //       animationType: 'slide-up',
-    //     },
-    //   },
-    // });
+    const { navigation } = this.props;
+    navigation.navigate("HelpModal");
   };
 
   render() {

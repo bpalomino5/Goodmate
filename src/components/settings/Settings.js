@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 
 import SelectMenu from "../shared/select-menu";
 import { Button } from "react-native-elements";
@@ -20,6 +20,14 @@ class Settings extends Component {
     headerBackTitle: null
   };
 
+  state = {
+    displayName: ""
+  };
+
+  componentDidMount = () => {
+    this.setState({ displayName: auth.getDisplayName() });
+  };
+
   openModal = screen => {
     const { navigation } = this.props;
     navigation.navigate(screen);
@@ -31,10 +39,12 @@ class Settings extends Component {
   };
 
   render() {
+    const { displayName } = this.state;
     return (
       <View style={styles.container}>
         <SelectMenu
           title="Profile"
+          subtitle={displayName}
           options={profileItems}
           onItemPress={this.openModal}
         />

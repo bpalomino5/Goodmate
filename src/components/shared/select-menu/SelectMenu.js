@@ -34,9 +34,20 @@ const SectionItem = ({ title, onPress }) => (
   </View>
 );
 
-const SelectMenu = ({ title, options, onItemPress }) => (
+const SelectMenu = ({ title, subtitle, options, onItemPress }) => (
   <View>
-    <Text style={styles.sectionText}>{title}</Text>
+    <View style={{ flexDirection: "row", marginTop: 25 }}>
+      <Text style={styles.sectionText}>{title}</Text>
+      {!!subtitle && (
+        <Text
+          style={{
+            fontSize: 22
+          }}
+        >
+          &nbsp;-&nbsp;{subtitle}
+        </Text>
+      )}
+    </View>
     {options.map((item, i) => (
       <SectionItem
         key={i}
@@ -49,10 +60,8 @@ const SelectMenu = ({ title, options, onItemPress }) => (
 
 const styles = StyleSheet.create({
   sectionText: {
-    // fontWeight: "bold",
     fontSize: 22,
     marginLeft: 10,
-    marginTop: 25,
     textDecorationLine: "underline"
   },
   divider: { backgroundColor: "grey", height: 1 },

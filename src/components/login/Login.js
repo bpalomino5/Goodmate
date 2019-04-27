@@ -77,7 +77,7 @@ class Login extends Component {
             isSignUpPage={isSignUpPage}
           />
         </KeyboardAvoidingView>
-        <HelpButton />
+        <HelpButton navigation={navigation} />
       </LoginPageContainer>
     );
   }
