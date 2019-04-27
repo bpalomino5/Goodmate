@@ -3,15 +3,18 @@ import { ActivityIndicator, View } from "react-native";
 import { firebase } from "../../firebase";
 
 export default class AuthLoading extends Component {
-  constructor(props) {
-    super(props);
+  componentDidMount = () => {
     this.init();
-  }
+  };
 
   init = () => {
-    firebase.auth.onAuthStateChanged(user => {
+    this.unsubscriber = firebase.auth.onAuthStateChanged(user => {
       this.props.navigation.navigate(user != null ? "Main" : "Auth");
     });
+  };
+
+  componentWillUnmount = () => {
+    this.unsubscriber();
   };
 
   render() {

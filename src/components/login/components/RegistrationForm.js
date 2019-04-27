@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { StyleSheet, View } from "react-native";
 import Layout from "../../../../constants/Layout";
 import { Input, Button, Icon } from "react-native-elements";
-// import { Navigation } from "react-native-navigation";
 import { auth } from "../../../firebase";
 
 class RegistrationForm extends Component {
@@ -80,12 +79,19 @@ class RegistrationForm extends Component {
         return;
       }
       try {
-        await auth.createUserWithEmailAndPassword(email, password);
-        // go to Welcome
-        this.setState({ isLoading: false });
-        this.openWelcomeModal();
-        const { selectCategory } = this.props;
-        selectCategory(0);
+        const success = await auth.createUserWithEmailAndPassword(
+          email,
+          password
+        );
+        if (success) {
+          this.setState({ isLoading: false });
+
+          const { navigation } = this.props;
+          navigation.navigate("UserInfoModal");
+
+          const { selectCategory } = this.props;
+          selectCategory(0);
+        }
       } catch (error) {
         if (error.code === "auth/email-already-in-use") {
           this.setState({
@@ -102,17 +108,6 @@ class RegistrationForm extends Component {
         }
       }
     }
-  };
-
-  openWelcomeModal = () => {
-    // Navigation.showModal({
-    //   component: {
-    //     name: "WelcomeModal",
-    //     options: {
-    //       animationType: "slide-up"
-    //     }
-    //   }
-    // });
   };
 
   render() {

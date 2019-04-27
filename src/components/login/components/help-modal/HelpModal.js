@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { StyleSheet, Text, View, Platform } from "react-native";
-// import { Navigation } from "react-native-navigation";
-import { Header, Input, Button, Icon } from "react-native-elements";
+import { Input, Button, Icon } from "react-native-elements";
 import { auth } from "../../../../firebase";
 
 const ForgotView = ({ onSubmit, onChangeText }) => (
@@ -31,15 +30,28 @@ const SubmitView = () => (
 );
 
 export default class HelpModal extends Component {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      headerLeft: (
+        <Icon
+          containerStyle={{ marginLeft: 10 }}
+          name="close"
+          underlayColor="transparent"
+          onPress={() => navigation.goBack()}
+        />
+      )
+    };
+  };
+
   state = { submitted: false, email: "" };
 
-  //   closeModal = () => Navigation.dismissModal(this.props.componentId);
-
   resetPassword = async () => {
+    const { navigation } = this.props;
     const { email } = this.state;
     if (email.length !== 0) {
       this.setState({ submitted: true });
       await auth.resetPassword(email);
+      navigation.goBack();
     }
   };
 
@@ -47,18 +59,6 @@ export default class HelpModal extends Component {
     const { submitted } = this.state;
     return (
       <View style={styles.container}>
-        <Header
-          containerStyle={Platform.OS === "android" && styles.header}
-          backgroundColor="white"
-          statusBarProps={{ backgroundColor: "white" }}
-          leftComponent={
-            <Icon
-              name="close"
-              underlayColor="transparent"
-              onPress={this.closeModal}
-            />
-          }
-        />
         {submitted === false ? (
           <ForgotView
             onSubmit={this.resetPassword}
@@ -76,11 +76,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white"
-  },
-  header: {
-    height: "auto",
-    paddingBottom: 10,
-    paddingTop: 10
   },
   forgetView: {
     flex: 1,

@@ -74,7 +74,7 @@ class RentGroupModal extends Component {
 
   openOptionModal = screen => {
     const { navigation } = this.props;
-    navigation.navigate(screen);
+    navigation.navigate(screen, { onFinish: () => this.getPrimary() });
   };
 
   render() {

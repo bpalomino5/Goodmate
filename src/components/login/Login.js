@@ -37,7 +37,8 @@ const LoginPageContainer = ({ children }) => (
 
 class Login extends Component {
   static navigationOptions = {
-    header: null
+    header: null,
+    headerBackTitle: null
   };
 
   state = {

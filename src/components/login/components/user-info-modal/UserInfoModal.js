@@ -5,7 +5,7 @@ import { auth } from "../../../../firebase";
 
 export default class UserInfoModal extends Component {
   static navigationOptions = {
-    title: ""
+    header: null
   };
 
   state = {
@@ -14,19 +14,12 @@ export default class UserInfoModal extends Component {
   };
 
   openNextModal = async () => {
+    const { navigation } = this.props;
     this.setState({ isLoading: true });
     const { name } = this.state;
     if (name.trim() !== "") {
       await auth.updateUserName(name);
-      // then move on to next modal
-      //   Navigation.showModal({
-      //     component: {
-      //       name: "CreateGroupModal",
-      //       options: {
-      //         animationType: "slide-up"
-      //       }
-      //     }
-      //   });
+      navigation.navigate("CreateGroupModal");
     }
   };
 
@@ -49,10 +42,9 @@ export default class UserInfoModal extends Component {
           onSubmitEditing={this.openNextModal}
         />
         <Button
-          containerStyle={{ marginTop: 40 }}
+          containerStyle={{ marginTop: 30 }}
           title="CONTINUE  "
           buttonStyle={{
-            backgroundColor: "rgba(92, 99,216, 1)",
             width: 300,
             height: 45,
             borderColor: "transparent",
