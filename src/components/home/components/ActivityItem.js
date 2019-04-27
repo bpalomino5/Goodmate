@@ -42,7 +42,7 @@ const ItemBody = ({ description }) => (
 );
 
 const ItemDetails = ({ name, time, description }) => (
-  <View style={{ flex: 1 }}>
+  <View style={{ flex: 3 }}>
     <ItemTitle title={name} />
     <ItemTimeStamp time={time} />
     <ItemBody description={description} />
@@ -50,28 +50,49 @@ const ItemDetails = ({ name, time, description }) => (
 );
 
 const LikesView = ({ likes }) => (
-  <>
+  <View
+    style={{
+      flex: 1,
+      justifyContent: "flex-start"
+    }}
+  >
     {likes > 0 && (
       <Text style={{ marginTop: 5 }}>
         {likes}
         &nbsp;likes
       </Text>
     )}
-  </>
+  </View>
 );
 
 const LikeButton = ({ likes, addLike }) => (
-  <View style={{ alignSelf: "center" }}>
-    <Icon name="thumbs-up" type="feather" onPress={addLike} />
+  <View
+    style={{
+      // borderLeftWidth: 0.5,
+      flex: 0,
+      width: 60,
+      alignItems: "center"
+    }}
+  >
+    <Icon
+      containerStyle={{
+        flex: 1,
+        justifyContent: "flex-end"
+      }}
+      name="thumbs-up"
+      type="feather"
+      onPress={addLike}
+    />
     <LikesView likes={likes} />
   </View>
 );
 
 const ActivityItemContainer = ({ children, onLongPress }) => (
   <TouchableHighlight
+    style={{ borderRadius: 10 }}
     activeOpacity={0.3}
     onLongPress={onLongPress}
-    underlayColor="#8E967C"
+    underlayColor="lightgray"
   >
     <View style={styles.row}>{children}</View>
   </TouchableHighlight>
@@ -87,7 +108,14 @@ const ActivityItem = ({ item, addLike, onLongPress }) => (
       />
       <LikeButton likes={item.likes} addLike={addLike} />
     </ActivityItemContainer>
-    <Divider style={{ backgroundColor: "grey", height: 1 }} />
+    <Divider
+      style={{
+        backgroundColor: "grey",
+        height: 1,
+        marginLeft: 10,
+        marginRight: 10
+      }}
+    />
   </View>
 );
 

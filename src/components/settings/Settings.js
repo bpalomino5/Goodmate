@@ -1,7 +1,5 @@
 import React, { Component } from "react";
 import { StyleSheet, View } from "react-native";
-// import { Navigation } from "react-native-navigation";
-// import { toggleDrawer } from "../navigation";
 
 import SelectMenu from "../shared/select-menu";
 import { Button } from "react-native-elements";
@@ -18,18 +16,13 @@ const generalItems = [
 
 class Settings extends Component {
   static navigationOptions = {
-    title: "Settings   "
+    title: "Settings   ",
+    headerBackTitle: null
   };
 
   openModal = screen => {
-    // Navigation.showModal({
-    //   component: {
-    //     name: screen,
-    //     options: {
-    //       animationType: "slide-up"
-    //     }
-    //   }
-    // });
+    const { navigation } = this.props;
+    navigation.navigate(screen);
   };
 
   onSignOut = async () => {

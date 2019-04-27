@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, TouchableOpacity } from "react-native";
+import { StyleSheet, View, TouchableHighlight } from "react-native";
 import { Icon, Text, Divider } from "react-native-elements";
 
 const ItemBody = ({ title }) => (
@@ -16,9 +16,13 @@ const ItemBody = ({ title }) => (
 );
 
 const SelectableItemRow = ({ onPress, children }) => (
-  <TouchableOpacity activeOpacity={0.3} onPress={onPress}>
+  <TouchableHighlight
+    activeOpacity={0.3}
+    onPress={onPress}
+    underlayColor="lightgray"
+  >
     <View style={styles.rowContainer}>{children}</View>
-  </TouchableOpacity>
+  </TouchableHighlight>
 );
 
 const SectionItem = ({ title, onPress }) => (
@@ -45,7 +49,7 @@ const SelectMenu = ({ title, options, onItemPress }) => (
 
 const styles = StyleSheet.create({
   sectionText: {
-    fontWeight: "bold",
+    // fontWeight: "bold",
     fontSize: 22,
     marginLeft: 10,
     marginTop: 25,
