@@ -183,21 +183,52 @@ export const addLikeToActivity = async aid => {
   }
 };
 
-export const getActivities = async () => {
+export const getActivities = async (lastVisible = null) => {
   const activities = [];
   const ref = await getGroupRef();
-  if (ref) {
-    const query = await ref
+  let docSnapshots = null;
+
+  if (!lastVisible) {
+    docSnapshots = await ref
       .collection("activities")
       .orderBy("time", "desc")
+      .limit(15)
       .get();
 
-    query.forEach(doc => {
+    docSnapshots.forEach(doc => {
+      activities.push({ ...doc.data(), key: doc.id });
+    });
+  } else {
+    docSnapshots = await ref
+      .collection("activities")
+      .orderBy("time", "desc")
+      .startAfter(lastVisible)
+      .limit(15)
+      .get();
+
+    docSnapshots.forEach(doc => {
       activities.push({ ...doc.data(), key: doc.id });
     });
   }
+
   return activities;
 };
+
+// export const getActivities = async () => {
+//   const activities = [];
+//   const ref = await getGroupRef();
+//   if (ref) {
+//     const query = await ref
+//       .collection("activities")
+//       .orderBy("time", "desc")
+//       .get();
+
+//     query.forEach(doc => {
+//       activities.push({ ...doc.data(), key: doc.id });
+//     });
+//   }
+//   return activities;
+// };
 
 /**
   |--------------------------------------------------
@@ -297,7 +328,7 @@ export const createGroup = async name => {
 
   if (!doc.exists) {
     // create group
-    doc.ref.set();
+    doc.ref.set({});
     success = await addUsertoGroup(name);
 
     // update to primary user

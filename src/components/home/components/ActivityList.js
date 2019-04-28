@@ -1,60 +1,33 @@
 import React from "react";
-import { ScrollView, View, RefreshControl, StyleSheet } from "react-native";
-import { Text, Divider } from "react-native-elements";
-
+import InfiniteList from "../../shared/infinite-list";
 import ActivityItem from "./ActivityItem";
-
-const ActivityFeed = ({ activities, addLike, onItemSelect }) =>
-  activities.map(item => (
-    <ActivityItem
-      key={item.key}
-      item={item}
-      addLike={() => addLike(item.key)}
-      onLongPress={() => onItemSelect(item.key, item.created_by)}
-    />
-  ));
-
-const EmptyActivityFeed = () => (
-  <View>
-    <View style={styles.emptyfeed}>
-      <Text h4>Upcoming activities!</Text>
-    </View>
-    <Divider style={{ backgroundColor: "grey", height: 1 }} />
-  </View>
-);
 
 const ActivityList = ({
   refreshing,
   activities,
   onRefresh,
   addLike,
-  openOverlay
+  openOverlay,
+  onLoadMore,
+  loadingMore
 }) => (
-  <ScrollView
-    refreshControl={
-      <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-    }
-  >
-    {activities.length > 0 ? (
-      <ActivityFeed
-        activities={activities}
-        addLike={key => addLike(key)}
-        onItemSelect={(aid, uid) => openOverlay(aid, uid)}
+  <InfiniteList
+    amount={5}
+    threshold={0.01}
+    emptyFeedTitle="Upcoming Activities!"
+    onLoadMore={onLoadMore}
+    onRefresh={onRefresh}
+    refreshing={refreshing}
+    data={activities}
+    renderItem={({ item, index }) => (
+      <ActivityItem
+        item={item}
+        addLike={() => addLike(index, item.key)}
+        onLongPress={() => openOverlay(index, item.key, item.created_by)}
       />
-    ) : (
-      <EmptyActivityFeed />
     )}
-  </ScrollView>
+    loadingMore={loadingMore}
+  />
 );
-
-const styles = StyleSheet.create({
-  emptyfeed: {
-    flex: 0,
-    flexDirection: "row",
-    justifyContent: "center",
-    backgroundColor: "white",
-    padding: 15
-  }
-});
 
 export default ActivityList;
