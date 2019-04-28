@@ -67,6 +67,14 @@ class Rent extends Component {
   };
 
   componentDidMount = async () => {
+    const { navigation } = this.props;
+    navigation.setParams({
+      disabled: true,
+      getBills: this.getBills,
+      getDate: this.getDate,
+      finishRent: this.finishRent
+    });
+
     const roommates = await db.getRoommates();
     roommates.forEach(mate => {
       if (auth.isAuthUser(mate.uid)) {
@@ -78,13 +86,6 @@ class Rent extends Component {
       await this.getRentSheet(date.month, date.year);
       this.setState({ month: date.month, year: date.year });
     }
-
-    const { navigation } = this.props;
-    navigation.setParams({
-      getBills: this.getBills,
-      getDate: this.getDate,
-      finishRent: this.finishRent
-    });
   };
 
   finishRent = async () => {
